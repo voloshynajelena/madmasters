@@ -1,0 +1,361 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Расчет стоимости сайтов</title>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" href="/wp-content/themes/tweb/img/favicon.ico">
+
+	<!-- CSS  -->
+	<link rel="stylesheet" href="css/style.css">
+	<!-- JS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<style>
+
+#page-preloader {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    z-index: 100500;
+}
+
+#page-preloader .spinner {
+    width: 110px;
+    height: 110px;
+    position: absolute;
+    border: none;
+    left: 47.5%;
+    top: 46%;
+    background: url('/wp-content/themes/tweb/img/spinner.gif') no-repeat 50% 50%;
+    margin: -16px 0 0 -16px;
+}
+
+#logoMM img {
+	width: 70px;
+    position: fixed;
+    top: 10px;
+    left: 75px;
+}
+
+</style>
+</head>
+<body>
+<div id="page-preloader"><span class="spinner"></span></div>
+<div class = "calculator">
+<div class="header-block" id="header">
+	<div id="logoMM"><a href="/"><img src="/wp-content/themes/tweb/img/MadMastersLogoWhite.png" alt="logo"></a></div>
+	<div class="result-block" id="resultBlock">
+	<h2>Расчет стоимости сайта:</h2>
+	<span class="result-title">дней</span>
+	<span type="text" class="result-span" id="resultTime">3</span>
+	<span class="result-title">$</span>
+	<span type="text" class="result-span" id="resultPrice">60</span>
+	</div>
+</div>
+<form method="post" action="calc.php" id="form-calculator" name = "form-calculator">
+	<div class = "section hostdom">
+		<div class = "header header-hostdom">Хостинг и домен</div>
+		<div class = "content content-hostdom">
+			<div class = "container-hosting">
+    			<input type = "radio" name = "hosting" id = "hostingNo" value = "0-0-хостингЕсть" checked>
+		    	<label for="hostingNo"><span class = "square"></span>Хостинг есть<i class="for-price">(0)</i><p class="subtext">Хостинг - размещение сайта на сервере, постоянно находящемся в сети</p></label>
+
+				<input type = "radio" name = "hosting" id = "hostingYes" value = "25-1-хостинг">
+		    	<label for="hostingYes"><span class = "square"></span>Нужен хостинг<i class="for-price">(+25)</i><p class="subtext">Услуга покупки хостинга на 1 год. Дальнейшая покупка осуществляется владельцем сайта</p></label>
+			</div>
+			<div class = "container-domen">
+				<div class = "domen-block">
+	    			<input type = "radio" name = "domen" id = "domenNo" value = "0-0-доменЕсть" checked>
+			    	<label for="domenNo"><span class = "square"></span>Домен есть<i class="for-price">(0)</i><p class="subtext">Домен - символьное имя в составе адреса сайта для доступа в интернете (Например: dp.ua)</p></label>
+					<input type = "radio" name = "domen" id = "domenYes" value = "0-0-домен">
+			    	<label for="domenYes"><span class = "square"></span>Нужен домен<p class="subtext">Услуга покупки демена на 1 год. Дальнейшая покупка осуществляется владельцем сайта</p></label>
+		    	</div>
+				<div id = "domenChoiceBlock" class = "domen-choice-block invisible">
+				    <select name = "domenChoice">
+				      <option value = "0-неВыбран">Не выбрано<i class="for-price"> (0)</i>
+				      <option value = "3-in.ua">in.ua<i class="for-price"> (+3)</i>
+				      <option value = "3-dp.ua">dp.ua<i class="for-price"> (+3)</i>
+				      <option value = "6-zp.ua">zp.ua<i class="for-price"> (+6)</i>
+				      <option value = "10-com.ua">com.ua<i class="for-price"> (+10)</i>
+				      <option value = "12-com">com<i class="for-price"> (+12)</i>
+				      <option value = "4-info">info<i class="for-price"> (+4)</i>
+				      <option value = "12-net">net<i class="for-price"> (+12)</i>
+				      <option value = "12-org">org<i class="for-price"> (+12)</i>
+				      <option value = "4-ru">ru<i class="for-price"> (+4)</i>
+				      <option value = "50-other">other<i class="for-price"> (+50)</i>
+				    </select><p class="subtext">Выберите желаемое окончание в доменном имени.<br><br></p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class = "section type">
+		<div class = "header header-type">Выберите тип сайта (определяет объем наполнения сайта базовым материалом)</div>
+		<div class = "content content-type">
+		    <input type = "radio" name = "type" id = "vis" value = "5-0-visitka" checked>
+		    <label for="vis"><span class = "square"></span>Визитка<i class="for-price">(+5)</i></label>
+		    <input type = "radio" name = "type" id = "kor" value = "10-0-korporat">
+		    <label for="kor"><span class = "square"></span>Корпоративный<i class="for-price">(+10)</i></label>
+		    <input type = "radio" name = "type" id = "cat" value = "10-0-catalog">
+		    <label for="cat"><span class = "square"></span>Каталог<i class="for-price">(+10)</i></label>
+		    <input type = "radio" name = "type" id = "inm" value = "20-0-intmagaz">
+		    <label for="inm"><span class = "square"></span>Интернет магазин<i class="for-price">(+20)</i></label>
+		    <input type = "radio" name = "type" id = "por" value = "50-0-portal">
+		    <label for="por"><span class = "square"></span>Портал<i class="for-price">(+50)</i></label>
+		    <input type = "radio" name = "type" id = "lap" value = "5-0-landing">
+		    <label for="lap"><span class = "square"></span>Landing Page<i class="for-price">(+5)</i></label>
+		</div>
+	</div>
+
+	<div class = "section cms">
+		<div class = "header header-cms">Выберите СMS</div>
+		<div class = "content content-cms">
+		    <input type = "radio" name = "cms" id = "wp" value = "0-1-wordpress" checked>
+		    <label for="wp">Wordpress<i class="for-price">(0)</i></label>
+		    <input type = "radio" name = "cms" id = "ps" value = "0-1-prestashop">
+		    <label for="ps">Presta Shop<i class="for-price">(0)</i></label>
+		    <input type = "radio" name = "cms" id = "oc" value = "0-5-opencart">
+		    <label for="oc">Open Cart<i class="for-price">(0)</i></label>
+		    <input type = "radio" name = "cms" id = "ok" value = "200-5-okay">
+		    <label for="wa">Okay CMS<i class="for-price">(+200)</i></label>
+		    <input type = "radio" name = "cms" id = "wa" value = "200-5-shopscript">
+		    <label for="wa">Shop Script<i class="for-price">(+200)</i></label>
+		    <input type = "radio" name = "cms" id = "bx" value = "800-14-bitrix">
+		    <label for="bx">1C Birtix<i class="for-price">(+800)</i></label>
+		</div>
+	</div>
+
+	<div class = "section template">
+		<div class = "header header-template">Дизайн макета</div>
+		<div class = "content content-template">				
+			<input type = "radio" name = "template" id = "template1" value = "50-1-готовый" checked>
+	    	<label for="template1"><span class = "square"></span>Готовый макет<i class="for-price">(+50)</i><p class="subtext">Выбор шаблона из набора готовых. Можно будет поменять цветовую <br>палитру</p></label>
+			<input type = "radio" name = "template" id = "template2" value = "250-5-индивидуальный">
+	    	<label for="template2"><span class = "square"></span>Индивидуальный макет<i class="for-price">(+250)</i><p class="subtext">Выбор прототипа из набора готовых шаблонов. Смена оформления и настройка прототипа сайта под заказчика</p></label>
+			<input type = "radio" name = "template" id = "template3" value = "600-14-эксклюзивный">
+	    	<label for="template3"><span class = "square"></span>Эксклюзивный макет<i class="for-price">(+600)</i><p class="subtext">Разработка эксклюзивного дизайна. Позволяет уделить внимание каждому элементу на сайте</p></label>
+		</div>
+	</div>
+
+	<div class = "section design">
+		<div class = "header header-design">Дизайн сайта (дополнительно)</div>
+		<div class = "content content-design">	
+		    <input type = "checkbox" name = "design[]" id = "designIco" value = "2-0-favicon">
+	    	<label for="designIco"><span class = "square"></span>Favicon<i class="for-price">(+2)</i></label>
+		    <input type = "checkbox" name = "design[]" id = "designLogo" value = "100-5-logo">
+	    	<label for="designLogo"><span class = "square"></span>Логотип<i class="for-price">(+100)</i></label>
+		    <input type = "checkbox" name = "design[]" id = "designFont" value = "7-1-font">
+	    	<label for="designFont"><span class = "square"></span>Шрифт<i class="for-price">(+7)</i></label>
+		</div>
+	</div>
+
+	<div class = "section modules">
+		<div class = "header header-modules">Модули</div>
+		<div class = "content content-modules">	
+			<div class = "module moduleGallery">
+			    <input type = "radio" name = "gallery" id = "galleryBasic" value = "5-1-базовая" checked>
+		    	<label for="galleryBasic"><span class = "square"></span>Базовая галерея<i class="for-price">(+5)</i></label>
+			    <input type = "radio" name = "gallery" id = "galleryMiddle" value = "10-2-премиум">
+		    	<label for="galleryMiddle"><span class = "square"></span>Премиум галерея<i class="for-price">(+10)</i></label>
+			    <input type = "radio" name = "gallery" id = "galleryPremium" value = "40-7-эксклюзивная">
+		    	<label for="galleryPremium"><span class = "square"></span>Эксклюзивная галерея<i class="for-price">(+40)</i></label>
+		    </div>			
+			<div class = "module moduleSlider">
+			    <input type = "radio" name = "slider" id = "sliderNo" value = "0-0-безСлайдера" checked>
+		    	<label for="sliderNo"><span class = "square"></span>Без слайдера<i class="for-price">(0)</i></label>
+			    <input type = "radio" name = "slider" id = "sliderBasic" value = "5-2-базовый">
+		    	<label for="sliderBasic"><span class = "square"></span>Базовый слайдер<i class="for-price">(+5)</i></label>
+			    <input type = "radio" name = "slider" id = "sliderPremium" value = "25-7-премиум">
+		    	<label for="sliderPremium"><span class = "square"></span>Премиум слайдер<i class="for-price">(+25)</i></label>
+		    </div>
+			<div class = "module moduleCarousel">
+			    <input type = "radio" name = "carousel" id = "carouselNo" value = "0-0-безКарусели" checked>
+		    	<label for="carouselNo"><span class = "square"></span>Без карусели<i class="for-price">(0)</i></label>
+			    <input type = "radio" name = "carousel" id = "carouselBasic" value = "10-2-базовая">
+		    	<label for="carouselBasic"><span class = "square"></span>Базовая карусель<i class="for-price">(+10)</i></label>
+			    <input type = "radio" name = "carousel" id = "carouselPremium" value = "30-7-премиум">
+		    	<label for="carouselPremium"><span class = "square"></span>Премиум карусель<i class="for-price">(+30)</i></label>
+		    </div>
+			<hr>
+			<div class = "module moduleBlog">
+			    <input type = "checkbox" name = "blog[]" id = "moduleBlogWP" value = "0-1-блогWP">
+		    	<label for="moduleBlogWP"><span class = "square"></span>Блог на Wordpress<i class="for-price">(0)</i></label>
+			    <input type = "checkbox" name = "blog[]" id = "moduleBlog" value = "80-5-блог">
+		    	<label for="moduleBlog"><span class = "square"></span>Модуль Блог<i class="for-price">(+80)</i></label>
+			    <input type = "checkbox" name = "blog[]" id = "moduleNews" value = "30-5-новости">
+		    	<label for="moduleNews"><span class = "square"></span>Модуль Новости<i class="for-price">(+30)</i></label>
+		    </div>
+		    <div class = "module moduleForms">
+			    <input type = "checkbox" name = "forms[]" id = "reviews" value = "0-0-комментарии" checked>
+		    	<label for="reviews"><span class = "square"></span>Комментарии<i class="for-price">(0)</i></label>
+			    <input type = "checkbox" name = "forms[]" id = "formFeedback" value = "5-1-формаОбратнойСвязи">
+		    	<label for="formFeedback"><span class = "square"></span>Форма обратной связи<i class="for-price">(+5)</i></label>
+			    <input type = "checkbox" name = "forms[]" id = "formQuestionnaire" value = "20-5-анкетирование">
+		    	<label for="formQuestionnaire"><span class = "square"></span>Анкетирование<i class="for-price">(+20)</i></label>
+		    </div>
+			<div class = "module moduleOthers">
+			    <input type = "checkbox" name = "access[]" id = "registration" value = "0-0-регистрация" checked readonly>
+		    	<label for="registration"><span class = "square"></span>Регистрация<i class="for-price">(0)</i></label>
+			    <input type = "checkbox" name = "access[]" id = "accessLevels" value = "20-1-уровниДоступа">
+		    	<label for="accessLevels"><span class = "square"></span>Уровни доступа<i class="for-price">(+20)</i></label>
+			    <input type = "checkbox" name = "oconsultant[]" id = "oСonsultant" value = "40-1-онлайнКонсультант">
+		    	<label for="oСonsultant"><span class = "square"></span>Онлайн консультант<i class="for-price">(+40)</i></label>
+		    </div>
+		</div>
+	</div>
+
+	<div class = "section effects">
+		<div class = "header header-effects">Использование динамических эффектов на сайте <p class="subtext">(Прдполагает использование существующих плагинов jQuery, написание JS анимации, создание анимации на чистом CSS и т.п.)</p></div>
+		<div class = "content content-effects">	
+		    <input type = "checkbox" name = "effects[]" id = "effects1" value = "70-3-parallax">
+	    	<label for="effects1"><span class = "square"></span>Parallax<i class="for-price">(+70)</i></label>
+		    <input type = "checkbox" name = "effects[]" id = "effects2" value = "100-5-horizontalScroll">
+	    	<label for="effects2"><span class = "square"></span>Horizontal scroll<i class="for-price">(+100)</i></label>
+		    <input type = "checkbox" name = "effects[]" id = "effects3" value = "10-1-animJS">
+	    	<label for="effects3"><span class = "square"></span>Animations js<i class="for-price">(+10)</i></label>
+		    <input type = "checkbox" name = "effects[]" id = "effects4" value = "5-1-animCSS">
+	    	<label for="effects4"><span class = "square"></span>Animations css<i class="for-price">(+5)</i></label>
+		</div>
+	</div>
+
+	<div class = "section social">
+		<div class = "header header-social">Интеграция с соц сетями</div>
+		<div class = "content content-social">	
+		    <input type = "checkbox" name = "social[]" id = "socialLikes" value = "8-1-socLikes">
+	    	<label for="socialLikes">Likes<i class="for-price">(+8)</i></label>
+		    <input type = "checkbox" name = "social[]" id = "socialComm" value = "13-1-socComm">
+	    	<label for="socialComm">Comments<i class="for-price">(+13)</i></label>
+		    <input type = "checkbox" name = "social[]" id = "socialGroup" value = "9-1-socGroup">
+	    	<label for="socialGroup">Group<i class="for-price">(+9)</i></label>
+		</div>
+	</div>
+
+	<div class = "section seo">
+		<div class = "header header-seo">SEO и добавление сайта в поисковые системы</div>
+		<div class = "content content-seo">	
+		    <input type = "checkbox" name = "seo[]" id = "seoBasic" value = "45-2-seoBasic">
+	    	<label for="seoBasic"><span class = "square"></span>SEO Basic, Google, Yandex<i class="for-price">(+45)</i></label>
+		    <input type = "checkbox" name = "seo[]" id = "seoPremium" value = "310-7-seoPremium">
+	    	<label for="seoPremium"><span class = "square"></span>SEO Premium, Google, Yandex<i class="for-price">(+310)</i></label>
+		</div>
+	</div>
+
+	<div class = "section content">
+		<div class = "header header-content">Дополнительное наполнение страниц или галерей<p class="subtext">(Базовое наполнение основных страниц сайта до 5 шт - входит в стоимость разработки сайта. Дополнительное наполнение расчитывается индивидуально в зависимости от объема работ. В расчет берется ориентировочная средняя цена)</p></div>
+		<div class = "content content-content">			
+			<input type = "radio" name = "content" id = "content1" value = "0-0-допНаполнениеНет" checked>
+	    	<label for="content1"><span class = "square"></span>Нет<i class="for-price">(0)</i></label>	
+			<input type = "radio" name = "content" id = "content2" value = "10-5-допНаполнениеДа">
+	    	<label for="content2"><span class = "square"></span>Да<i class="for-price">(+10)</i></label>
+		</div>
+	</div>
+
+	<div class = "section speed-site">
+		<div class = "header header-speed-site">Скорость сайта и юзабилити<p class="subtext">(Уменьшение скорости загрузки сайта до 1-2с. Анализ сайта на удобство для пользователя. Настройка сайта до максимально возможных показателей)</p></div>
+		<div class = "content content-speed-site">			
+			<input type = "radio" name = "speedSite" id = "speedSite0" value = "0-0-скоростьСайтаНет" checked>
+	    	<label for="speedSite0"><span class = "square"></span>Нет<i class="for-price">(0)</i></label>	
+			<input type = "radio" name = "speedSite" id = "speedSite1" value = "10-1-скоростьСайтаДа">
+	    	<label for="speedSite1"><span class = "square"></span>Да<i class="for-price">(+10)</i></label>
+		</div>
+	</div>
+
+	<div class = "section versions">
+		<div class = "header header-versions">Дополнительные версии сайта</div>
+		<div class = "content content-versions">	
+		    <input type = "checkbox" name = "versions[]" id = "versionsResp" value = "160-3-адаптивность">
+	    	<label for="versionsResp"><span class = "square"></span>Адаптивность (4 разрешения)<i class="for-price">(+160)</i></label>
+		    <input type = "checkbox" name = "versions[]" id = "versionsMob" value = "80-5-мобВерсия">
+	    	<label for="versionsMob"><span class = "square"></span>Мобильная версия сайта<i class="for-price">(+80)</i></label>
+		    <input type = "checkbox" name = "versions[]" id = "versionsApp" value = "300-7-приложение">
+	    	<label for="versionsApp"><span class = "square"></span>Разработка приложения (ios, android)<i class="for-price">(+300)</i></label>
+		</div>
+	</div>
+	
+	<div class = "section lang">
+		<div class = "header header-lang">Количество языковых версий (ru/eng/ukr)</div>
+		<div class = "content content-lang">				
+			<input type = "radio" name = "lang" id = "lang1" value = "0-0-один" checked>
+	    	<label for="lang1"><span class = "square"></span>1<i class="for-price">(0)</i></label>
+			<input type = "radio" name = "lang" id = "lang2" value = "100-3-два">
+	    	<label for="lang2"><span class = "square"></span>2<i class="for-price">(+100)</i></label>
+			<input type = "radio" name = "lang" id = "lang3" value = "200-5-три">
+	    	<label for="lang3"><span class = "square"></span>3<i class="for-price">(+200)</i></label>
+		</div>
+	</div>
+
+	<div class = "section corrections">
+		<div class = "header header-corrections">Пакет правок <p class="subtext">(Пакет правок - возможность для заказчика внести изменения в готовый сайт до окончания срока его разработки и только в соответствии с ТЗ)</p></div>
+		<div class = "content content-corrections">	
+		    <input type = "checkbox" name = "corrections[]" id = "corrections1" value = "0-7-первый">
+	    	<label for="corrections1"><span class = "square"></span>Первый<i class="for-price">(0)</i></label>
+		    <input type = "checkbox" name = "corrections[]" id = "corrections2" value = "5-7-второй">
+	    	<label for="corrections2"><span class = "square"></span>Второй<i class="for-price">(+5)</i></label>
+		    <input type = "checkbox" name = "corrections[]л" id = "corrections3" value = "10-7-третий">
+	    	<label for="corrections3"><span class = "square"></span>Третий<i class="for-price">(+10)</i></label>
+		</div>
+	</div>
+
+	<div class = "section speed">
+		<div class = "header header-speed">Уменьшение срока разработки<p class="subtext">(Заказчик может ускорить работу за определенную доплату)</p></div>
+		<div class = "content content-speed">			
+			<input type = "radio" name = "speed" id = "speed0" value = "0" checked>
+	    	<label for="speed0">0%<i class="for-price">(0)</i></label>	
+			<input type = "radio" name = "speed" id = "speed1" value = "20">
+	    	<label for="speed1">-10%<i class="for-price">(+20%)</i></label>
+			<input type = "radio" name = "speed" id = "speed2" value = "50">
+	    	<label for="speed2">-25%<i class="for-price">(+50%)</i></label>
+			<input type = "radio" name = "speed" id = "speed3" value = "100">
+	    	<label for="speed3">-50%<i class="for-price">(+100%)</i></label>
+		</div>
+	</div>
+
+	<div id="messegeResult">
+        	<p> Заполните поля контактных данных и нажмите "Заказать". <p class="subtext">Заполненная форма расчета стоимости сайта отправится как заявка на разработку сайта.</p> </p>
+    </div>
+
+    <input id="name" type="text" name="name" placeholder="Введите ваше имя" maxlength="30" autocomplete="off" required/>
+	<input id="telephone" type="tel" name="telephone" placeholder="Введите ваш телефон" maxlength="30" autocomplete="off" required/>     			
+    <input id="send" type = "button" value = "Заказать"  onclick="AjaxFormRequest('messegeResult', 'form-calculator', '/calc.php')">
+ </form>
+
+</div>
+	<script src="js/script.js"></script>
+
+	<!--AjaxForm-->
+	<script>
+    function AjaxFormRequest(result_id,formMain,url) {
+                jQuery.ajax({
+                    url:     url,
+                    type:     "POST",
+                    dataType: "html",
+                    data: jQuery("#"+formMain).serialize(), 
+                    success: function(response) {
+                    document.getElementById(result_id).innerHTML = response;
+                },
+                error: function(response) {
+                document.getElementById(result_id).innerHTML = "<p>Возникла ошибка при отправке формы. Попробуйте еще раз</p>";
+                }
+             });
+
+             $(':input','#formMain')
+ 				.not(':button, :submit, :reset, :hidden')
+ 				.val('')
+ 				.removeAttr('checked')
+ 				.removeAttr('selected');
+    }
+	</script>
+	<script>
+	$(window).on('load', function () {
+	    var $preloader = $('#page-preloader'),
+	        $spinner   = $preloader.find('.spinner');
+	    // $spinner.fadeOut();
+	    $preloader.delay(800).fadeOut('slow');
+	});
+	</script>
+</body>
+</html>

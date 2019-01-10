@@ -1,0 +1,59 @@
+/*Lato-Bold*/
+
+@font-face {
+    font-family: "Lato-Bold";
+    src: url("../fonts/Lato-Bold/Lato-Bold.eot");
+    src: url("../fonts/Lato-Bold/Lato-Bold.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/Lato-Bold/Lato-Bold.woff") format("woff"),
+    url("../fonts/Lato-Bold/Lato-Bold.ttf") format("ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+/*Lato-Light*/
+
+@font-face {
+    font-family: "Lato-Light";
+    src: url("../fonts/Lato-Light/Lato-Light.eot");
+    src: url("../fonts/Lato-Light/Lato-Light.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/Lato-Light/Lato-Light.woff") format("woff"),
+    url("../fonts/Lato-Light/Lato-Light.ttf") format("ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+/*Lato-Medium*/
+
+@font-face {
+    font-family: "Lato-Medium";
+    src: url("../fonts/Lato-Medium/Lato-Medium.eot");
+    src: url("../fonts/Lato-Medium/Lato-Medium.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/Lato-Medium/Lato-Medium.woff") format("woff"),
+    url("../fonts/Lato-Medium/Lato-Medium.ttf") format("ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+/*Lato-Semibold*/
+
+@font-face {
+    font-family: "Lato-Semibold";
+    src: url("../fonts/Lato-Semibold/Lato-Semiboldm.eot");
+    src: url("../fonts/Lato-Semibold/Lato-Semibold.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/Lato-Semibold/Lato-Semibold.woff") format("woff"),
+    url("../fonts/Lato-Semibold/Lato-Semibold.ttf") format("ttf");
+    font-style: normal;
+    font-weight: normal;
+}
+
+/*Lato-Regular*/
+
+@font-face {
+    font-family: "Lato-Regular";
+    src: url("../fonts/Lato-Regular/Lato-Regular.eot");
+    src: url("../fonts/Lato-Regular/Lato-Regular.eot?#iefix")format("embedded-opentype"),
+    url("../fonts/Lato-Regular/Lato-Regular.woff") format("woff"),
+    url("../fonts/Lato-Regular/Lato-Regular.ttf") format("ttf");
+    font-style: normal;
+    font-weight: normal;
+}

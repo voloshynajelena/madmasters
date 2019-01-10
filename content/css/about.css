@@ -1,0 +1,133 @@
+body {
+
+    background-color: #f2f2f2;
+}
+.main-header {
+    position: absolute;
+  }
+.header-bg {
+  background: url(/content/img/seo-audit.jpg);
+  background-size: cover;
+  background-position: 0 100%;
+  background-attachment: fixed;
+  position: absolute;
+  position: absolute;
+  top: 0;
+  height: 190px;
+  width: 100%;
+}
+.header-bg h1 {
+    height: 100%;
+    font-size: 4vw;
+    line-height: 190px;
+    color: #ffffff;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: 'Exo 2', sans-serif;
+}
+.main-header>a.logo {
+    padding: 30px 9.5vw;
+}
+.section1-web,
+.section2-web {
+    display: inline-block;
+    transition: 0.5s;
+    box-sizing: border-box;
+}
+.section1-web {
+    width: 80vw;
+    position: relative;
+    margin: 0 auto;
+    display: block;
+    padding-top: 220px;
+}
+.section2-web {
+    width: 70vw;
+    position: relative;
+    padding-left: 60px;
+}
+#section1Slide1 {
+    opacity: 0;
+}
+#section1Slide2 {
+    left: 100vw;
+    transition-delay: 0.3s;
+}
+.section1-web h2 {
+    font: 2vw/4vw Lato-Bold;
+    color: #fbc877;
+}
+.section1-web p {
+    font-size: 0.9vw;
+    font-weight: 300;
+    color: #5f6263;
+    line-height: 26px;
+    letter-spacing: 0px;
+    text-transform: none;
+    margin-bottom: 20px;
+}
+.accordeon  h4 {
+    font: 24px/25px Lato-Bold;
+    cursor: pointer;        
+}
+.accordeon p {
+    margin-left:  20px;
+}  
+.accordeon dl {
+    margin-bottom: 40px;
+} 
+.accordeon dt {
+    margin-bottom: 20px;
+}
+.footer {
+    min-height: 20vh;
+    float: left;
+    width: 100%;
+    z-index: 10;
+    background: rgb(255, 255, 255);
+}
+footer {
+    padding-top: 5vh;
+    color: #454545;
+}
+footer .cols {
+    font-weight: 500;
+    padding: 0 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 300;
+    float: left;
+    width: 100%;
+}
+.footer-bottom a {
+    color: #454545;
+    font-weight: 300;
+}
+@media screen and (max-width: 860px) {
+    .grid figure {
+        display: inline-block;
+        float: none;
+        margin: 10px auto;
+        width: 100%;
+    }
+    .content {
+        width: 100%;
+        height: auto;
+    }
+    .secondPageItem {
+        max-height: none;
+    }
+    header {
+        top: 15px;
+    }
+    .path,
+    .pathMouse,
+    #video-back {
+        opacity: 0 !important;
+    }
+    .solutions {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.4);
+        height: auto;
+    }
+}

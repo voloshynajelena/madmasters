@@ -1,0 +1,134 @@
+.main-header>a.logo {
+    padding: 0 8vw;
+}
+
+/*=========== CONTENT ===========*/
+
+#section1 {
+    min-height: 100vh;
+    float: left;
+}
+#section1 h3 {
+    text-transform: none;
+    font-size: 2vw;
+    font-weight: 100;
+    font-family: "Marck Script";
+}
+#section1 h5 {
+    text-transform: uppercase;
+    font-size: 1vw;
+    font-weight: 800;
+    margin: 1.7vh 0;
+}
+#section1 p {
+    font: 400 13px "Raleway", "Open Sans", "Arial", sans-serif;
+    color: #5f6263;
+    line-height: 26px;
+    margin: 0;
+}
+.side-heading-wrap {
+    margin: 4vh 0;
+}
+.section1-portfolio,
+.section2-portfolio {
+    float: left;
+    transition: 0.5s;
+    box-sizing: border-box;
+}
+.section1-portfolio {
+    width: 30vw;
+    height: 100vh;
+    position: fixed;
+    padding: 30px;
+    padding-top: 100px;
+    background-color: rgba(245, 222, 179, 0.9);
+}
+.section2-portfolio {
+    width: 70vw;
+    min-height: 100vh;
+    position: relative;
+    padding: 30px;
+}
+#section1Slide1 {
+    top: -100vh;
+}
+#section1Slide2 {
+    left: 100vw;
+    transition-delay: 0.3s;
+}
+.portfolio-details {
+    text-align: center;
+    margin-top: 2vh;
+}
+.section2-portfolio-content {} .view-project-link {
+    border-bottom-color: #e0a240;
+    color: #e0a240;
+    text-transform: uppercase;
+    background: none;
+    padding: 10px 0px;
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+    font-size: 13px;
+    line-height: 14px;
+    letter-spacing: 1px;
+}
+.mediumbtn {
+    font-size: 13px;
+    line-height: 14px;
+}
+.section2-portfolio-content img {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.footer {
+    min-height: 20vh;
+    float: left;
+    width: 100%;
+    z-index: 10;
+    background: rgb(255, 255, 255);
+}
+footer {
+    padding-top: 5vh;
+    color: #454545;
+}
+footer .cols {
+    font-weight: 500;
+    padding: 0 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 300;
+    float: left;
+    width: 100%;
+}
+.footer-bottom a {
+    color: #454545;
+    font-weight: 300;
+}
+@media screen and (max-width: 860px) {
+    .grid figure {
+        display: inline-block;
+        float: none;
+        margin: 10px auto;
+        width: 100%;
+    }
+    .content {
+        width: 100%;
+        height: auto;
+    }
+    .secondPageItem {
+        max-height: none;
+    }
+    header {
+        top: 15px;
+    }
+    .path,
+    .pathMouse,
+    #video-back {
+        opacity: 0 !important;
+    }
+    .solutions {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.4);
+        height: auto;
+    }
+}
