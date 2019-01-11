@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+  <meta charset="utf-8">
+  <link rel="shortcut icon" href="/content/img/favicon.ico" type="image/x-icon">
 <title>Document</title>
 </head>
 <body>
