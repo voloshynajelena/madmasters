@@ -1,15 +1,27 @@
 {
   "name": "madmasters",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
-  "homepage": "/,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
   },
-  "keywords": [
-    "site"
-  ],
-  "author": "Elena Voloshyna",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voloshynajelena/madmasters.git"
+  },
+  "author": "Elena",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/voloshynajelena/madmasters/issues"
+  },
+  "homepage": "https://github.com/voloshynajelena/madmasters#readme",
+  "dependencies": {
+    "cowsay-browser": "^1.1.8",
+    "next": "^7.0.2",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0"
+  }
 }
