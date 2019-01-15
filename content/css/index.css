@@ -1051,6 +1051,10 @@ figure.effect ul {
     -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
     transition: opacity 0.35s, transform 0.35s;
 }
+figure.effect div {
+    width: 100%;
+    opacity: 0;
+}
 figure.effect p,
 figure.effect ul {
     position: absolute;
@@ -1073,7 +1077,7 @@ figure.effect:hover h2 {
     transform: translate3d(0, -50%, 0) translate3d(0, -100px, 0);
 }
 figure.effect:hover figcaption::before,
-figure.effect:hover p,
+figure.effect:hover p, figure.effect:hover div,
 figure.effect:hover ul {
     opacity: 0.9;
     -webkit-transform: translate3d(0, 0, 0);
@@ -1157,7 +1161,23 @@ h6 {
 }
 #section4 figure p:first-of-type {
     font-size: 1.3vw;
-    padding-top: 5vw;
+    padding-top: 1vw;
+}
+#section4 figure.effect .fa {
+    color: #b1b1b0;
+    margin-bottom: 5px
+}
+#section4 figure.effect .fa::before {
+    font-size: 20px;
+}
+#section4 figure.effect:hover .fa {
+    opacity: 1;
+}
+#section4  .portfolio_hover_icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-top: 3vh;
 }
 .col-33 {
     width: 31%;
