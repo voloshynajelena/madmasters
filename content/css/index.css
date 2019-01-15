@@ -1159,8 +1159,12 @@ h6 {
     letter-spacing: 0.05vw;
     font-weight: 100;
 }
-#section4 figure p:first-of-type {
+#section4 figure .first {
     font-size: 1.3vw;
+    padding-top: 2vw;
+}
+#section4 figure .last {
+    font-size: 1vw;
     padding-top: 1vw;
 }
 #section4 figure.effect .fa {
@@ -1177,7 +1181,7 @@ h6 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    padding-top: 3vh;
+    padding-top: 0vh;
 }
 .col-33 {
     width: 31%;
