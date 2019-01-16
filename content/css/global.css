@@ -842,10 +842,13 @@ textarea{
     display: block;
     right: 2vw;
     bottom: 10vh;
-    padding: 12px;
+    font-size: 20px;
+    padding: 14px 18px;
     color: white;
-    background: #261d15;
+    background: rgba(52, 52, 52, 0.7);
     border-radius: 7px;
+    display: none;
+    z-index: 99;
 }
 @media screen and (max-width: 860px) {
     .grid figure {

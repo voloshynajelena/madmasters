@@ -158,21 +158,11 @@
       </div>
     </section>
   </div>
-  <a href="#" id="scroller">наверх</a> 
+  <a href="#" id="scroller" class="hiddenUpBtn"><i class="fas fa-angle-up"></i></a> 
+  
   <script type="text/javascript" src="../content/js/libs/jquery-3.0.0.min.js"></script>
   <script type="text/javascript" src="../content/js/plugins/modernizr.js"></script>
-  <script>
-      /* Scroll up */
-      $(document).ready(function(){
-        $(window).scroll(function () {
-          if ($(this).scrollTop() > 0) {
-            $('#scroller').fadeIn();
-          } else {
-            $('#scroller').fadeOut();}
-          });
-      $('#scroller').click(function () {$('body,html').animate({scrollTop: 0}, 400); return false;});
-});  
-    </script>
+  <script ype="text/javascript" src="../content/js/scroll_up.js"></script>
   <script type="text/javascript">
     var menuButton = document.getElementById("menuButton"),
       navOverlay = document.getElementById("navOverlay"),
