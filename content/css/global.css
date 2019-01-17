@@ -605,14 +605,20 @@ footer .address a {
 .fa {
     transition: 0.3s;
 }
-.fa-facebook-square:hover {
-    color: #29487d;
+.fa-facebook:hover {
+    color: #0f3981;
 }
 .fa-instagram:hover {
-    color: rgb(81, 90, 203);
+    color:  rgb(151, 20, 92);
 }
 .fa-vk:hover {
-    color: #507299;
+    color: #375f8d;
+}
+.fa-viber:hover {
+    color: #3e328a; 
+}
+.fa-telegram:hover {
+    color: #418cec;
 }
 .footer-bottom {
     padding: 25px 0 25px 0;
