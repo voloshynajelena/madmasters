@@ -900,7 +900,7 @@ Slider navigation
 .process-style .fa {
     
     margin-bottom: 2vh;
-    font-size: 6vw !important;
+    font-size: 5.5vw !important;
 }
 .process-style h6 {
     font-size: 1.2vw;
@@ -1029,7 +1029,12 @@ figure.effect .fa {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
 }
-figure.effect:hover .fa {
+figure.effect .fas {
+    color: #fbc063;
+    margin: 20px;
+    opacity: 0.9;
+}
+    figure.effect:hover .fa {
     opacity: 0;
     -webkit-transform: translate3d(0, -10px, 0);
     transform: translate3d(0, -10px, 0);
