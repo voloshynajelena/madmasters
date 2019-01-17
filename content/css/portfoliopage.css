@@ -344,6 +344,29 @@ footer .cols {
     color: #454545;
     font-weight: 300;
 }
+#portfolio .portfolio_hover_icon .effect .fa {
+  color: #b1b1b0;
+  margin-bottom: 5px
+}
+#portfolio .portfolio_hover_icon .effect .fa::before {
+  font-size: 20px;
+}
+#portfolio .portfolio_hover_icon .effect:hover .fa {
+  opacity: 1;
+}
+#portfolio .portfolio_hover_icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding-top: 0vh;
+  max-width: 100px;
+  margin: 0 auto;
+}
+.portfolio_hover_icons a {
+  flex-basis: 50%;
+  text-align: center;
+}
 @media screen and (max-width: 860px) {
     .grid figure {
         display: inline-block;
