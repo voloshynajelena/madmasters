@@ -41,7 +41,7 @@ body {
     vertical-align: top;
 }
 .section2-contact {
-    width: 70vw;
+    /*width: 70vw;  Removing Horizontal scroll*/
     position: relative;
     padding-left: 60px;
     padding-top: 220px;
