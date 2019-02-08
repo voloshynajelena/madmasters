@@ -1,2 +1,2 @@
 # Site Madmasters.pro
-Max-ok
+Max-ok!
