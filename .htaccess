@@ -1,12 +1,21 @@
 RewriteEngine On
+
+RewriteBase /
 RewriteCond %{HTTP_HOST} ^www\.madmasters\.pro$
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule ^(.*)$ https://www.madmasters.pro/$1 [R=301,L]
+#в случае index.php:
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.php\ HTTP/
+RewriteRule ^index\.php$ http://madmasters.pro/ [R=301,L]
+
+#в случае index.html:
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
+RewriteRule ^index\.html$ http://madmasters.pro/ [R=301,L]
+
 
 
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
-RewriteBase /
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -38,11 +47,3 @@ RewriteRule ^(.*)$ https://www.madmasters.pro/$1 [R=301,L]
 </IfModule>
 
 # END WordPress
-
-
-
-RewriteEngine On
-RewriteBase /
-RewriteCond %{HTTP:SSL} !=1 [NC]
-RewriteRule ^(.*) /$1 [L,R=301]
-
