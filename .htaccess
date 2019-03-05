@@ -1,3 +1,9 @@
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.madmasters\.pro$
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://www.madmasters.pro/$1 [R=301,L]
+
+
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
 RewriteEngine On
@@ -30,7 +36,10 @@ RewriteRule . /index.php [L]
 
 # END WordPress
 
+
+
 RewriteEngine On
 RewriteBase /
 RewriteCond %{HTTP:SSL} !=1 [NC]
 RewriteRule ^(.*) /$1 [L,R=301]
+
