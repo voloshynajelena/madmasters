@@ -1,3 +1,8 @@
+
+
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
 RewriteEngine On
 
 RewriteBase /
@@ -12,10 +17,6 @@ RewriteRule ^index\.php$ http://madmasters.pro/ [R=301,L]
 RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /index\.html\ HTTP/
 RewriteRule ^index\.html$ http://madmasters.pro/ [R=301,L]
 
-
-
-# BEGIN WordPress
-<IfModule mod_rewrite.c>
 RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
