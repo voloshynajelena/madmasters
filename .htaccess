@@ -12,6 +12,10 @@ RewriteRule ^index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
+RewriteCond %{HTTP_HOST} ^www\.madmasters\.pro$
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://www.madmasters.pro/$1 [R=301,L]
+
 </IfModule>
 
 # Включаем кэш в браузерах посетителей
