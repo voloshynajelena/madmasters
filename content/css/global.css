@@ -184,7 +184,7 @@ h3 {
     font-size: 30px;
     text-align: center;
 }
-.fa {
+.fa, .fab {
     font-size: 30px !important;
     color: white;
     cursor: pointer;
@@ -602,7 +602,7 @@ footer .address a {
     color: #fbc063;
     cursor: pointer;
 }
-.fa {
+.fa, .fab {
     transition: 0.3s;
 }
 .fa-facebook:hover {
