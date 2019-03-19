@@ -16,14 +16,46 @@
 
 <body>
   <header class="main-header">
-    <a id="logo" class="logo" href="/"> <img id="logoImg" src="../content/img/MLogoGrey.png"> </a> <span id="menuButton" class="menu-button">
+    <a id="logo" class="logo" href="/"> <img id="logoImg" src="../content/img/MLogoGrey.png"></a>
+  <!-- HIDE OLD MENU BUTTON -->   
+  <!--span id="menuButton" class="menu-button">
     <i></i>
     <i></i>
     <i></i>
     <i></i>
-  </span>
-    <div class="langs"> <a href="/" class="active" target="_self">RU</a> / <a href="/en" class="" target="_self">EN</a> </div>
+  </span-->
+
+  <!-- NEW MENU -->
+  <input id="hamburger" class="hamburger" type="checkbox"/>
+  <label class="hamburger" for="hamburger">
+    <i></i>
+  </label>
+  <div class="langs"> <a href="/" class="active" target="_self">RU</a> / <a href="/en" class="" target="_self">EN</a> </div>
+  <section class="drawer-list">
+    <ul>
+      <li><a href="/about">О Mad Masters</a></li>
+      <li><a href="/web">Web разработка</a></li>
+      <li><a href="/marketing">Интернет Маркетинг</a></li>
+      <li><a href="/programming">Программирование</a></li>
+      <li><a href="/portfolio/">Портфолио</a></li>
+      <li><a href="/team">Команда</a></li>
+      <li><a href="/contacts">Контакты</a></li>
+      <li><div class="drawer-list-row">
+        <a href="/breef/">Бриф</a>
+        <a class="drawer-list-row" href="/calc/">Калькулятор</a></div></li>
+      <li><a href="" style="visibility:hidden;"></a></li>
+      <li><div class="drawer-list-row">
+        <a href="https://www.facebook.com/madmweb" class="facebook" target="_blank"><i class="fab fa-facebook fa-3x" aria-hidden="true" ></i></a>
+        <a href="https://www.instagram.com/mad.masters/" class="instagram" target="_blank"><i class="fab fa-instagram fa-3x" aria-hidden="true"></i></a>
+        <a href="https://new.vk.com/madmweb" class="vk" target="_blank"><i class="fab fa-vk fa-3x" aria-hidden="true"></i></a>
+        <a href="viber://chat?number=+380964777690" rel="nofollow" class="viber" target="_blank"><i class="fab fa-viber fa-3x" aria-hidden="true"></i></a>
+        <a href="tg://resolve?domain=voloshynajelena" class="telegram" target="_blank"><i class="fab fa-telegram fa-3x" aria-hidden="true"></i></a></div>
+      </li>
+    </ul>
+  </section>
   </header>
+
+  <!-- OLD MENU -->
   <nav id="mainNav" class="main-nav">
     <!--     <div class="background"></div> -->
     <ul class="nav-items">
@@ -78,7 +110,7 @@
               </div>
               <div class="">
                 
-                
+  
               </div> 
             </div>
           </div>
@@ -113,9 +145,9 @@
               <p>Zhuravel Dmytro</p>
               <div class="portfolio_hover_icons">
                 <a href="/team/index.html" target="_blank"><i class="fa fa-link"></i></a>
-                <a href="" target="_blank"  rel="nofollow"><i class="fab fa-linkedin"></i></a>
+                <a href="https://www.linkedin.com/in/DJur" target="_blank"  rel="nofollow"><i class="fab fa-linkedin"></i></a>
               </div>
-              <p></p>
+              <p>Frontend developer</p>
             </figure>
             <img src="../content/img/DJur.jpg" alt="" />
            </div>
@@ -189,7 +221,7 @@
   <script type="text/javascript" src="../content/js/libs/jquery-3.0.0.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script type="text/javascript" src="../content/js/plugins/modernizr.js"></script> 
-  <script src="js/script.js"></script>
+  <!--script src="js/script.js"></script-->
   <script ype="text/javascript" src="../content/js/scroll_up.js"></script>
   <!--AjaxForm-->
   <script>
@@ -230,7 +262,7 @@
       navOverlayStyle = getComputedStyle(navOverlay),
       section1Slide1 = document.getElementById("section1Slide1"),
       section1Slide2 = document.getElementById("section1Slide2");
-    menuButton.addEventListener("click", modifyNav, false);
+    //menuButton.addEventListener("click", modifyNav, false);
 
     function modifyNav() {
       if (mainNavStyle.display == "none") {
