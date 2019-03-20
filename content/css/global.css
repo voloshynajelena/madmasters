@@ -154,7 +154,7 @@ a:hover {
 }
 body {
     font: 800 12px/16px 'Exo 2', sans-serif;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 .clearfix:before,
 .clearfix:after {
