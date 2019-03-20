@@ -16,55 +16,39 @@
 
 <body>
   <header class="main-header">
-    <a id="logo" class="logo" href="/"> <img id="logoImg" src="/content/img/MLogoGrey.png"> </a> <span id="menuButton" class="menu-button">
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    </span>
-    <div class="langs"> <a href="/" class="active" target="_self">RU</a> / <a href="/en" class="" target="_self">EN</a> </div>
+    <a id="logo" class="logo" href="/"> <img id="logoImg" src="/content/img/MLogoGrey.png"> </a>
+     <!-- NEW MENU -->
+     <input id="hamburger" class="hamburger" type="checkbox"/>
+     <label class="hamburger" for="hamburger">
+       <i></i>
+     </label>
+     <div class="langs"> 
+       <a href="/" class="active" target="_self">RU</a> / 
+       <a href="/en" class="" target="_self">EN</a> 
+     </div>
+     <section class="drawer-list">
+       <ul>
+         <li><a href="/about">О Mad Masters</a></li>
+         <li><a href="/web">Web разработка</a></li>
+         <li><a href="/marketing">Интернет Маркетинг</a></li>
+         <li><a href="/programming">Программирование</a></li>
+         <li><a href="/portfolio/">Портфолио</a></li>
+         <li><a href="/team">Команда</a></li>
+         <li><a href="/contacts">Контакты</a></li>
+         <li><div class="drawer-list-row">
+           <a href="/breef/">Бриф</a>
+           <a class="drawer-list-row" href="/calc/">Калькулятор</a></div></li>
+         <li><a href="" style="visibility:hidden;"></a></li>
+         <li><div class="drawer-list-row">
+           <a href="https://www.facebook.com/madmweb" class="facebook" target="_blank"><i class="fab fa-facebook fa-3x" aria-hidden="true" ></i></a>
+           <a href="https://www.instagram.com/mad.masters/" class="instagram" target="_blank"><i class="fab fa-instagram fa-3x" aria-hidden="true"></i></a>
+           <a href="https://new.vk.com/madmweb" class="vk" target="_blank"><i class="fab fa-vk fa-3x" aria-hidden="true"></i></a>
+           <a href="viber://chat?number=+380964777690" rel="nofollow" class="viber" target="_blank"><i class="fab fa-viber fa-3x" aria-hidden="true"></i></a>
+           <a href="tg://resolve?domain=voloshynajelena" class="telegram" target="_blank"><i class="fab fa-telegram fa-3x" aria-hidden="true"></i></a></div>
+         </li>
+       </ul>
+     </section>
   </header>
-  <nav id="mainNav" class="main-nav">
-    <!--     <div class="background"></div> -->
-    <ul class="nav-items">
-      <li> <a href="/about">О Mad Masters</a> </li>
-      <li> <a href="/web">Web разработка</a> </li>
-      <li> <a href="/marketing">Интернет Маркетинг</a> </li>
-      <li> <a href="/programming">Программирование</a> </li>
-      <li> <a href="/portfolio/">Портфолио</a> </li>
-      <li> <a href="/team">Команда</a> </li>  
-      <li> <a href="/contacts" target="_blank">Contact Us</a> </li>
-      <li> <a href="/breef/">Бриф &middot; </a><a href="/calc/">Калькулятор</a> </li>
-    </ul>
-    <ul class="social-links">
-      <li>
-        <a href="https://www.facebook.com/madmweb" class="facebook" target="_blank">
-          <i class="fab fa-facebook fa-3x" aria-hidden="true" ></i>
-        </a>
-      </li>
-      <li>
-        <a href="https://www.instagram.com/mad.masters/" class="instagram" target="_blank">
-          <i class="fab fa-instagram fa-3x" aria-hidden="true"></i>
-        </a>
-      </li>
-      <li>
-        <a href="https://new.vk.com/madmweb" class="vk" target="_blank">
-          <i class="fab fa-vk fa-3x" aria-hidden="true"></i>
-        </a>
-      </li>
-      <li>
-        <a href="viber://chat?number=+380964777690" rel="nofollow" class="viber" target="_blank">
-          <i class="fab fa-viber fa-3x" aria-hidden="true"></i>
-        </a>
-      </li>
-      <li>
-        <a href="tg://resolve?domain=voloshynajelena" class="telegram" target="_blank">
-          <i class="fab fa-telegram fa-3x" aria-hidden="true"></i>
-        </a>
-      </li>
-    </ul>
-  </nav>
-  <div id="navOverlay" class="nav-overlay"></div>
   <div class="main" id="main">
     <section id="section1" class="container header">
       <div class="header-bg">
@@ -170,30 +154,13 @@
   <script type="text/javascript" src="../content/js/libs/jquery-3.0.0.min.js"></script>
   <script type="text/javascript" src="../content/js/plugins/modernizr.js"></script>
   <script ype="text/javascript" src="../content/js/scroll_up.js"></script>
-   <script type="text/javascript">
-    var menuButton = document.getElementById("menuButton"),
-      navOverlay = document.getElementById("navOverlay"),
-      mainNav = document.getElementById("mainNav"),
-      mainNavStyle = getComputedStyle(mainNav),
-      navOverlayStyle = getComputedStyle(navOverlay),
-      section1Slide1 = document.getElementById("section1Slide1");
-    menuButton.addEventListener("click", modifyNav, false);
-    function modifyNav() {
-      if (mainNavStyle.display == "none") {
-        mainNav.style.display = "block"
-      }
-      else {
-        mainNav.style.display = "none"
-      }
-      mainNav.classList.toggle("displayed");
-      navOverlay.classList.toggle("displayed");
-      menuButton.classList.toggle("active");
-    }
+  <script type="text/javascript">
+    var section1Slide1 = document.getElementById("section1Slide1");
     setTimeout(function() {
       section1Slide1.style.opacity = 1;
     }, 300)
-   </script>
-    <script>
+  </script>
+  <script>
     $(document).ready(function(){
       $(".accordeon dd").hide().prev().click(function() {
       $(this).parents(".accordeon").find("dd").not(this).slideUp().prev().removeClass("active");
