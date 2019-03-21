@@ -928,7 +928,7 @@ textarea{
   }
   @media (min-width: 768px) {
     .drawer-list {
-      width: 40vw;
+      width: 50vw;
     }
   }
   .drawer-list ul {
