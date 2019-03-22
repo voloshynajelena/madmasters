@@ -13,12 +13,19 @@ h2, h3, .c-number {
     font-weight: 600;
     color: #727272;
 }
-.fa, .fab, .fas {
-    font-size: 30px; 
-    color: #ededed;; 
-    cursor: pointer;
+.fab, .fas {
+    color: silver;
+} 
+.fa-angle-up  {
+    color: white;
 }
-    
+.fa-angle-up:hover {
+    color: white;
+}
+.fab:hover, .fas:hover {
+    color: #F8BB10;
+} 
+
 /*BACKGROUND-COLORS*/
 .BG-pink {
     background: #fbfbfb;
@@ -37,6 +44,11 @@ h2, h3, .c-number {
 .title-content {
     text-align: right;
     padding-bottom: 1.75rem;
+}
+.header-block  {
+    text-align: right;
+    padding: 3.15rem 3.5rem 1.4rem;
+    height: 100%;
 }
 
 /*HEADER*/
@@ -84,12 +96,18 @@ h2, h3, .c-number {
 /*CONTACT*/
 .header-contact {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     border-top: 2px solid #ececec;
     padding-top: 2rem;
 }
+.contact-item {
+    padding: 8px;
+    min-width: 5rem;
+}
 .footer-contact {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     border-bottom: 2px solid #ececec;
     padding-bottom: 2rem;
@@ -274,6 +292,32 @@ h2, h3, .c-number {
     border-style: solid;
 }
 
+/*AWARDS*/
+.gallery {
+    display: flex;
+    flex-flow: row wrap;
+}
+.gallery img{
+    padding:10px; 
+    border:3px solid #fff; 
+    min-width: 10rem;
+}
+.gallery a {
+    flex: 0 0 auto;
+    width: calc(99.999999% * 0.5);
+}
+a.photo {
+    position: relative;
+}
+a.photo:hover img{
+    background:  rgb(245, 206, 100);
+    transition: all .3s linear;
+    transform: scale(1.03,  1.03);
+}
+
+
+
+
 /*PORTFOLIO*/
 
 
@@ -408,6 +452,25 @@ h2, h3, .c-number {
     .title-content {
         text-align: left;
     }
+    .avatar {
+        width: 14rem;
+    }
+    .header-block  {
+        text-align: center;
+        padding-bottom: 0;
+    }
+    .CV-header1-inner, .CV-header2-inner {
+        flex-direction: column;
+        align-items: center;
+    }
+    .header-social-buttons {
+        align-self: center; 
+        margin-top: 2rem;
+    }
+    .padding-block {
+        padding: 1.5rem 3.5rem 1rem;
+        height: 100%;
+    }
 }
 @media screen and (max-width: 600px) {
     .CV-container {
@@ -443,6 +506,16 @@ h2, h3, .c-number {
     }
     .title-content {
         text-align: left;
+    }
+    .avatar {
+        width: 10rem;
+    }
+    .header-contact, .footer-contact {
+        flex-direction: column; 
+        text-align: center;
+    }
+    .expertise-item, .skills-item, .timeline-grid-col, .timeline-grid-text, .gallery a {
+        width: 100%;
     }
 }
 
