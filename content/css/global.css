@@ -928,7 +928,7 @@ textarea{
   }
   @media (min-width: 768px) {
     .drawer-list {
-      width: 40vw;
+      width: 50vw;
     }
   }
   .drawer-list ul {
@@ -1198,5 +1198,5 @@ textarea{
   label.hamburger {
     position: absolute;
     top: 78px;
-    right: 78px;
+    right:  calc(4vw + 12px);
   }
