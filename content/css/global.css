@@ -185,7 +185,7 @@ h3 {
     font-size: 30px;
     text-align: center;
 }
-.fa, .fab {
+.fa, .fab, .fas {
     font-size: 30px !important;
     color: white;
     cursor: pointer;
