@@ -1,0 +1,115 @@
+.image_1 {
+    width: 100px;
+    height: 110px;
+    border: solid 1px;
+    border-color: rgb(199, 199, 199);
+    border-radius: 5px;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    
+}
+body {
+    background-color: rgba(230, 228, 228, 0.863);
+    margin-right: 200px ;
+    margin-left: 200px;
+    border-radius: 10px;
+}
+ul.icons_social li{
+    display: inline;
+    list-style-type:none;
+    padding-left:4px;
+    padding-right:4px; 
+    font-size:17px;
+    text-align: center;
+}
+
+.icon, h2, h5, h4{
+    color:rgb(54, 54, 54);
+    text-align: center;
+}
+h3{
+    color:rgb(54, 54, 54);
+    padding-left: 100px;
+}
+
+.icons_social{
+    padding-inline-start: 0px; 
+    margin-block-start: 0px; 
+    margin-block-end: 0px;
+    }
+.content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(255, 253, 253, 0.863);
+    border-radius: 10px;
+}
+.social{
+    text-align: center;
+}
+.exp{
+    color:rgb(54, 54, 54);
+    padding-left: 190px;
+    list-style-type: disc; 
+    font-weight: 600;
+    font-size: 14px;
+    padding-top: 10px;
+    padding-top: 10px;
+    line-height: 16px;
+
+}
+.education{
+    color:rgb(54, 54, 54);
+    padding-left: 190px;
+    list-style-type: disc; 
+    font-weight: 600;
+    font-size: 12px;
+    padding-top: 10px;
+}
+.education li{
+    padding-top: 10px;
+    letter-spacing: 1px;
+}
+      
+  
+.skills{
+    color:rgb(54, 54, 54);
+    padding-left: 190px;
+    list-style-type: disc; 
+    font-weight: 600;
+    font-size: 12px;
+    padding-top: 10px;
+}
+.skills li{
+    padding-top: 10px;
+    letter-spacing: 1px;
+    
+}
+.personal{
+    color:rgb(54, 54, 54);
+    padding-left: 190px;
+    list-style-type: disc; 
+    font-weight: 600;
+    font-size: 12px;
+    padding-top: 10px;
+}
+.personal li{
+    padding-top: 10px;
+    letter-spacing: 1px;
+    
+}
+
+.divider {
+    display: block;
+    width: auto;
+    background: rgb(54, 54, 54);
+    height:1px;
+    margin-bottom:20px;
+    margin-left:100px;
+    margin-right:100px;
+    margin-top:20px;
+}
+.end{
+    margin-bottom: 50px;
+}

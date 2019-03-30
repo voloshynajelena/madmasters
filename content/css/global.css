@@ -154,6 +154,7 @@ a:hover {
 }
 body {
     font: 800 12px/16px 'Exo 2', sans-serif;
+    overflow-x: hidden;
 }
 .clearfix:before,
 .clearfix:after {
@@ -184,7 +185,7 @@ h3 {
     font-size: 30px;
     text-align: center;
 }
-.fa, .fab {
+.fa, .fab, .fas {
     font-size: 30px !important;
     color: white;
     cursor: pointer;
@@ -294,145 +295,6 @@ h3 {
 }
 .main-header.dark>a.logo {
     color: #3c4651;
-}
-/*--- MENU BUTTON ---*/
-
-.main-header .menu-button {
-    float: right;
-    margin-top: 68px;
-    position: relative;
-    cursor: pointer;
-    padding: 12px;
-}
-.main-header .menu-button i {
-    display: block;
-    height: 3px;
-    width: 30px;
-    background: rgba(97, 97, 97, 1);
-    margin-bottom: 5px;
-    transition: all 500ms cubic-bezier(.19, 1, .22, 1) 0ms;
-}
-.main-header.dark .menu-button i {
-    background: #3c4651;
-}
-.main-header .menu-button i:nth-child(3) {
-    position: absolute;
-    top: 20px;
-}
-.main-header .menu-button.active i:nth-child(1),
-.main-header .menu-button.active i:nth-child(4) {
-    opacity: 0;
-}
-.main-header .menu-button.active i:nth-child(2) {
-    -webkit-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-.main-header .menu-button.active i:nth-child(3) {
-    -webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
-}
-.main-header .menu-button i:nth-child(3) {
-    position: absolute;
-    top: 20px;
-}
-/*--- MENU ---*/
-
-.main-nav {
-    position: fixed;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    text-align: left;
-    z-index: 12;
-    overflow: hidden;
-    display: none;
-}
-.main-nav.displayed {
-    display: block;
-}
-/* - - NAV ITEMS - - */
-
-.main-nav .nav-items {
-    position: relative;
-    z-index: 2;
-    padding: 0;
-    margin-top: 250px;
-}
-.main-nav li {
-    text-align: center;
-    opacity: 0;
-    -webkit-transform: translate3d(0, -10px, 0);
-    transform: translate3d(0, -10px, 0);
-    transition: -webkit-transform 0ms cubic-bezier(.19, 1, .22, 1) 800ms, opacity 800ms cubic-bezier(.19, 1, .22, 1) 0ms;
-    transition: transform 0ms cubic-bezier(.19, 1, .22, 1) 800ms, opacity 800ms cubic-bezier(.19, 1, .22, 1) 0ms;
-}
-.main-nav.displayed li {
-    opacity: 1;
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-    transition: -webkit-transform 800ms cubic-bezier(.19, 1, .22, 1) 0ms, opacity 800ms cubic-bezier(.19, 1, .22, 1) 0ms;
-    transition: transform 800ms cubic-bezier(.19, 1, .22, 1) 0ms, opacity 800ms cubic-bezier(.19, 1, .22, 1) 0ms;
-}
-.main-nav .nav-items li {
-    padding: 0 70px;
-    margin-bottom: 15px;
-}
-.main-nav.displayed li:nth-child(1) {
-    transition-delay: 400ms;
-}
-.main-nav.displayed li:nth-child(2) {
-    transition-delay: 450ms;
-}
-.main-nav.displayed li:nth-child(3) {
-    transition-delay: 500ms;
-}
-.main-nav.displayed li:nth-child(4) {
-    transition-delay: 525ms;
-}
-.main-nav.displayed li:nth-child(5) {
-    transition-delay: 550ms;
-}
-.main-nav.displayed li:nth-child(6) {
-    transition-delay: 575ms;
-}
-.main-nav.displayed li:nth-child(7) {
-    transition-delay: 600ms;
-}
-.main-nav .nav-items li:nth-child(2) {
-    position: relative;
-}
-.main-nav .nav-items li:last-child {
-    margin-top: 80px;
-}
-.main-nav .nav-items li:last-child a {
-    font: 400 25px/38px 'Vaud Display', Helvetica, sans-serif;
-}
-.main-nav .nav-items a {
-    color: #9e9e9e;
-    font: 100 35px/45px 'Vaud Display', Helvetica, sans-serif;
-    border-bottom: 2px solid rgba(255, 255, 255, 0);
-    display: inline;
-    transition: border 700ms cubic-bezier(.19, 1, .22, 1) 0ms;
-}
-.main-nav .nav-items a:hover {
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-}
-.nav-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: rgba(0, 0, 0, .9);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 800ms cubic-bezier(.19, 1, .22, 1);
-    -webkit-backface-visibility: hidden;
-}
-.nav-overlay.displayed {
-    transition: opacity 800ms cubic-bezier(.19, 1, .22, 1);
-    opacity: 1;
-    z-index: 11;
 }
 /* - - SOC LINKS - - */
 
@@ -1045,3 +907,296 @@ textarea{
         content: "";
     }
 }
+/*NEW MENU*/
+.drawer-list {
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    transform: translate(100vw, 0);
+    /* ie workaround */
+    -ms-transform: translatex(-100vw);
+    box-sizing: border-box;
+    pointer-events: none;
+    padding-top: 125px;
+    transition: width 475ms ease-out, transform 450ms ease, border-radius .8s .1s ease;
+    border-bottom-left-radius: 100vw;
+    background-color: #3e3f3f;
+    background-color: rgba(32, 32, 32, 0.95);
+    z-index: 999;
+  }
+  @media (min-width: 768px) {
+    .drawer-list {
+      width: 50vw;
+    }
+  }
+  .drawer-list ul {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    overflow-x: hidden;
+    pointer-events: auto;
+  }
+  .drawer-list li {
+    list-style: none;
+    text-transform: uppercase;
+    pointer-events: auto;
+    white-space: nowrap;
+    box-sizing: border-box;
+    transform: translatex(100vw);
+    /* ie workaround */
+    -ms-transform: translatex(-100vw);
+  }
+  .drawer-list li:last-child {
+    margin-bottom: 2em;
+  }
+  .drawer-list li a {
+    text-decoration: none;
+    color: #9e9e9e;
+    text-align: center;
+    display: block;
+    padding: 1.2rem;
+    font-size: calc(34px - .5vw);
+  }
+  .drawer-list-row  {
+    display: flex;
+    justify-content: center;
+  }
+  @media (min-width: 768px) {
+    .drawer-list li a {
+      /*text-align: right;*/
+      padding: 1.2rem;
+    }
+  }
+  .drawer-list li a:hover {
+    cursor: pointer;
+    background-color: #858686;
+    background-color: rgba(118, 120, 121, 0.5);
+  }
+  input.hamburger {
+    display: none;
+  }
+  input.hamburger:checked ~ .drawer-list {
+    transform: translatex(0);
+    border-bottom-left-radius: 0;
+  }
+  input.hamburger:checked ~ .drawer-list li {
+    transform: translatex(0);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(1) {
+    transition: transform 1s 0.08s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(2) {
+    transition: transform 1s 0.16s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(3) {
+    transition: transform 1s 0.24s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(4) {
+    transition: transform 1s 0.32s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(5) {
+    transition: transform 1s 0.4s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(6) {
+    transition: transform 1s 0.48s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(7) {
+    transition: transform 1s 0.56s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(8) {
+    transition: transform 1s 0.64s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(9) {
+    transition: transform 1s 0.72s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(10) {
+    transition: transform 1s 0.8s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(11) {
+    transition: transform 1s 0.88s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(12) {
+    transition: transform 1s 0.96s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(13) {
+    transition: transform 1s 1.04s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(14) {
+    transition: transform 1s 1.12s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(15) {
+    transition: transform 1s 1.2s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(16) {
+    transition: transform 1s 1.28s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(17) {
+    transition: transform 1s 1.36s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(18) {
+    transition: transform 1s 1.44s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(19) {
+    transition: transform 1s 1.52s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(20) {
+    transition: transform 1s 1.6s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(21) {
+    transition: transform 1s 1.68s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(22) {
+    transition: transform 1s 1.76s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(23) {
+    transition: transform 1s 1.84s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(24) {
+    transition: transform 1s 1.92s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(25) {
+    transition: transform 1s 2s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(26) {
+    transition: transform 1s 2.08s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(27) {
+    transition: transform 1s 2.16s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(28) {
+    transition: transform 1s 2.24s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(29) {
+    transition: transform 1s 2.32s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(30) {
+    transition: transform 1s 2.4s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(31) {
+    transition: transform 1s 2.48s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(32) {
+    transition: transform 1s 2.56s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(33) {
+    transition: transform 1s 2.64s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(34) {
+    transition: transform 1s 2.72s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(35) {
+    transition: transform 1s 2.8s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(36) {
+    transition: transform 1s 2.88s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(37) {
+    transition: transform 1s 2.96s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(38) {
+    transition: transform 1s 3.04s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(39) {
+    transition: transform 1s 3.12s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(40) {
+    transition: transform 1s 3.2s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(41) {
+    transition: transform 1s 3.28s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(42) {
+    transition: transform 1s 3.36s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(43) {
+    transition: transform 1s 3.44s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(44) {
+    transition: transform 1s 3.52s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(45) {
+    transition: transform 1s 3.6s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(46) {
+    transition: transform 1s 3.68s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(47) {
+    transition: transform 1s 3.76s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(48) {
+    transition: transform 1s 3.84s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(49) {
+    transition: transform 1s 3.92s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li:nth-child(50) {
+    transition: transform 1s 4s cubic-bezier(0.29, 1.4, 0.44, 0.96);
+  }
+  input.hamburger:checked ~ .drawer-list li a {
+    padding-right: 15px;
+  }
+  input.hamburger:checked ~ label > i {
+    background-color: transparent;
+    transform: rotate(90deg);
+  }
+  input.hamburger:checked ~ label > i:before {
+    transform: translate(-50%, -50%) rotate(315deg);
+  }
+  input.hamburger:checked ~ label > i:after {
+    transform: translate(-50%, -50%) rotate(-315deg);
+  }
+  input.hamburger:checked ~ label close {
+    color: #FEFEFE;
+    width: 100%;
+  }
+  input.hamburger:checked ~ label open {
+    color: rgba(0, 0, 0, 0);
+    width: 0;
+  }
+  
+  label.hamburger {
+    z-index: 9999;
+    position: relative;
+    display: block;
+    height: 20px;
+    width: 30px;
+  }
+  label.hamburger:hover {
+    cursor: pointer;
+  }
+  label.hamburger > i {
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    top: 50%;
+    background-color: rgba(97, 97, 97, 1);
+    pointer-events: auto;
+    transition-duration: .35s;
+    transition-delay: .35s;
+  }
+  label.hamburger > i:before, label.hamburger > i:after {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 3px;
+    left: 50%;
+    background-color: rgba(97, 97, 97, 1);
+    content: "";
+    transition: transform 0.35s;
+    transform-origin: 50% 50%;
+  }
+  label.hamburger > i:before {
+    transform: translate(-50%, -8px);
+  }
+  label.hamburger > i:after {
+    transform: translate(-50%, 8px);
+  }
+  label.hamburger {
+    position: absolute;
+    top: 78px;
+    right:  calc(4vw + 12px);
+  }
