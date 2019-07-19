@@ -193,7 +193,7 @@ h3 {
 .daimond {
     position: absolute;
     top: 25vh;
-    left: 36.4vw;
+    left: calc(50% - 13.5vw);
     height: 27vw;
     width: 27vw;
     background-color: white;
