@@ -1,0 +1,2289 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  outline: none;
+}
+
+body { font-size: 62.5%; line-height: 1; font-family: Arial, Tahoma, Verdana, sans-serif; }
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+ol, ul { list-style: none; }
+
+blockquote, q { quotes: none; }
+blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+strong { font-weight: bold; } 
+
+input { outline: none; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+img { border: 0; max-width: 100%; }
+
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+@font-face {
+    font-family: SourceSansPro; 
+    src: url(../font/SourceSansPro-Bold.otf); 
+}
+body
+{   
+  overflow-x: hidden;
+  background: url(../img/bg5.jpg);
+ background: radial-gradient(at bottom center, #FAF05D, #83DCFC) fixed;
+                                              
+}
+ 
+.loader {
+ color: #dcdce2;
+ position: absolute;
+ top: 45%;
+ left: 50%;
+ margin-left: -140px;
+ margin-top: -140px;
+ width: 280px;
+ height: 280px;
+ text-align: center;
+ font-family: 'Open Sans', sans-serif;
+ font-size: 35px;
+ line-height: 280px;
+ -webkit-font-smoothing: antialiased;
+}
+.loader:after,
+.loader:before {
+ content: "";
+ border-radius: 100%;
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ transform-origin: center center;
+}
+.loader:after {
+ box-shadow: inset 0 17.5px 0 rgba(250, 250, 0, 0.6), inset 17.5px 0 0 rgba(250, 200, 0, 0.6), inset 0 -17.5px 0 rgba(250, 150, 0, 0.6), inset -17.5px 0 0 rgba(250, 100, 0, 0.6);
+ animation: rotar 2s linear infinite;
+}
+.loader:before {
+ box-shadow: inset 0 17.5px 0 rgba(0, 250, 250, 0.6), inset 17.5px 0 0 rgba(0, 200, 200, 0.6), inset 0 -17.5px 0 rgba(0, 150, 200, 0.6), inset -17.5px 0 0 rgba(0, 200, 250, 0.6);
+ animation: rotarIz 2s linear infinite;
+}
+@keyframes rotar {
+ 0% {
+ transform: rotatez(0deg) scalex(1) scaley(1);
+ }
+ 50% {
+ transform: rotatez(180deg) scalex(0.82) scaley(0.95);
+ }
+ 100% {
+ transform: rotatez(360deg) scalex(1) scaley(1);
+ }
+}
+@keyframes rotarIz {
+ 0% {
+ transform: rotatez(0deg) scalex(1) scaley(1);
+ }
+ 50% {
+ transform: rotatez(-180deg) scalex(0.95) scaley(0.85);
+ }
+ 100% {
+ transform: rotatez(-360deg) scalex(1) scaley(1);
+ }
+}  
+.scroll
+{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+}
+
+
+                  /*-----Menu-----*/
+#main {
+  position: fixed;
+  float: 0;
+  z-index: 300;
+  margin-top: 35vh;
+}
+#navigationMenu li{
+  list-style:none;
+
+  padding:2px;
+  width:40px;
+}
+
+#navigationMenu span{
+  /* Container properties */
+  width:0;
+  left:38px;
+  padding:0;
+  position:absolute;
+  overflow:hidden;
+
+  /* Text properties */
+  font-family:'Myriad Pro',Arial, Helvetica, sans-serif;
+  font-size:18px;
+  font-weight:bold;
+  letter-spacing:0.6px;
+  white-space:nowrap;
+  line-height:39px;
+  
+  /* CSS3 Transition: */
+  -webkit-transition: 0.25s;
+  
+  /* Future proofing (these do not work yet): */
+  -moz-transition: 0.25s;
+  transition: 0.25s;
+}
+
+#navigationMenu a{
+  background:url(../img/iconmenu.png) no-repeat;
+
+  height:39px;
+  width:38px;
+  display:block;
+  z-index: 500;
+  position:relative;
+}
+
+/* General hover styles */
+
+#navigationMenu a:hover span{ width:auto; padding:0 20px;overflow:visible; }
+#navigationMenu a:hover{
+  text-decoration:none;
+  
+  /* CSS outer glow with the box-shadow property */
+  -moz-box-shadow:0 0 5px #9ddff5;
+  -webkit-box-shadow:0 0 5px #9ddff5;
+  box-shadow:0 0 5px #9ddff5;
+}
+
+/* Green Button */
+
+#navigationMenu .one { background-position:0 0;}
+#navigationMenu .one:hover { background-position:0 ;}
+#navigationMenu .one span{
+  background-color:#0B95B9;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+
+/* Blue Button */
+
+#navigationMenu .two { background-position:-38px 0;}
+#navigationMenu .two:hover { background-position:-38px ;}
+#navigationMenu .two span{
+  background-color:#EBBF4A;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+
+/* Orange Button */
+
+#navigationMenu .three { background-position:-76px 0;}
+#navigationMenu .three:hover { background-position:-76px ;}
+#navigationMenu .three span{
+  background-color:#0A89AA;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+
+/* Yellow Button */
+
+#navigationMenu .four { background-position:-114px 0;}
+#navigationMenu .four:hover{ background-position:-114px ;}
+#navigationMenu .four span{
+  background-color:#75AC47;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+
+/* Purple Button */
+
+#navigationMenu .five { background-position:-152px 0;}
+#navigationMenu .five:hover { background-position:-152px ;}
+#navigationMenu .five span{
+  background-color:#E4B346;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+
+#navigationMenu .six { background-position:-190px 0;}
+#navigationMenu .six:hover { background-position:-190px ;}
+#navigationMenu .six span{
+  background-color:#1687A3;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+#navigationMenu .seven { background-position:-228px 0;}
+#navigationMenu .seven:hover { background-position:-228px ;}
+#navigationMenu .seven span{
+  background-color:#BD5454;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+#navigationMenu .eigth { background-position:-266px 0;}
+#navigationMenu .eigth:hover { background-position:-266px ;}
+#navigationMenu .eigth span{
+  background-color:#5C9E32;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+#navigationMenu .nine { background-position:-304px 0;}
+#navigationMenu .nine:hover { background-position:-304px ;}
+#navigationMenu .nine span{
+  background-color:#CF5658;
+  color:#E7F2D7;
+  text-shadow:1px 1px 0 #99bf31;
+}
+
+#main{
+  margin:80px auto;
+  position:fixed;
+  left: 0;
+  z-index: 300;
+  width:40px;
+}
+
+
+h1{
+  color:#fff;
+  font-size:30px;
+  font-weight:normal;
+  padding:60px 0 20px;
+  text-align:center;
+}
+
+h2{
+  font-weight:normal;
+  text-align:center;
+}
+
+h1,h2{
+  font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
+}
+
+a, a:visited,a:active {
+  color:#0196e3;
+  text-decoration:none;
+  outline:none;
+}
+
+a:hover{
+  text-decoration:underline;
+}
+
+a img{
+  border:none;
+}
+
+p.note{
+  color:#707070;
+  font-size:10px;
+  text-align:center;
+  margin:50px;
+}
+
+                    /*-----ScreenOne-------*/
+
+
+.road {
+width: 1800px;
+    height: 6vh;
+    left: 0px;
+    bottom: 0vh;
+    margin-bottom: 9vh;
+    position: absolute;
+    z-index: 2;
+}
+.road img{
+  width: 110vw;
+      height: 6vh;
+}
+.road1 {
+width: 3550px;
+    height: 7vh;
+    left: 0px;
+    bottom: 0vh;
+    margin-bottom: 11vh;
+    position: absolute;
+   background-image: url(../img/road5.png);
+}
+.road1 img{
+width: 2900px;
+height: 3vh;
+height: 12vh;
+z-index: 0;
+}
+.balloon1 {
+position: absolute;
+top: 30vh;
+margin-left: 80vw;
+animation: 15s linear 0s normal none infinite running balloon1;
+}
+@keyframes balloon1 {
+0% {
+    top: -3vh;
+}
+50% {
+    top: 25vh;
+}
+70% {
+    top: 25vh;
+}
+100% {
+    top: -3vh;
+}}
+#car-green {
+  position: absolute; 
+  left: 0; bottom: 0;
+  z-index: 5;
+  margin-bottom: 9vh;
+  margin-left: 1vw;
+  animation:25s linear 0s normal none infinite car1 ;
+}  
+#car-green img {
+  width: 40%;
+}
+@keyframes car1 {
+    0% {
+    left: -180px;
+    transform: scaleX(1);
+}
+49% {
+    left: 90vw;
+    transform: scaleX(1);
+}
+50% {
+    left: 90vw;
+    transform: scaleX(-1);
+}
+99% {
+    left: -180px;
+    transform: scaleX(-1);
+}
+100% {
+    left: -180px;
+    transform: scaleX(1);
+  }}
+  #car-mini {
+  position: absolute; 
+  left: 0; bottom: 0;
+  z-index: 3;
+  margin-bottom: 12vh;
+
+  margin-left: 1vw;
+  animation:25s linear 0s normal none infinite car-mini ;
+}  
+#car-mini img {
+  width: 50%;
+}
+@keyframes car-mini {
+    0% {
+    left: 90vw;
+    transform: scaleX(1);
+}
+49% {
+    left: -180px;
+    transform: scaleX(1);
+}
+50% {
+    left: -180px;
+    transform: scaleX(-1);
+}
+99% {
+    left: 90vw;
+    transform: scaleX(-1);
+}
+100% {
+    left: 90vw;
+    transform: scaleX(1);
+  }}
+
+
+  #zaz  img{
+  position: fixed; 
+  left: 0; bottom: 0;
+  z-index: 999;
+  margin-bottom: 0vh;
+  margin-left: 1vw;
+  height: 8.5vh;
+    width: 200px;
+  width: 10%;
+  animation:3s linear 0s normal forwards running zaz;
+
+}  
+@keyframes zaz {
+    0% {
+    left: -180px;
+    transform: scaleX(-1);
+}
+100% {
+  position: fixed;
+    left: 45vw;
+    transform: scaleX(-1);
+  }}
+.text-Ukrain {
+  float: left;
+ max-width: 400px;
+  z-index: 6;
+   position: absolute;
+  text-align: center;
+    margin-left: 38vw;
+}
+.text3d {
+text-transform: uppercase;
+color: #313132;
+border-bottom: 2px solid #005BBB;
+margin-top: 20%;
+font-family: SourceSansPro;
+font-size: 14vh;
+}
+.text-Ukrain h2 {
+  text-transform: uppercase;
+color: #313132;
+border-bottom: 2px solid #FFD500;
+margin-top: 1vh;
+font-family: SourceSansPro;
+font-size: 3vh;
+padding-bottom: 1vh;
+}
+.text-Ukrain p {
+  max-width: 256px;
+  margin-left: auto;
+margin-right: auto;
+margin-top: 1vh;
+font-size: 2vh;
+}
+.one {
+  margin-top: 3vh !important;
+}
+.swing {
+position: absolute;
+float: left;
+height: 15vh;
+margin-left: 89vw;
+margin-top: 50vh;
+cursor: pointer;
+-webkit-animation: swing 3s ease;
+    animation: swing 3s ease;
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+@-webkit-keyframes swing
+{
+    15%
+    {
+        -webkit-transform: translateY(5px);
+        transform: translateY(5px);
+    }
+    30%
+    {
+        -webkit-transform: translateY(-5px);
+       transform: translateY(-5px);
+    }
+    50%
+    {
+        -webkit-transform: translateY(3px);
+        transform: translateY(3px);
+    }
+    65%
+    {
+        -webkit-transform: translateY(-3px);
+        transform: translateY(-3px);
+    }
+    80%
+    {
+        -webkit-transform: translateY(2px);
+        transform: translateY(2px);
+    }
+    100%
+    {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+}
+@keyframes swing
+{
+    15%
+    {
+        -webkit-transform: translateY(5px);
+        transform: translateY(5px);
+    }
+    30%
+    {
+        -webkit-transform: translateY(-5px);
+        transform: translateY(-5px);
+    }
+    50%
+    {
+        -webkit-transform: translateY(3px);
+        transform: translateY(3px);
+    }
+    65%
+    {
+        -webkit-transform: translateY(-3px);
+        transform: translateY(-3px);
+    }
+    80%
+    {
+        -webkit-transform: translateY(2px);
+        transform: translateY(2px);
+    }
+    100%
+    {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+}
+.skroll1 img{
+  z-index: 5;
+}
+.skroll2 {
+    position: absolute;
+    left: 88vw;
+    bottom: 45vh;
+
+}
+.skroll2 img {
+  width: 30%;
+  z-index: 2;
+}
+.tree1 {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 12vh;
+}
+#tree1 img{
+    margin-left: 3vw;
+    margin-bottom: 5.5vh;
+    margin-right: 2vw;
+}
+#fountain img{
+  margin-left: 2vw;
+         margin-bottom: 5.5vh;
+}
+#tree11 img{
+    margin-left: 2vw;
+    margin-bottom: 5.5vh;
+}
+#tree2 img{
+    margin-left: 9vw;
+    margin-bottom: 5.5vh;
+    margin-right: 18vw;
+}
+#grass2 img{
+    margin-left: 5vw;
+    margin-bottom: 5.5vh;
+    margin-right: 4vw;
+}
+#fonar {
+  left: 600px;
+}
+#fonar img{
+  margin-left: 0vw;
+    margin-bottom: 2.5vh;
+}
+.cloud1 {
+  position: absolute;
+  margin-top: 11vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim1;
+  Animation-duration: 20s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 1;
+  opacity: 0.8;
+
+}
+.cloud2 {
+  position: absolute;
+  margin-left: 25vw;
+  margin-top: 7vh;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim2;
+  Animation-duration: 20s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 2;
+  opacity: 0.7;
+}
+.cloud3 {
+  position: absolute;
+  margin-left: 40vw;
+  margin-top: 5vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim3;
+  Animation-duration: 20s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 3;
+  opacity: 0.8;
+}
+.cloud4 {
+  position: absolute;
+  margin-left: 10vw;
+ margin-top: 28vh;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  z-index: 2;
+  opacity: 0.6;
+}
+.cloud5 {
+  position: absolute;
+  margin-left: 70vw;
+  margin-top: 20vh;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  z-index: 2;
+  opacity: 0.6;
+}
+.cloud6 {
+  position: fixed;
+margin-left: 23vw;
+margin-top: 19vh;
+width: 100px;
+height: 100px;
+z-index: 2;
+opacity: 0.3;
+animation-name: cloud-anim3;
+  Animation-duration: 20s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+}
+.cloud7 {
+  position: fixed;
+margin-left: 56vw;
+margin-top: 31vh;
+width: 100px;
+height: 100px;
+z-index: 2;
+opacity: 0.2;
+animation-name: cloud-anim7;
+  Animation-duration: 20s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+}
+.cloud10 {
+  position: absolute;
+  margin-left: 2100px;
+  margin-top: 9vh;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim2;
+  Animation-duration: 25s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 2;
+  opacity: 0.7;
+}
+.cloud11 {
+  position: absolute;
+  margin-left: 2200px;
+  margin-top: 4vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim7;
+  Animation-duration: 18s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 3;
+  opacity: 0.8;
+}
+.cloud20 {
+  position: absolute;
+  margin-left: 4800px;
+  margin-top: 9vh;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim3;
+  Animation-duration: 25s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 2;
+  opacity: 0.7;
+}
+.cloud21 {
+  position: absolute;
+  margin-left: 4200px;
+  margin-top: 5vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim1;
+  Animation-duration: 18s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 3;
+  opacity: 0.8;
+}
+.cloud30 {
+  position: absolute;
+  margin-left: 6200px;
+  margin-top: 8vh;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim3;
+  Animation-duration: 25s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 2;
+  opacity: 0.7;
+}
+.cloud31 {
+  position: absolute;
+  margin-left: 6400px;
+  margin-top: 4vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim1;
+  Animation-duration: 18s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 3;
+  opacity: 0.8;
+}
+.cloud32 {
+  position: absolute;
+  margin-left: 7800px;
+  margin-top: 8vh;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim1;
+  Animation-duration: 25s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 2;
+  opacity: 0.7;
+}
+.cloud33 {
+  position: absolute;
+  margin-left: 8000px;
+  margin-top: 4vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim3;
+  Animation-duration: 18s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 3;
+  opacity: 0.8;
+}
+.cloud34{
+  position: absolute;
+  margin-left: 9800px;
+  margin-top: 8vh;
+  z-index: 1;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim1;
+  Animation-duration: 25s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 2;
+  opacity: 0.7;
+}
+.cloud35 {
+  position: absolute;
+  margin-left: 10200px;
+  margin-top: 4vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim3;
+  Animation-duration: 18s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 3;
+  opacity: 0.8;
+}
+.cloud36 {
+    position: absolute;
+    margin-left: 10200px;
+    margin-top: 28vh;
+    width: 100px;
+    height: 100px;
+    z-index: 2;
+    opacity: 0.6;
+}
+.cloud37 {
+    position: absolute;
+    margin-left: 10800px;
+    margin-top: 15vh;
+    width: 100px;
+    height: 100px;
+    z-index: 2;
+}
+.cloud38 {
+    position: absolute;
+    margin-left: 11500px;
+    margin-top: 25vh;
+    width: 100px;
+    height: 100px;
+    z-index: 2;
+    opacity: 0.8;
+}
+.cloud39 {
+    position: absolute;
+    margin-left: 12500px;
+    margin-top: 27vh;
+    width: 100px;
+    height: 100px;
+    z-index: 2;
+}
+.cloud40 {
+  position: absolute;
+  margin-left: 12000px;
+  margin-top: 10vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim3;
+  Animation-duration: 18s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 3;
+  opacity: 0.9;
+}
+.cloud41 {
+  position: absolute;
+  margin-left: 13500px;
+  margin-top: 10vh;
+  z-index: 2;
+  width: 100px;
+  height: 100px;
+  animation-name: cloud-anim3;
+  Animation-duration: 18s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+  z-index: 3;
+  opacity: 0.9;
+}
+.cloud42 {
+    position: absolute;
+    margin-left: 13500px;
+    margin-top: 20vh;
+    width: 100px;
+    height: 100px;
+    z-index: 2;
+}
+.cloud43 {
+    position: absolute;
+    margin-left: 14200px;
+    margin-top: 35vh;
+    width: 100px;
+    height: 100px;
+    z-index: 2;
+}
+@keyframes cloud-anim1 {
+    0% {
+        left: 5vw;
+    }
+
+    100% {
+        left: 30vw;
+    }
+}
+@keyframes cloud-anim2 {
+    0% {
+        left: 20vw;
+    }
+
+    100% {
+        left: 40vw;
+    }
+}
+@keyframes cloud-anim3 {
+    0% {
+        left: 30vw;
+    }
+
+    100% {
+        left: 10vw;
+    }
+}
+@keyframes cloud-anim7 {
+    0% {
+        left: 0vw;
+    }
+
+    100% {
+        left: 10vw;
+    }
+}
+.undeground {
+  width: 100vw;
+  height: 9vh;
+  background-color: #B4B3B1;
+  position: fixed; 
+  left: 0; bottom: 0;
+  z-index: 500;
+}
+.words {
+  width: 16000px;
+  
+}
+
+                        /*-------Dnipro--------*/
+
+#Archon1 {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    z-index: 10;
+    margin-left: 1600px;
+    margin-bottom: 7vh;
+}   
+#Archon1 img {
+  height: 20vh;
+}
+#Archon2 {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    z-index: 10;
+    left: 3350px;
+    margin-bottom: 7vh;
+}  
+#Archon2 img {
+  height: 20vh;
+}                    
+#wawes1 {
+    width: 1770px;
+  height: 7vh;
+  position: absolute; 
+  bottom: 9vh;
+  z-index: 8;
+  margin-left: 110vw;
+  background-image: url(../img/wawes3.png);
+  animation: 2s linear 1s normal none infinite running wawes1;
+}
+#wawes2 {
+    width: 1770px;
+  height: 5vh;
+  position: absolute; 
+  bottom: 9vh;
+  z-index: 9;
+  margin-left: 110vw;
+  background-image: url(../img/wawes4.png);
+  animation: 1s linear 1s normal none infinite running wawes1;
+}
+
+@keyframes wawes1 {
+0% {
+  left: 1vw;
+    
+}
+50% {
+  left: 2vw;
+    
+}
+100% {
+  left: 1vw;
+}}
+#fontain2 {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+    left: 2280px;
+    margin-bottom: 13vh;
+}
+#menF {
+    position: absolute;
+    left: 3250px;
+    bottom: 0;
+    z-index: 5;
+   
+}
+#menF img{
+ width: 20%;
+ margin-bottom: 16vh;
+}
+#bird44 {
+position: absolute;
+    left: 2500px;
+    bottom: 0;
+    z-index: 5;
+  
+}
+#bird44 img{
+margin-bottom: 73vh;
+opacity: 0.4;
+}
+#avatar7 {
+position: absolute;
+    left: 2700px;
+    bottom: 0;
+    z-index: 5;
+ 
+}
+#avatar7 img{
+
+ margin-bottom: 14vh;
+}
+#avatar12 {
+position: absolute;
+    left: 2900px;
+    bottom: 0;
+    z-index: 5;
+    animation: 18s linear 1s normal none infinite running avatar12;
+ }
+@keyframes avatar12 {
+    0% {
+    left: 3200px;
+}
+49% {
+    left: 2900px;
+}
+
+100% {
+    left: 3200px;
+}}
+#avatar12 img{
+
+ margin-bottom: 15vh;
+}
+#avatar1 {
+position: absolute;
+    left: 2500px;
+    bottom: 0;
+    z-index: 5;
+    transform: scaleX(-1);
+    animation: 25s linear 1s normal none infinite running woonamdog;
+}
+#avatar1 img{
+
+ margin-bottom: 14vh;
+}
+@keyframes woonamdog {
+    0% {
+    left: 2500px;
+    
+}
+49% {
+    left: 2800px;
+}
+100% {
+    left: 2600px;
+}}
+#boudarka {
+
+  position: absolute; 
+  bottom: 9vh;
+  z-index: 9;
+  margin-left: 2500px;
+   animation:10s linear infinite boudarka ;
+
+}
+@keyframes boudarka {
+    0% {
+    left: 180px;
+    transform: scaleX(1);
+}
+49% {
+    left: 580px;
+    transform: scaleX(1);
+}
+50% {
+    left: 580px;
+    transform: scaleX(-1);
+}
+99% {
+    left: 180px;
+    transform: scaleX(-1);
+}
+100% {
+    left: 200px;
+    transform: scaleX(1);
+  }}
+#boudarka img {
+  width: 20%;
+}
+#Dnipro img{
+position: absolute;
+    height: 65vh;
+    left: 0px;
+    bottom: 0px;
+    z-index: 5;
+    margin-left: 2450px;
+    margin-bottom: 18vh;
+  
+}
+#DneprBG {
+  position: absolute;
+    height: 35vh;
+    left: 0px;
+    bottom: 0px;
+    z-index: 2;
+    left: 2200px;
+    margin-bottom: 13vh;
+    opacity: 0.3;
+  
+}
+#DneprBG img {
+
+    height: 30vh;
+}
+.text-box1 {
+    float: left;
+    background: rgba(255, 255, 255, 0.2) none repeat scroll 0% 0%;
+    padding: 0px 30px 0px;
+    width: 225px;
+    height: 100vh;
+    z-index: 6;
+    text-align: left;
+}
+.text-box1 h2 {
+  text-align: center;
+  text-transform: uppercase;
+  color: #313132;
+  border-bottom: 2px solid #005BBB;
+  font-family: SourceSansPro;
+font-size: 3.5vh;    
+  padding: 2vh 0;
+}
+.text-box1 h3 {
+  text-align: center;
+  text-transform: uppercase;
+  color: #313132;
+  border-bottom: 2px solid #FFD500;
+  margin-top: 1.5vh;
+  font-family: SourceSansPro;
+  font-size: 2.5vh;
+  padding-bottom: 1.5vh;
+}
+.text-box1 p {
+color: #313132;
+    margin-top: 2vh;
+    font-size: 2vh;
+    line-height: 3vh;
+}
+#text-box2{
+    position: absolute;
+    left: 1900px;
+}  
+#icon1 {
+position: absolute;
+    left: 2798px;
+    z-index: 499;
+    bottom: 61vh;
+    opacity: 0.9;
+    cursor: pointer;
+}
+.icon img {
+  width: 65%;
+}
+.icon span{
+  
+    visibility: hidden;
+    position: absolute;
+   
+    width: 300px;
+   padding: 10px;
+    color: #313132;
+    background-color: rgba(255, 255, 255, 0.2);
+    font-size: 2vh;
+    left: 100px;
+    -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+-moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+-webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+-moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+
+ }
+.icon:hover span{
+visibility: visible;
+}
+
+
+
+                  /*--------kyiv---------*/
+#kyiv img{
+height: 65vh;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    margin-left: 4350px;
+    margin-bottom: 18vh;
+}
+#kuivBG {
+position: absolute;
+    height: 35vh;
+    left: 0px;
+    bottom: 0px;
+    z-index: 0;
+    left: 4000px;
+    margin-bottom: 13vh;
+  
+}
+#kuivBG img {
+height: 30vh;
+    width: 1100px;
+        opacity: 0.3;
+}
+.bru2 {
+    left: 3530px;
+    width: 1800px;
+    height: 9vh;
+    bottom: 0vh;
+    margin-bottom: 9vh;
+    position: absolute;
+     background-image: url(../img/road4.png);
+}
+#text-box3{
+  margin-bottom: 13vh;
+padding-bottom: 5vh;
+margin-left: 3700px;
+height: 80.5vh;
+} 
+#text-box3 h2 {
+      font-size: 4.5vh;
+
+}
+#Untitled1 {
+    position: absolute;
+    left: 4000px;
+    bottom: 17vh;
+    z-index: 5;
+}  
+#Untitled2 {
+position: absolute;
+    left: 4595px;
+    bottom: 17vh;
+    z-index: 5;
+} 
+#bird6Kuiv {
+position: absolute;
+    left: 4650px;
+    bottom: 80vh;
+    z-index: 5;
+}
+#bird6Kuiv img {
+  height: 12vh;
+}
+#bird7Kuiv {
+position: absolute;
+    left: 4150px;
+    bottom: 67vh;
+    z-index: 5;
+    opacity: 0.4;
+    transform: scaleX(-1);
+}
+#bird7Kuiv img {
+  height: 12vh;
+}
+#icon3 {
+    position: absolute;
+    left: 4700px;
+     z-index: 5;
+    bottom: 45vh;
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+
+#avatar14 {
+position: absolute;
+    left: 4250px;
+    bottom: 15vh;
+    z-index: 5;
+}
+#avatar141 img {
+  height: 9vh;
+}
+#avatar141 {
+position: absolute;
+    left: 4850px;
+    bottom: 15vh;
+    z-index: 5;
+}
+#avatar14 img {
+  height: 9vh;
+}
+#menF2 {
+position: absolute;
+    left: 4650px;
+    bottom: 15vh;
+    z-index: 5;
+}
+#menF2 img {
+  height: 9vh;
+}
+#bisnessman img {
+  height: 9vh;
+}
+#bisnessman {
+position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 7;
+    margin-bottom: 10vh;
+    margin-left: 1vw;
+  animation: bisnessman 18s linear infinite ;
+
+}  
+@keyframes bisnessman {
+    0% {
+    left: 300vw;
+    transform: scaleX(1);
+}
+49% {
+    left: 260vw;
+    transform: scaleX(1);
+}
+50% {
+    left: 260vw;
+    transform: scaleX(-1);
+}
+99% {
+    left: 300vw;
+    transform: scaleX(-1);
+}
+100% {
+    left: 300vw;
+   transform: scaleX(1);
+  }} 
+#woonam2 img {
+  height: 9vh;
+}
+#woonam2 {
+position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 15;
+    margin-bottom: 13vh;
+    margin-left: 1vw;
+  animation: woonam2 26s  linear infinite ;
+
+}  
+@keyframes woonam2 {
+    0% {
+    left: 250vw;
+    transform: scaleX(1);
+}
+49% {
+    left: 280vw;
+    transform: scaleX(1);
+}
+50% {
+    left: 280vw;
+    transform: scaleX(-1);
+}
+99% {
+    left: 250vw;
+    transform: scaleX(-1);
+}
+100% {
+    left: 250vw;
+   transform: scaleX(1);
+  }}
+#airopalne img{
+  position: absolute; 
+  z-index: -1;
+  margin-left: 1vw;
+  margin-top: 12vh;
+  height: 5%;
+  animation: airopalne1 30s linear infinite;   
+}
+@keyframes airopalne1 {
+
+    0% {
+    left: 4200px;
+    top: 10vh;
+    transform: scaleX(1);
+}
+49% {
+    left: 4800px;
+    top: 3vh;
+    transform: scaleX(1);
+}
+50% {
+    left: 4800px;
+    top: 3vh;
+    transform: scaleX(-1);
+}
+99% {
+    left: 4200px;
+    top: 10vh;
+    transform: scaleX(-1);
+}
+100% {
+    left: 4200px;
+    top: 10vh;
+    transform: scaleX(1);
+  }}
+
+
+
+                    /*--------odessa---------*/
+#odessa img{
+    height: 65vh;
+    position: absolute;
+    left: 0;
+    bottom: 9vh;
+    z-index: 5;
+    margin-left: 5900px;
+  
+}
+#odessaBG {
+position: absolute;
+    bottom: 0px;
+    z-index: 2;
+    left: 5770px;
+    margin-bottom: 8vh;
+    opacity: 0.3;
+  
+}
+#odessaBG img {
+width: 1300px;
+    height: 50vh;
+}
+#bird447 {
+    position: absolute;
+    left: 6700px;
+    z-index: 5;
+      bottom: 85vh;
+    opacity: 0.4;
+}
+#bird66 {
+    position: absolute;
+    left: 6300px;
+    z-index: 5;
+      bottom: 50vh;
+
+}
+#bird67 {
+    position: absolute;
+    left: 6500px;
+    z-index: 5;
+      bottom: 46vh;
+       transform: scaleX(-1);
+}
+#icon8 {
+    position: absolute;
+    left: 6000px;
+    z-index: 50;
+      bottom: 48vh;
+    cursor: pointer;
+}
+#fish {
+position: absolute;
+    left: 6950px;
+    z-index: 8;
+    bottom: 8vh;
+    animation-name: fish;
+    Animation-duration: 1s;
+    animation-iteration-count: infinite;
+    Animation-timing-function: linear;
+    Animation-iteration-count: infinite;
+    Animation-direction: alternate;
+}
+#fish2 {
+    position: absolute;
+    left: 6900px;
+    z-index: 8;
+    bottom: 8vh;
+     animation-name: fish;
+  Animation-duration: 2s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+}
+@keyframes fish {
+0% {
+  margin-bottom: 7vh;
+
+}
+50% {
+  margin-bottom: 8vh;
+  margin-left: -1vw;
+  transform: scaleX(-1);
+    
+}
+100% {
+  margin-bottom 7vh;
+}}
+.bruOdessa {
+    left: 5350px;
+    width: 600px;
+    height: 9vh;
+    bottom: 0vh;
+    margin-bottom: 9vh;
+    position: absolute;
+     background-image: url(../img/road4.png);
+    background-size: 100% 100%;
+    background-repeat: repeat;
+  
+}
+#Archon3 {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    z-index: 10;
+left: 5300px;
+    margin-bottom: 7vh;
+}   
+#Archon3 img {
+  width: 50%;
+
+}               
+#Archon4 {
+position: absolute;
+    left: 0px;
+    bottom: 0px;
+    z-index: 10;
+    left: 7070px;
+    margin-bottom: 7vh;
+}   
+#Archon4 img {
+  width: 60%;
+
+}               
+#wawes3 {
+width: 1750px;
+
+  height: 7vh;
+  position: absolute; 
+    left: 3600px;
+  bottom: 9vh;
+  z-index: 8;
+  background-image: url(../img/wawes3.png);
+  animation: 2s linear 1s normal none infinite running wawes1;
+}
+#wawes4 {
+width: 1750px;
+
+  height: 5vh;
+  position: absolute; 
+  bottom: 9vh;
+  z-index: 9;
+  background-image: url(../img/wawes4.png);
+    left: 3600px;
+  animation: 1s linear 1s normal none infinite running wawes1;
+}
+
+@keyframes wawes1 {
+0% {
+  margin-left: 110vw;
+    
+}
+50% {
+  margin-left: 111vw;
+    
+}
+100% {
+  margin-left: 110vw;
+}}
+#wawes7 {
+width: 750px;
+
+  height: 7vh;
+  position: absolute; 
+    left: 4620px;
+  bottom: 15vh;
+  z-index: 3;
+  background-image: url(../img/wawes3.png);
+  animation: 1s linear 1s normal none infinite running wawes1;
+}
+#wawes8 {
+    width: 750px;
+    height: 7vh;
+    position: absolute;
+    left: 4620px;
+    bottom: 12vh;
+    z-index: 8;
+    background-image: url(../img/wawes4.png);
+    z-index: 3;
+  animation: 2s linear 1s normal none infinite running wawes1;
+}
+#chip2 img {
+      height: 14vh;
+}
+#chip2 {
+position: absolute;
+    bottom: 0;
+    z-index: 8;
+    margin-bottom: 12vh;
+    margin-left: 1vw;
+    left: 5780px;
+} 
+#chip3 {
+position: absolute; 
+  left: 0; bottom: 0;
+  z-index: 10;
+  margin-bottom: 10vh;
+  margin-left: 1vw;
+  animation:chip3 15s linear infinite;
+
+}  
+@keyframes chip3 {
+    0% {
+    left: 6000px;
+    transform: scaleX(1);
+}
+49% {
+    left: 6400px;
+    transform: scaleX(1);
+}
+50% {
+    left: 6400px;
+    transform: scaleX(-1);
+}
+99% {
+    left: 6000px;
+    transform: scaleX(-1);
+}
+100% {
+    left: 6000px;
+    transform: scaleX(1);
+  }}
+#text-box4 {
+    margin-bottom: 13vh;
+    padding-bottom: 5vh;
+    margin-left: 1500px;
+    height: 80.5vh;
+}
+#text-box4 h2 {
+      font-size: 3.7vh;
+}
+
+
+
+
+
+                    /*--------Kharkiv---------*/
+
+
+.bruHarkiv {
+left: 7160px;
+width: 2200px;
+    height: 9vh;
+    bottom: 0vh;
+    margin-bottom: 9vh;
+    position: absolute;
+     background-image: url(../img/road4.png);
+ 
+}
+.gelocopter {
+    position: absolute;
+    margin-left: 8700px;
+    margin-top: 15vh;
+    width: 100px;
+    height: 100px;
+    z-index: 2;
+      animation-name: gelocopter;
+  Animation-duration: 18s;
+  animation-iteration-count: infinite;
+  Animation-timing-function:linear;
+  Animation-iteration-count:infinite;
+  Animation-direction:alternate;
+}
+@keyframes gelocopter {
+    0% {
+        top: 8vh;
+    }
+
+    100% {
+        top: 15vw;
+    }
+}
+  #treess1 {
+    position: absolute;
+    bottom: 0;
+    z-index: 3;
+    left: 7450px;
+    margin-bottom: 17vh;
+} 
+ 
+ #fountan22 {
+position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+    left: 8100px;
+    margin-bottom: 11vh;
+} 
+ #fountan22 img {
+  height: 12vh;
+ }  
+  #park {
+position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+left: 8350px;
+    margin-bottom: 17vh;
+} 
+ #park img {
+  height: 58vh;
+ } 
+#avatar6 {
+position: absolute; 
+  left: 8000px;
+  bottom: 0;
+  z-index: 10;
+  margin-bottom: 10vh;
+  margin-left: 1vw;
+ }  
+#avatar6 img {
+  height: 9vh;
+}
+#avatar17 {
+position: absolute; 
+  left: 8250px;
+  bottom: 0;
+  z-index: 10;
+  margin-bottom: 13vh;
+  margin-left: 1vw;
+  transform: scaleX(-1);
+ }  
+#avatar17 img {
+  height: 9vh;
+}
+#avatar15 {
+position: absolute; 
+  left: 8050px;
+  bottom: 0;
+  z-index: 10;
+  margin-bottom: 12vh;
+  margin-left: 1vw;
+  transform: scaleX(-1);
+ }  
+#avatar15 img {
+  height: 9vh;
+}
+#avatar13 {
+position: absolute; 
+  left: 8050px;
+  bottom: 0;
+  z-index: 10;
+  margin-bottom: 11vh;
+  margin-left: 1vw;
+  animation: avatar13 30s linear infinite;
+ }  
+
+#avatar13 img {
+  height: 9vh;
+}
+@keyframes avatar13 {
+    0% {
+    left: 8400px;
+}
+49% {
+    left: 9200px;
+}
+
+100% {
+    left: 8400px;
+}}
+#Kharkiv2 img{
+height: 60vh;
+
+    position: absolute;
+    bottom: 17vh;
+    z-index: 2;
+    left: 7900px;
+   
+  
+}
+#CharkovBG {
+    position: absolute;
+    height: 39vh;
+    left: 0px;
+    bottom: 0px;
+    z-index: 0;
+    margin-left: 7600px;
+    margin-bottom: 9vh;
+  
+}
+#CharkovBG img {
+height: 30vh; 
+    opacity: 0.3;
+    width: 1500px;
+}
+#text-box5 {
+    margin-bottom: 13vh;
+    padding-bottom: 5vh;
+    margin-left: 1500px;
+    height: 80.5vh;
+}
+#Archon5 {
+    position: absolute;
+     bottom: 0px;
+    z-index: 10;
+    left: 9300px;
+    margin-bottom: 7vh;
+} 
+#Archon5 img {
+  width: 50%;
+
+}
+#woonamdog24 {
+position: absolute; 
+  left: 0; bottom: 0;
+  z-index: 10;
+  margin-bottom: 10vh;
+  margin-left: 1vw;
+  animation: woonamdog24 20s linear infinite;
+
+}  
+#woonamdog24 img {
+  height: 9vh;
+}
+@keyframes woonamdog24 {
+    0% {
+    left: 7400px;
+    transform: scaleX(-1);
+}
+49% {
+    left: 7800px;
+    margin-top: 0.5vh;
+    transform: scaleX(-1);
+}
+50% {
+    left: 7800px;
+    margin-top: -1vh;
+    transform: scaleX(1);
+}
+99% {
+    left: 7400px;
+    margin-top: 0.5vh;
+    transform: scaleX(1);
+}
+100% {
+    left: 7400px;
+    margin-top: -1vh;
+    transform: scaleX(-1);
+  }}
+#avatar23 {
+position: absolute;
+    left: 9200px;
+    bottom: 0;
+    z-index: 5;
+    animation: 30s linear 1s normal none infinite running avatar23;
+ }
+@keyframes avatar23 {
+    0% {
+    left: 9200px;
+}
+49% {
+    left: 8500px;
+}
+
+100% {
+    left: 9200px;
+}}
+#avatar23 img{
+
+ margin-bottom: 14vh;
+}  
+#icon6 {
+position: absolute;
+    left: 8300px;
+    z-index: 50;
+    bottom: 74vh;
+    cursor: pointer;
+} 
+
+
+                    /*--------Lviv---------*/
+
+.road5 {
+width: 3600px;
+    height: 6vh;
+    left: 9380px;
+    bottom: 0vh;
+    margin-bottom: 9vh;
+    position: absolute;
+    z-index: 4;
+   
+}
+.road5 img{
+width: 3600px;
+    height: 6vh;
+}
+.road6 {
+    width: 3630px;
+    height: 7vh;
+    left: 9350px;
+    bottom: 0vh;
+    margin-bottom: 11vh;
+    position: absolute;
+    z-index: 3;
+   background-image: url(../img/bru22.png);
+}
+.road6 img{
+    width: 3630px;
+      height: 3vh;
+          height: 12vh;
+          z-index: 0;
+}
+#Lviv1 img{
+    height: 50vh;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    margin-left: 10050px;
+    margin-bottom: 16.5vh;
+}
+#LvivBG2 {
+position: absolute;
+
+    left: 0px;
+    bottom: 0px;
+    z-index: 0;
+    left: 9800px;
+    margin-bottom: 13vh;
+    opacity: 0.3;
+  
+}
+#LvivBG2 img {
+height: 30vh; 
+}
+#text-box6 {
+margin-bottom: 13vh;
+    padding-bottom: 5vh;
+    margin-left: 1900px;
+    height: 80.5vh;
+}
+#text-box6 h2 {
+      font-size: 6vh;
+}
+#treess2 {
+position: absolute;
+    bottom: 0px;
+    z-index: 10;
+    left: 10615px;
+    margin-bottom: 17vh;
+}
+#tress5 {
+position: absolute;
+    bottom: 0px;
+    z-index: 10;
+    left: 9800px;
+    margin-bottom: 17vh;
+}
+#car-police {
+position: absolute; 
+  left: 0; bottom: 0;
+  z-index: 15;
+  margin-bottom: 10vh;
+  margin-left: 1vw;
+  animation: car-police 40s linear infinite; 
+
+}  
+#car-police img {
+  height: 9vh;
+
+}
+@keyframes car-police {
+    0% {
+    left: 9500px;
+    transform: scaleX(1);
+}
+49% {
+    left: 12500px;
+    transform: scaleX(1);
+}
+50% {
+    left: 12500px;
+    transform: scaleX(-1);
+}
+99% {
+    left: 9500px;
+    transform: scaleX(-1);
+}
+100% {
+    left: 9500px;
+    transform: scaleX(1);
+  }}
+  #car5 {
+position: absolute;
+    left: 10900px;
+    bottom: 0;
+    z-index: 15;
+    margin-bottom: 14vh;
+    margin-left: 1vw;
+}
+  #car5 img {
+    width: 50%;
+  }
+#car88 {
+position: absolute; 
+  left: 0; bottom: 0;
+  z-index: 15;
+  margin-bottom: 10vh;
+  margin-left: 1vw;
+  animation: car88 40s linear infinite; 
+
+}  
+#car88 img {
+  height: 9vh;
+width: 40%;
+}
+@keyframes car88 {
+    0% {
+    left: 12600px;
+    transform: scaleX(1);
+}
+49% {
+    left: 9500px;
+    transform: scaleX(1);
+}
+50% {
+    left: 9500px;
+    transform: scaleX(-1);
+}
+99% {
+    left: 12600px;
+    transform: scaleX(-1);
+}
+100% {
+    left: 12600px;
+    transform: scaleX(1);
+  }}
+  #icon4 {
+    position: absolute;
+    left: 10600px;
+    z-index: 50;
+    bottom: 65vh;
+    cursor: pointer;
+} 
+
+                    /*--------Chernovshi---------*/
+
+#Chernovshi1 img{
+    height: 50vh;
+    width: 7%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 2;
+    margin-left: 11450px;
+    margin-bottom: 17vh;
+  
+}
+#ChernovBG {
+position: absolute;
+
+    left: 0px;
+    bottom: 0px;
+    z-index: 0;
+    left: 11300px;
+    margin-bottom: 13vh;
+    opacity: 0.3;
+  
+}
+#ChernovBG img {
+    height: 37vh;
+    width: 1500px; 
+}
+#text-box7 {
+    margin-bottom: 13vh;
+    padding-bottom: 5vh;
+    margin-left: 1400px;
+    height: 80.5vh;
+}
+#text-box7  h2 {
+  font-size: 4vh;
+}
+  #treess7 {
+    position: absolute;
+    left: 11100px;
+    z-index: 5;
+    bottom: 17vh;
+
+}
+  #treess8 {
+    position: absolute;
+    left: 12650px;
+    z-index: 5;
+    bottom: 17vh;
+
+}
+  #icon5 {
+position: absolute;
+left: 12100px;
+z-index: 50;
+bottom: 72vh;
+cursor: pointer;
+}
+
+                    /*--------Zaporoze---------*/
+
+#wawes9 {
+width: 570px;
+
+  height: 7vh;
+  position: absolute; 
+    left: 11290px;
+  bottom: 11vh;
+  z-index: 3;
+  background-image: url(../img/wawes3.png);
+  animation: 1s linear 1s normal none infinite running wawes1;
+}
+#wawes10 {
+    width: 570px;
+    height: 7vh;
+    position: absolute;
+    left: 11290px;
+    bottom: 9vh;
+   
+    background-image: url(../img/wawes4.png);
+    z-index: 3;
+  animation: 2s linear 1s normal none infinite running wawes1;
+}
+#wawes11 {
+width: 300vw;
+    height: 7vh;
+    position: absolute;
+    left: 12550px;
+    bottom: 11vh;
+    z-index: 3;
+  background-image: url(../img/wawes3.png);
+  animation: 1s linear 1s normal none infinite running wawes1;
+}
+#wawes12 {
+width: 300vw;
+    height: 7vh;
+    position: absolute;
+    left: 12550px;
+    bottom: 9vh;
+    z-index: 9;
+    background-image: url(../img/wawes4.png);
+    z-index: 3;
+  animation: 2s linear 1s normal none infinite running wawes1;
+}
+#Archon7 {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    z-index: 10;
+    left: 12850px;
+    height: 19vh;
+    margin-bottom: 8vh;
+}
+#Archon7 img {
+  height: 100%;
+}
+#Zaporoze1 img{
+height: 65vh;
+width: 7%;
+    position: absolute;
+    left: 13600px;
+    bottom: 7vh;
+    width: 800px;
+    z-index: 10;
+}
+#zpBG {
+position: absolute;
+
+    left: 0px;
+    bottom: 0px;
+    z-index: 0;
+    left: 13200px;
+    margin-bottom: 13vh;
+    opacity: 0.3;
+  
+}
+#zpBG img {
+height: 80vh; 
+}
+#text-box8 {
+    margin-bottom: 13vh;
+    padding-bottom: 5vh;
+    margin-left: 1700px;
+    height: 80.5vh;
+}
+#text-box8  h2 {
+  font-size: 5vh;
+}
+  #icon7 {
+position: absolute;
+left: 13600px;
+z-index: 50;
+bottom: 65vh;
+cursor: pointer;
+}
+                          /*-----roadmap-----*/
+
+
+#roadmap img{
+    height: 100vh;
+    position: absolute;
+    left: 15080px;
+    z-index: 10;
+    bottom: 2vh;
+
+}
+#text-box9 {
+    margin-bottom: 13vh;
+    padding-bottom: 5vh;
+    margin-left: 1300px;
+    height: 80.5vh;
+}
+#text-box9  h2 {
+  font-size: 5vh;
+}
+
+
+
+
+
