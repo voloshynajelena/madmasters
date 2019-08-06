@@ -8,8 +8,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "http-server .",
-    "build": "echo hello"
+    "start": "http-server ."
   },
   "repository": {
     "type": "git",
