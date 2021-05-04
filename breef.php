@@ -4,7 +4,14 @@
   <meta charset="utf-8">
   <link rel="shortcut icon" href="/content/img/favicon.ico" type="image/x-icon">
 <title>Document</title>
-</head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FE9J5WS225"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FE9J5WS225');
+</script></head>
 <body>
 
 
