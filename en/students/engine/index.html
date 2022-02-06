@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="css/style.css">
+		<link href="css/bootstrap.css" rel="stylesheet">
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400,500,100,300,700,700italic,900,900italic,500italic,400italic,300italic,100italic&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<meta charset="UTF-8">
+		<title>
+		Engine
+		</title>
+
+<!-- Edit -->
+		<link rel="stylesheet" href="css/parall.css">
+		<script type="text/javascript" src="//use.typekit.net/rws3een.js"></script>
+<!-- end edit -->
+
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FE9J5WS225"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-FE9J5WS225');
+</script></head>
+	<body style="height: auto;">
+	<div class="header">
+		<div class="container col-md-12 ak-background">
+			<div class="row">
+				<div class="title-text">
+					    <section id="intro" class="wrapper">
+					      <h1 class="name">
+					      	<span class="grey-text">1.6L</span><br> direct<br> </h1>
+					      <h1 class="byline">injection<br></h1>
+						  <h1 class="name">gasoline<br></h1>
+					      <h1 class="byline">
+					      	<span class="grey-text">turbo</span></h1>
+					    </section>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main-content" id="main-content">
+		<div class="scroll-container">
+			<div class="page">
+				<div class="video">
+				  <div class="video__inner">
+				    <video id="video" autobuffer preload muted>
+				        <source type="video/webm" src="engine1.mp4"></source>
+				      Your browser does not support the <code>video</code> element.
+				    </video>
+				  </div>
+				  <div id="stage" class="video__stage">
+				    <div id="scroll" class="video__stage-content">
+						<div class="banner banner1">
+
+								<div class="text-size">
+									<div class="icon-banner-block icon-banner-block-left"><div class="icon-banner"></div></div>
+									<p class="big">К <b>коленчатому валу</b> с помощью 4-х шатунов присоединяются <b>4 поршня.</b></p><hr>
+									<p class="small">Они служат для восприятия давления газов и передачи усилий на шатун, герметизации камеры сгорания и отвода от нее тепла.</p>
+								</div>
+						</div>
+						<div class="banner banner2">
+								<div class="text-size">
+									<div class="icon-banner-block icon-banner-block-right"><div class="icon-banner"></div></div>
+									<p class="big">Над поршнем крепятся <b>впускные клапаны</b></p><hr>
+									<p class="small">Они служат для закрытия каналов по которым поступают газы из работающего цилиндра, кроме того, когда они должны быть открыты.</p>
+								</div>
+						</div>
+						<div class="banner banner3">
+								<div class="text-size">
+									<div class="icon-banner-block icon-banner-block-left"><div class="icon-banner"></div></div>
+									<p class="big">Над впускными клапанами располагается <b>распределительный вал</b></p><hr>
+									<p class="small">Он нужен для своевременного открытия клапана, вследствие чего происходит подача топливной смеси или выпуск уже отработанной смеси и является <b>основной деталью</b> газораспределительного механизма.</p>
+								</div>
+						</div>
+						<div class="banner banner4">
+								<div class="text-size">
+									<div class="icon-banner-block icon-banner-block-right"><div class="icon-banner"></div></div>
+									<p class="big">К нему крепится <b>шкив распределительного вала</b></p><hr>
+									<p class="small">Конструкция данного устройства позволяет регулировать относительно распределительного вала положение зубчатой части.</p>
+								</div>
+						</div>	
+				    </div>
+				  </div>
+				</div>
+				</div>
+			<script src="js/js.js"></script>
+			<script>
+			// select video element
+			var video = document.getElementById('video');
+			var videoStage = document.getElementById('stage');
+			var videoScroll = document.getElementById('scroll');
+			var totalHeight = videoScroll.offsetHeight;
+			var videoDuration = video.duration;
+			var stopAt = 0;
+
+			// pause video on load
+			video.pause();
+
+			// scroll within container
+			videoStage.onscroll = function() {
+
+			if (video.currentTime < videoDuration) {
+
+			  video.play();
+			  stopAt = (videoStage.scrollTop / totalHeight) * videoDuration; // calculate percantages
+			} else {
+					$(video).fadeOut(500);}
+			};
+
+			setInterval(function() {
+			  if (video.currentTime >= stopAt) {
+			    video.pause();
+			  }
+			}, 60);
+
+			// duration on load
+			video.addEventListener('loadedmetadata', function() {
+			  videoDuration = video.duration;
+			});
+			
+			
+
+			</script>
+		</div>
+	</div>
+	<div class="footer">
+	    <div class="statistics">
+
+	        <div class="number">
+	            <p class="title-two">Inline 4 cylinder</p><br>
+	            <p class="title-two">16V Twin CVTC</p><br>
+	            <p class="title-two">Max Power - 116/5,600 ps/rpm</p><br>
+	            <p class="title-two">Ignition System - Electronics Injection</p><br>
+	            <p class="title-two">Fuel Tank Capacity 52 liters</p><br>
+	            <div class="title-two"><p class="enginePng"></p></div>
+	            
+	        </div>
+
+	        <div class="comparison">
+	            <h2 class="title-three"></h2>
+	            <div class="ak-47-block">
+
+	            </div>
+	            <div class="ak-12-block">
+
+	        	</div>
+	        	<div class="bars">
+		            
+		        </div>
+	        </div>
+	      </div>
+	<!-- <div class="container"></div> -->
+	<script src="js/bootstrap.js"></script>
+	<script src="js/jquery-2.0.2.min.js"></script>
+	<script src="js/picasso.js"></script>
+	</body>
+</html>
