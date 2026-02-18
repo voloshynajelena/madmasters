@@ -1,0 +1,64 @@
+'use client';
+
+import { useState } from 'react';
+import { getDictionary } from '@/i18n/dictionaries';
+import { PageLayout } from '@/components/layout/page-layout';
+
+export default function ContactPage() {
+  const dict = getDictionary('fr');
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await new Promise((r) => setTimeout(r, 1000));
+    setSubmitted(true);
+  };
+
+  return (
+    <PageLayout locale="fr" title="Contactez-nous" subtitle="Prenez contact">
+      <div className="py-16">
+        <div className="container-section">
+          <div className="max-w-2xl mx-auto">
+            {submitted ? (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center">
+                <h3 className="text-xl font-bold text-green-800 mb-2">Merci!</h3>
+                <p className="text-green-700">Votre message a été envoyé.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Nom *"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-3 border border-primary/20 rounded-lg focus:outline-none focus:border-accent bg-white"
+                />
+                <input
+                  type="email"
+                  placeholder="Email *"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="w-full px-4 py-3 border border-primary/20 rounded-lg focus:outline-none focus:border-accent bg-white"
+                />
+                <textarea
+                  placeholder="Votre message *"
+                  required
+                  rows={5}
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full px-4 py-3 border border-primary/20 rounded-lg focus:outline-none focus:border-accent bg-white resize-none"
+                />
+                <button type="submit" className="w-full px-8 py-4 bg-primary text-white text-sm tracking-wider hover:bg-primary-light transition-colors">
+                  Envoyer le message
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}

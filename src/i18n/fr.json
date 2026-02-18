@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "services": "Services",
+    "work": "Réalisations",
+    "fresh": "Actualités",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "cta": {
+    "getQuote": "Demander un devis",
+    "startProject": "Démarrer un projet",
+    "calculatePrice": "Calculer le prix",
+    "viewWork": "Voir nos réalisations",
+    "submitBrief": "Soumettre un brief",
+    "sendMessage": "Envoyer",
+    "learnMore": "En savoir plus",
+    "seeAll": "Voir tout"
+  },
+  "hero": {
+    "headline": "Nous créons des produits digitaux qui convertissent",
+    "subheadline": "Développement web, marketing et solutions sur mesure pour les entreprises ambitieuses"
+  },
+  "sections": {
+    "aboutTitle": "Qui sommes-nous",
+    "aboutSubtitle": "Une équipe créative qui transforme les idées en succès digital",
+    "aboutDescription": "Nous choisissons les solutions les plus efficaces pour créer et gérer votre présence en ligne. Chaque projet respecte les standards W3C et Google Developers.",
+    "servicesTitle": "Nos services",
+    "servicesSubtitle": "Services digitaux complets",
+    "portfolioTitle": "Nos réalisations",
+    "portfolioSubtitle": "Le meilleur compliment est un client satisfait",
+    "contactTitle": "Parlons-en",
+    "contactSubtitle": "Prêt à démarrer votre projet ?",
+    "contactDescription": "Discutons de votre projet ou idée et découvrons comment Mad Masters peut aider votre entreprise à se développer.",
+    "freshTitle": "Actualités",
+    "freshSubtitle": "Nos derniers travaux et contributions open-source"
+  },
+  "services": {
+    "web": {
+      "title": "Développement Web",
+      "short": "Web",
+      "description": "Sites multilingues, e-commerce, landing pages, thèmes CMS"
+    },
+    "marketing": {
+      "title": "Marketing Digital",
+      "short": "Marketing",
+      "description": "SEO, PPC, campagnes email, analytics, réseaux sociaux"
+    },
+    "custom": {
+      "title": "Solutions Sur Mesure",
+      "short": "Sur mesure",
+      "description": "APIs, intégrations, calculateurs, formulaires, automatisation"
+    },
+    "support": {
+      "title": "Support & Maintenance",
+      "short": "Support",
+      "description": "Support technique, mises à jour, optimisation, corrections"
+    }
+  },
+  "process": {
+    "strategy": "Stratégie",
+    "design": "Design",
+    "development": "Développement",
+    "testing": "Tests",
+    "launch": "Lancement"
+  },
+  "form": {
+    "name": "Votre nom",
+    "email": "Adresse email",
+    "phone": "Numéro de téléphone",
+    "company": "Entreprise",
+    "message": "Message",
+    "subject": "Sujet",
+    "budget": "Budget estimé",
+    "timeline": "Délai souhaité",
+    "required": "Ce champ est requis",
+    "invalidEmail": "Veuillez entrer un email valide",
+    "invalidPhone": "Veuillez entrer un numéro valide",
+    "submitSuccess": "Merci ! Nous vous contacterons dans les 24 heures.",
+    "submitError": "Une erreur est survenue. Veuillez réessayer.",
+    "submitting": "Envoi en cours..."
+  },
+  "footer": {
+    "rights": "Tous droits réservés",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "tagline": "Studio de Produits Digitaux"
+  },
+  "meta": {
+    "defaultTitle": "Mad Masters — Studio de Produits Digitaux",
+    "defaultDescription": "Nous créons des sites web, applications et expériences digitales à fort taux de conversion.",
+    "servicesTitle": "Nos Services — Mad Masters",
+    "workTitle": "Nos Réalisations — Mad Masters",
+    "aboutTitle": "À Propos — Mad Masters",
+    "contactTitle": "Contact — Mad Masters"
+  },
+  "admin": {
+    "dashboard": "Tableau de bord",
+    "caseStudies": "Études de cas",
+    "testimonials": "Témoignages",
+    "orders": "Commandes",
+    "freshWorks": "Actualités",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "publish": "Publier",
+    "unpublish": "Dépublier",
+    "draft": "Brouillon",
+    "published": "Publié"
+  },
+  "errors": {
+    "notFound": "Page non trouvée",
+    "notFoundDescription": "La page que vous recherchez n'existe pas.",
+    "serverError": "Une erreur est survenue",
+    "serverErrorDescription": "Veuillez réessayer plus tard.",
+    "backHome": "Retour à l'accueil"
+  }
+}

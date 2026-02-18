@@ -1,25 +1,50 @@
-# build output
-dist
-.next
-
-# dependencies
+# Dependencies
 node_modules
-package-lock.json
-yarn.lock
-!/yarn.lock
-test/node_modules
+.pnp
+.pnp.js
 
-# logs & pids
-*.log
-pids
+# Next.js
+.next
+out
+build
 
-# coverage
-.nyc_output
-coverage
+# Testing
+/coverage
+/playwright-report
+/test-results
 
-# test output
-test/**/out
+# Production
+dist
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
 .DS_Store
+Thumbs.db
 
-# Editors
-**/.idea
+# Firebase
+.firebase
+firebase-debug.log

@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #1a1a1a;
+  --color-primary-light: #333333;
+  --color-accent: #ff6b35;
+  --color-accent-hover: #ff8555;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f5f5f5;
+
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  --ease-smooth: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-page: 1000ms;
+  --duration-quiet: 500ms;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface text-primary antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Base button styles */
+  .btn {
+    @apply inline-flex items-center justify-center px-8 py-3 font-medium transition-all duration-300;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply uppercase tracking-wider text-sm;
+  }
+
+  /* Primary button - filled accent color */
+  .btn-primary {
+    @apply btn bg-accent text-white hover:bg-accent-hover;
+    @apply focus:ring-accent;
+  }
+
+  /* Accent button - same as primary but with border radius */
+  .btn-accent {
+    @apply btn bg-accent text-white hover:bg-accent-hover rounded-sm;
+    @apply focus:ring-accent;
+    @apply border-2 border-transparent;
+  }
+
+  /* Dark button - dark fill */
+  .btn-dark {
+    @apply btn bg-primary text-white hover:bg-primary-light rounded-sm;
+    @apply focus:ring-primary;
+  }
+
+  /* Outline light - for dark backgrounds */
+  .btn-outline-light {
+    @apply btn bg-transparent text-white rounded-sm;
+    @apply border-2 border-white/40 hover:border-white hover:bg-white/10;
+    @apply focus:ring-white/50;
+  }
+
+  /* Outline dark - for light backgrounds */
+  .btn-outline-dark {
+    @apply btn bg-transparent text-primary rounded-sm;
+    @apply border-2 border-primary/30 hover:border-primary hover:bg-primary/5;
+    @apply focus:ring-primary/50;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply btn bg-white text-primary border-2 border-primary/20 hover:bg-surface-muted rounded-sm;
+    @apply focus:ring-primary;
+  }
+
+  /* Ghost button */
+  .btn-ghost {
+    @apply btn bg-transparent text-white hover:bg-white/10 rounded-sm;
+    @apply focus:ring-white/50;
+  }
+
+  /* Section titles */
+  .section-title {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4;
+  }
+
+  .section-subtitle {
+    @apply text-lg md:text-xl text-primary/60 text-center max-w-2xl mx-auto;
+  }
+
+  .container-section {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Diamond separator */
+  .diamond-separator {
+    @apply flex items-center justify-center gap-4;
+  }
+
+  .diamond-separator::before,
+  .diamond-separator::after {
+    content: '';
+    @apply w-20 h-px bg-current opacity-20;
+  }
+
+  .diamond-separator .diamond {
+    @apply w-3 h-3 border border-current rotate-45 opacity-40;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Hide scrollbar but allow scrolling */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Rotate utility for diamond shapes */
+  .rotate-45 {
+    transform: rotate(45deg);
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "nav": {
+    "services": "Services",
+    "work": "Work",
+    "fresh": "Fresh & Active",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "cta": {
+    "getQuote": "Get a Quote",
+    "startProject": "Start a Project",
+    "calculatePrice": "Calculate Price",
+    "viewWork": "View Our Work",
+    "submitBrief": "Submit Brief",
+    "sendMessage": "Send Message",
+    "learnMore": "Learn More",
+    "seeAll": "See All"
+  },
+  "hero": {
+    "headline": "We Build Digital Products That Convert",
+    "subheadline": "Web development, marketing, and custom solutions for ambitious businesses"
+  },
+  "sections": {
+    "aboutTitle": "Who We Are",
+    "aboutSubtitle": "Creative team turning ideas into digital success",
+    "aboutDescription": "We choose the most effective solutions for creating and operating your virtual office. Every project meets W3C and Google Developers standards.",
+    "servicesTitle": "What We Do",
+    "servicesSubtitle": "Full-cycle digital services",
+    "portfolioTitle": "Our Work",
+    "portfolioSubtitle": "The best compliment is a satisfied client",
+    "contactTitle": "Let's Talk",
+    "contactSubtitle": "Ready to start your project?",
+    "contactDescription": "Let's discuss your project or idea and find out how Mad Masters can help your business grow.",
+    "freshTitle": "Fresh & Active",
+    "freshSubtitle": "Our latest work and open-source contributions"
+  },
+  "services": {
+    "web": {
+      "title": "Web Development",
+      "short": "Web",
+      "description": "Multilingual sites, e-commerce, landing pages, CMS themes"
+    },
+    "marketing": {
+      "title": "Digital Marketing",
+      "short": "Marketing",
+      "description": "SEO, PPC, email campaigns, analytics, social media"
+    },
+    "custom": {
+      "title": "Custom Solutions",
+      "short": "Custom",
+      "description": "APIs, integrations, calculators, forms, automation"
+    },
+    "support": {
+      "title": "Support & Maintenance",
+      "short": "Support",
+      "description": "Technical support, updates, optimization, bug fixes"
+    }
+  },
+  "process": {
+    "strategy": "Strategy",
+    "design": "Design",
+    "development": "Development",
+    "testing": "Testing",
+    "launch": "Launch"
+  },
+  "form": {
+    "name": "Your Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "company": "Company",
+    "message": "Message",
+    "subject": "Subject",
+    "budget": "Budget Range",
+    "timeline": "Timeline",
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email",
+    "invalidPhone": "Please enter a valid phone number",
+    "submitSuccess": "Thank you! We'll be in touch within 24 hours.",
+    "submitError": "Something went wrong. Please try again.",
+    "submitting": "Sending..."
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "tagline": "Digital Product Studio"
+  },
+  "meta": {
+    "defaultTitle": "Mad Masters — Digital Product Studio",
+    "defaultDescription": "We build high-converting websites, apps, and digital experiences for ambitious businesses.",
+    "servicesTitle": "Our Services — Mad Masters",
+    "workTitle": "Our Work — Mad Masters",
+    "aboutTitle": "About Us — Mad Masters",
+    "contactTitle": "Contact — Mad Masters"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "caseStudies": "Case Studies",
+    "testimonials": "Testimonials",
+    "orders": "Orders",
+    "freshWorks": "Fresh Works",
+    "settings": "Settings",
+    "logout": "Log Out",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create New",
+    "publish": "Publish",
+    "unpublish": "Unpublish",
+    "draft": "Draft",
+    "published": "Published"
+  },
+  "errors": {
+    "notFound": "Page not found",
+    "notFoundDescription": "The page you're looking for doesn't exist.",
+    "serverError": "Something went wrong",
+    "serverErrorDescription": "Please try again later.",
+    "backHome": "Back to Home"
+  }
+}

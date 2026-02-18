@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Disallow admin routes
+Disallow: /admin
+Disallow: /api
+
+# Sitemap
+Sitemap: https://madmasters.pro/sitemap.xml

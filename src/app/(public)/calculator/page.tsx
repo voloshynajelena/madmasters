@@ -1,0 +1,203 @@
+'use client';
+
+import { useState } from 'react';
+import { getDictionary } from '@/i18n/dictionaries';
+import { PageLayout } from '@/components/layout/page-layout';
+import Link from 'next/link';
+
+type ProjectType = 'landing' | 'corporate' | 'ecommerce' | 'webapp';
+type DesignOption = 'template' | 'custom' | 'premium';
+
+const projectTypes: Record<ProjectType, { name: string; base: number; description: string }> = {
+  landing: { name: 'Landing Page', base: 500, description: 'Single page website for campaigns' },
+  corporate: { name: 'Corporate Website', base: 1500, description: 'Multi-page business website' },
+  ecommerce: { name: 'E-commerce Store', base: 3000, description: 'Online shop with payments' },
+  webapp: { name: 'Web Application', base: 5000, description: 'Custom web application' },
+};
+
+const designOptions: Record<DesignOption, { name: string; multiplier: number }> = {
+  template: { name: 'Template-based', multiplier: 1 },
+  custom: { name: 'Custom Design', multiplier: 1.5 },
+  premium: { name: 'Premium Design', multiplier: 2 },
+};
+
+const features = [
+  { id: 'responsive', name: 'Responsive Design', price: 0, included: true },
+  { id: 'seo', name: 'SEO Optimization', price: 300, included: false },
+  { id: 'cms', name: 'CMS Integration', price: 500, included: false },
+  { id: 'multilang', name: 'Multi-language', price: 400, included: false },
+  { id: 'analytics', name: 'Analytics Setup', price: 150, included: false },
+  { id: 'speed', name: 'Speed Optimization', price: 200, included: false },
+  { id: 'support', name: '1 Year Support', price: 600, included: false },
+];
+
+export default function CalculatorPage() {
+  const dict = getDictionary('en');
+
+  const [projectType, setProjectType] = useState<ProjectType>('corporate');
+  const [design, setDesign] = useState<DesignOption>('custom');
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>(['responsive']);
+
+  const toggleFeature = (featureId: string) => {
+    setSelectedFeatures((prev) =>
+      prev.includes(featureId)
+        ? prev.filter((f) => f !== featureId)
+        : [...prev, featureId]
+    );
+  };
+
+  const calculatePrice = () => {
+    const base = projectTypes[projectType].base;
+    const designMultiplier = designOptions[design].multiplier;
+    const featuresPrice = features
+      .filter((f) => selectedFeatures.includes(f.id) && !f.included)
+      .reduce((sum, f) => sum + f.price, 0);
+
+    return Math.round(base * designMultiplier + featuresPrice);
+  };
+
+  return (
+    <PageLayout locale="en" title="Price Calculator" subtitle="Estimate your project cost">
+      <div className="py-16">
+        <div className="container-section">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-8">
+              {/* Options */}
+              <div className="md:col-span-2 space-y-8">
+                {/* Project Type */}
+                <div>
+                  <h3 className="text-lg font-bold text-primary mb-4">Project Type</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {(Object.keys(projectTypes) as ProjectType[]).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setProjectType(type)}
+                        className={`p-4 rounded-lg text-left transition-colors ${
+                          projectType === type
+                            ? 'bg-accent text-white'
+                            : 'bg-white border border-primary/20 text-primary hover:border-accent'
+                        }`}
+                      >
+                        <div className="font-semibold">{projectTypes[type].name}</div>
+                        <div className={`text-xs mt-1 ${projectType === type ? 'text-white/70' : 'text-primary/50'}`}>
+                          {projectTypes[type].description}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Design Option */}
+                <div>
+                  <h3 className="text-lg font-bold text-primary mb-4">Design</h3>
+                  <div className="grid grid-cols-3 gap-3">
+                    {(Object.keys(designOptions) as DesignOption[]).map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => setDesign(opt)}
+                        className={`p-4 rounded-lg text-center transition-colors ${
+                          design === opt
+                            ? 'bg-accent text-white'
+                            : 'bg-white border border-primary/20 text-primary hover:border-accent'
+                        }`}
+                      >
+                        {designOptions[opt].name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Features */}
+                <div>
+                  <h3 className="text-lg font-bold text-primary mb-4">Additional Features</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {features.map((feature) => (
+                      <button
+                        key={feature.id}
+                        onClick={() => !feature.included && toggleFeature(feature.id)}
+                        disabled={feature.included}
+                        className={`p-4 rounded-lg text-left flex items-center gap-3 transition-colors ${
+                          selectedFeatures.includes(feature.id)
+                            ? 'bg-accent text-white'
+                            : feature.included
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-white border border-primary/20 text-primary hover:border-accent'
+                        }`}
+                      >
+                        <div
+                          className={`w-5 h-5 rounded border flex items-center justify-center ${
+                            selectedFeatures.includes(feature.id)
+                              ? 'bg-white border-white'
+                              : 'border-current'
+                          }`}
+                        >
+                          {selectedFeatures.includes(feature.id) && (
+                            <svg className="w-3 h-3 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-medium">{feature.name}</div>
+                          {!feature.included && (
+                            <div className={`text-xs ${selectedFeatures.includes(feature.id) ? 'text-white/70' : 'text-primary/50'}`}>
+                              +${feature.price}
+                            </div>
+                          )}
+                          {feature.included && (
+                            <div className="text-xs text-gray-400">Included</div>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Price Summary */}
+              <div className="md:col-span-1">
+                <div className="bg-primary text-white rounded-lg p-6 sticky top-24">
+                  <h3 className="text-lg font-bold mb-4">Estimated Price</h3>
+
+                  <div className="text-4xl font-bold mb-6">
+                    ${calculatePrice().toLocaleString()}
+                  </div>
+
+                  <div className="text-white/60 text-sm space-y-2 mb-6">
+                    <div className="flex justify-between">
+                      <span>Base ({projectTypes[projectType].name})</span>
+                      <span>${projectTypes[projectType].base}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Design ({designOptions[design].name})</span>
+                      <span>x{designOptions[design].multiplier}</span>
+                    </div>
+                    {features
+                      .filter((f) => selectedFeatures.includes(f.id) && !f.included)
+                      .map((f) => (
+                        <div key={f.id} className="flex justify-between">
+                          <span>{f.name}</span>
+                          <span>+${f.price}</span>
+                        </div>
+                      ))}
+                  </div>
+
+                  <Link
+                    href="/contact"
+                    className="block w-full py-3 bg-white text-primary text-center font-medium rounded hover:bg-white/90 transition-colors"
+                  >
+                    Get a Quote
+                  </Link>
+
+                  <p className="text-white/40 text-xs text-center mt-4">
+                    * This is an estimate. Final price may vary based on requirements.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
