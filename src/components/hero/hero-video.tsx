@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 interface HeroVideoProps {
   mp4Src: string;
   webmSrc?: string;
-  posterSrc: string;
+  posterSrc?: string;
   className?: string;
   priority?: boolean;
 }
@@ -87,15 +87,15 @@ export function HeroVideo({
 
   return (
     <div className={cn('absolute inset-0 overflow-hidden', className)}>
-      {/* Poster image - always rendered as base layer */}
+      {/* Poster/fallback - always rendered as base layer */}
       <div
         className={cn(
-          'absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-500',
+          'absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-500 bg-primary',
           videoLoaded && !prefersReducedMotion && !isMobileOrTablet
             ? 'opacity-0'
             : 'opacity-100'
         )}
-        style={{ backgroundImage: `url(${posterSrc})` }}
+        style={posterSrc ? { backgroundImage: `url(${posterSrc})` } : undefined}
         role="img"
         aria-label="Hero background"
       />
@@ -112,7 +112,7 @@ export function HeroVideo({
           muted
           loop
           playsInline // Critical for iOS Safari
-          poster={posterSrc}
+          poster={posterSrc || undefined}
           preload="auto"
         >
           {/* WebM first for smaller file size (if provided) */}

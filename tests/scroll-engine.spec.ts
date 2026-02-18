@@ -267,5 +267,153 @@ test.describe('Full Page Scroll Engine', () => {
       const section2 = page.locator('[data-section="2"]');
       await expect(section2).toHaveAttribute('data-active', 'true');
     });
+
+    test('should ignore small swipes below threshold', async ({ page }) => {
+      const container = page.locator('body');
+
+      // Simulate small swipe (below 50px threshold)
+      await container.evaluate((el) => {
+        const touchStart = new TouchEvent('touchstart', {
+          touches: [new Touch({ identifier: 0, target: el, clientX: 500, clientY: 400 })],
+        });
+        const touchMove = new TouchEvent('touchmove', {
+          touches: [new Touch({ identifier: 0, target: el, clientX: 500, clientY: 370 })], // Only 30px
+        });
+
+        el.dispatchEvent(touchStart);
+        el.dispatchEvent(touchMove);
+      });
+
+      await page.waitForTimeout(1500);
+
+      // Should still be at section 1
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+  });
+
+  test.describe('Section 3 & 4 special transitions', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('section 3 should be visible when navigated to', async ({ page }) => {
+      // Navigate to section 3
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+
+      const section3 = page.locator('[data-section="3"]');
+      await expect(section3).toBeVisible();
+      await expect(section3).toHaveAttribute('data-active', 'true');
+    });
+
+    test('section 4 should be visible when navigated to', async ({ page }) => {
+      // Navigate to section 4
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+
+      const section4 = page.locator('[data-section="4"]');
+      await expect(section4).toBeVisible();
+      await expect(section4).toHaveAttribute('data-active', 'true');
+    });
+
+    test('should navigate correctly from section 3 to 4', async ({ page }) => {
+      // Go to section 3
+      const dots = page.locator('nav[aria-label="Page sections"] button');
+      await dots.nth(2).click();
+      await page.waitForTimeout(1500);
+
+      const section3 = page.locator('[data-section="3"]');
+      await expect(section3).toHaveAttribute('data-active', 'true');
+
+      // Navigate to section 4
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+
+      const section4 = page.locator('[data-section="4"]');
+      await expect(section4).toHaveAttribute('data-active', 'true');
+    });
+
+    test('should navigate correctly from section 4 to 3', async ({ page }) => {
+      // Go to section 4
+      const dots = page.locator('nav[aria-label="Page sections"] button');
+      await dots.nth(3).click();
+      await page.waitForTimeout(1500);
+
+      // Navigate back to section 3
+      await page.keyboard.press('ArrowUp');
+      await page.waitForTimeout(1500);
+
+      const section3 = page.locator('[data-section="3"]');
+      await expect(section3).toHaveAttribute('data-active', 'true');
+    });
+  });
+
+  test.describe('Animation timing', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('animation should complete within expected timeframe', async ({ page }) => {
+      const startTime = Date.now();
+
+      await page.keyboard.press('ArrowDown');
+
+      // Wait for section 2 to become active
+      await page.waitForFunction(
+        () => document.querySelector('[data-section="2"]')?.getAttribute('data-active') === 'true',
+        { timeout: 2000 }
+      );
+
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+
+      // Animation should complete within ~1000-1500ms
+      expect(duration).toBeGreaterThan(800);
+      expect(duration).toBeLessThan(2000);
+    });
+  });
+
+  test.describe('Full navigation sequence', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('should navigate through all 5 sections sequentially', async ({ page }) => {
+      // Verify starting at section 1
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+
+      // Navigate through all sections
+      for (let i = 2; i <= 5; i++) {
+        await page.keyboard.press('ArrowDown');
+        await page.waitForTimeout(1500);
+
+        const section = page.locator(`[data-section="${i}"]`);
+        await expect(section).toHaveAttribute('data-active', 'true');
+      }
+
+      // Navigate back to section 1
+      await page.keyboard.press('Home');
+      await page.waitForTimeout(1500);
+
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+
+    test('should handle rapid dot clicking correctly', async ({ page }) => {
+      const dots = page.locator('nav[aria-label="Page sections"] button');
+
+      // Rapidly click different dots
+      await dots.nth(4).click(); // Section 5
+      await dots.nth(0).click(); // Section 1
+      await dots.nth(2).click(); // Section 3
+
+      // Wait for animations to settle
+      await page.waitForTimeout(2000);
+
+      // Should end up at the last clicked section
+      const section3 = page.locator('[data-section="3"]');
+      await expect(section3).toHaveAttribute('data-active', 'true');
+    });
   });
 });

@@ -18,11 +18,7 @@ export function HomePage({ locale, dict }: HomePageProps) {
     <FullPageScroll totalSections={5}>
       {/* Section 1: Hero */}
       <ScrollSection index={1} className="bg-primary">
-        <HeroVideo
-          mp4Src="/videos/hero.mp4"
-          webmSrc="/videos/hero.webm"
-          posterSrc="/videos/hero-poster.jpg"
-        />
+        <HeroVideo mp4Src="/videos/hero.mp4" />
         <HeroOverlay />
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 text-balance">

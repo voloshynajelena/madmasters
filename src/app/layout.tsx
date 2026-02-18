@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { generateJsonLd } from '@/lib/seo/metadata';
 import './globals.css';
 
 const inter = Inter({
@@ -67,6 +68,12 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(generateJsonLd('en')),
+          }}
+        />
         {children}
       </body>
     </html>

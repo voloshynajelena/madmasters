@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { getDictionary } from '@/i18n/dictionaries';
 import { PageLayout } from '@/components/layout/page-layout';
-import Link from 'next/link';
 
 type ProjectType = 'landing' | 'corporate' | 'ecommerce' | 'webapp';
 type DesignOption = 'template' | 'custom' | 'premium';
@@ -37,6 +36,10 @@ export default function CalculatorPage() {
   const [projectType, setProjectType] = useState<ProjectType>('corporate');
   const [design, setDesign] = useState<DesignOption>('custom');
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>(['responsive']);
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [leadForm, setLeadForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const toggleFeature = (featureId: string) => {
     setSelectedFeatures((prev) =>
@@ -54,6 +57,44 @@ export default function CalculatorPage() {
       .reduce((sum, f) => sum + f.price, 0);
 
     return Math.round(base * designMultiplier + featuresPrice);
+  };
+
+  const handleSubmitLead = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadForm.name || !leadForm.email) return;
+
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'calculator',
+          name: leadForm.name,
+          email: leadForm.email,
+          phone: leadForm.phone,
+          message: leadForm.message,
+          data: {
+            projectType,
+            projectTypeName: projectTypes[projectType].name,
+            design,
+            designName: designOptions[design].name,
+            selectedFeatures,
+            estimatedPrice: calculatePrice(),
+          },
+          locale: 'en',
+          page: '/calculator',
+        }),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -182,12 +223,63 @@ export default function CalculatorPage() {
                       ))}
                   </div>
 
-                  <Link
-                    href="/contact"
-                    className="block w-full py-3 bg-white text-primary text-center font-medium rounded hover:bg-white/90 transition-colors"
-                  >
-                    Get a Quote
-                  </Link>
+                  {!showLeadForm && !submitted && (
+                    <button
+                      onClick={() => setShowLeadForm(true)}
+                      className="block w-full py-3 bg-white text-primary text-center font-medium rounded hover:bg-white/90 transition-colors"
+                    >
+                      Get a Quote
+                    </button>
+                  )}
+
+                  {showLeadForm && !submitted && (
+                    <form onSubmit={handleSubmitLead} className="space-y-3">
+                      <input
+                        type="text"
+                        placeholder="Your name *"
+                        value={leadForm.name}
+                        onChange={(e) => setLeadForm((p) => ({ ...p, name: e.target.value }))}
+                        className="w-full px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/50 focus:border-white focus:outline-none text-sm"
+                        required
+                      />
+                      <input
+                        type="email"
+                        placeholder="Email *"
+                        value={leadForm.email}
+                        onChange={(e) => setLeadForm((p) => ({ ...p, email: e.target.value }))}
+                        className="w-full px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/50 focus:border-white focus:outline-none text-sm"
+                        required
+                      />
+                      <input
+                        type="tel"
+                        placeholder="Phone (optional)"
+                        value={leadForm.phone}
+                        onChange={(e) => setLeadForm((p) => ({ ...p, phone: e.target.value }))}
+                        className="w-full px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/50 focus:border-white focus:outline-none text-sm"
+                      />
+                      <textarea
+                        placeholder="Any additional details..."
+                        value={leadForm.message}
+                        onChange={(e) => setLeadForm((p) => ({ ...p, message: e.target.value }))}
+                        className="w-full px-3 py-2 rounded bg-white/10 border border-white/20 text-white placeholder-white/50 focus:border-white focus:outline-none text-sm h-20"
+                      />
+                      <button
+                        type="submit"
+                        disabled={submitting}
+                        className="w-full py-3 bg-accent text-white font-medium rounded hover:bg-accent/90 transition-colors disabled:opacity-50"
+                      >
+                        {submitting ? 'Sending...' : 'Send Quote Request'}
+                      </button>
+                    </form>
+                  )}
+
+                  {submitted && (
+                    <div className="text-center py-4">
+                      <div className="text-green-400 text-2xl mb-2">✓</div>
+                      <p className="text-white font-medium">Quote Request Sent!</p>
+                      <p className="text-white/60 text-sm mt-1">We'll get back to you within 24 hours.</p>
+                    </div>
+                  )}
 
                   <p className="text-white/40 text-xs text-center mt-4">
                     * This is an estimate. Final price may vary based on requirements.
