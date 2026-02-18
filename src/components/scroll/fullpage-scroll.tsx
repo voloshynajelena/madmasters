@@ -9,15 +9,17 @@ interface FullPageScrollProps {
   children: ReactNode;
   totalSections: number;
   showPagination?: boolean;
+  onSectionChange?: (section: number) => void;
 }
 
 export function FullPageScroll({
   children,
   totalSections,
   showPagination = true,
+  onSectionChange,
 }: FullPageScrollProps) {
   return (
-    <ScrollProvider totalSections={totalSections}>
+    <ScrollProvider totalSections={totalSections} onSectionChange={onSectionChange}>
       {/* Fixed viewport container */}
       <div
         className="fixed inset-0 w-full h-full overflow-hidden"

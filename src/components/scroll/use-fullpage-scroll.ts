@@ -8,6 +8,7 @@ export interface UseFullPageScrollOptions {
   quietPeriod?: number;
   swipeThreshold?: number;
   mobileBreakpoint?: number;
+  onSectionChange?: (section: number) => void;
 }
 
 export interface FullPageScrollState {
@@ -41,6 +42,7 @@ export function useFullPageScroll(
     quietPeriod = 500,
     swipeThreshold = 50,
     mobileBreakpoint = 768,
+    onSectionChange,
   } = options;
 
   const [state, setState] = useState<FullPageScrollState>({
@@ -76,6 +78,11 @@ export function useFullPageScroll(
       }
     }
   }, [totalSections]);
+
+  // Call onSectionChange when section changes
+  useEffect(() => {
+    onSectionChange?.(state.currentSection);
+  }, [state.currentSection, onSectionChange]);
 
   // Prevent body scroll when not mobile
   useEffect(() => {

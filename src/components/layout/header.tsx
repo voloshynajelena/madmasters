@@ -20,8 +20,10 @@ export function Header({ locale }: HeaderProps) {
     { href: `${prefix}/about`, label: dict.nav.about },
     { href: `${prefix}/services`, label: dict.nav.services },
     { href: `${prefix}/work`, label: dict.nav.work },
-    { href: `${prefix}/contact`, label: dict.nav.contact },
+    { href: `${prefix}/fresh`, label: 'Fresh Works', isNew: true },
     { href: `${prefix}/calculator`, label: 'Calculator' },
+    { href: `${prefix}/brief`, label: 'Start Project', isHighlight: true },
+    { href: `${prefix}/contact`, label: dict.nav.contact },
   ];
 
   return (
