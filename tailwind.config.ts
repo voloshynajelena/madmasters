@@ -9,10 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        background: 'var(--color-background)',
+        foreground: 'var(--color-foreground)',
         primary: {
-          DEFAULT: '#0f172a',
-          light: '#1e293b',
-          lighter: '#334155',
+          DEFAULT: 'var(--color-primary)',
+          light: 'var(--color-primary-light)',
+          lighter: 'var(--color-primary-lighter)',
+          // Static dark values for admin sidebar
+          dark: '#0f172a',
         },
         accent: {
           DEFAULT: '#ff6b35',
@@ -20,10 +24,12 @@ const config: Config = {
           glow: 'rgba(255, 107, 53, 0.4)',
         },
         surface: {
-          DEFAULT: '#ffffff',
-          muted: '#f8fafc',
-          dark: '#0f172a',
+          DEFAULT: 'var(--color-surface)',
+          muted: 'var(--color-surface-muted)',
+          hover: 'var(--color-surface-hover)',
         },
+        border: 'var(--color-border)',
+        'text-muted': 'var(--color-text-muted)',
         glass: {
           light: 'rgba(255, 255, 255, 0.1)',
           dark: 'rgba(0, 0, 0, 0.1)',

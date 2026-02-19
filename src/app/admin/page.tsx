@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function AdminDashboard() {
   return (
     <div>
-      <h1 className="text-2xl font-bold text-primary mb-8">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-white mb-8">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardCard
@@ -35,11 +35,11 @@ export default function AdminDashboard() {
 
       {/* Recent Orders */}
       <div className="mt-12">
-        <h2 className="text-lg font-semibold text-primary mb-4">
+        <h2 className="text-lg font-semibold text-white mb-4">
           Recent Orders
         </h2>
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <p className="text-primary/60 text-sm">
+        <div className="bg-surface rounded-xl p-6">
+          <p className="text-white/60 text-sm">
             No orders yet. Orders will appear here when visitors submit forms.
           </p>
         </div>
@@ -64,12 +64,12 @@ function DashboardCard({
   return (
     <Link
       href={href}
-      className={`block p-6 rounded-xl shadow-sm transition-shadow hover:shadow-md ${
-        highlight ? 'bg-accent text-white' : 'bg-white'
+      className={`block p-6 rounded-xl transition-all hover:scale-[1.02] ${
+        highlight ? 'bg-accent text-white' : 'bg-surface hover:bg-surface-hover'
       }`}
     >
       <div className="flex items-center justify-between mb-2">
-        <h3 className={`font-semibold ${highlight ? '' : 'text-primary'}`}>
+        <h3 className={`font-semibold ${highlight ? '' : 'text-white'}`}>
           {title}
         </h3>
         <span
@@ -82,7 +82,7 @@ function DashboardCard({
       </div>
       <p
         className={`text-sm ${
-          highlight ? 'text-white/80' : 'text-primary/60'
+          highlight ? 'text-white/80' : 'text-white/60'
         }`}
       >
         {description}

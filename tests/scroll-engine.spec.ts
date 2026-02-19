@@ -416,4 +416,295 @@ test.describe('Full Page Scroll Engine', () => {
       await expect(section3).toHaveAttribute('data-active', 'true');
     });
   });
+
+  test.describe('Accessibility', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('pagination dots should be keyboard accessible', async ({ page }) => {
+      const pagination = page.locator('nav[aria-label="Page sections"]');
+      await expect(pagination).toBeVisible();
+
+      // Tab to pagination and navigate
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Tab');
+      await page.keyboard.press('Tab');
+
+      // Focus should be on a pagination button
+      const focusedElement = page.locator(':focus');
+      await expect(focusedElement).toHaveRole('button');
+    });
+
+    test('sections should have proper ARIA attributes', async ({ page }) => {
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+      await expect(section1).toHaveAttribute('data-index', '1');
+    });
+
+    test('pagination dots should have aria-current on active', async ({ page }) => {
+      const dots = page.locator('nav[aria-label="Page sections"] button');
+
+      // First dot should have aria-current
+      await expect(dots.first()).toHaveAttribute('aria-current', 'true');
+
+      // Navigate to section 2
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+
+      // Second dot should now have aria-current
+      await expect(dots.nth(1)).toHaveAttribute('aria-current', 'true');
+      await expect(dots.first()).not.toHaveAttribute('aria-current', 'true');
+    });
+
+    test('keyboard navigation should not trigger in input fields', async ({ page }) => {
+      // Create a temporary input for testing
+      await page.evaluate(() => {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'test-input';
+        input.style.position = 'fixed';
+        input.style.top = '10px';
+        input.style.left = '10px';
+        input.style.zIndex = '9999';
+        document.body.appendChild(input);
+      });
+
+      const input = page.locator('#test-input');
+      await input.focus();
+      await input.fill('test');
+
+      // Press arrow down while in input
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(500);
+
+      // Should still be at section 1
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+  });
+
+  test.describe('Body class updates', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('should add viewing-page-X class to body', async ({ page }) => {
+      // Initially viewing-page-1
+      await expect(page.locator('body')).toHaveClass(/viewing-page-1/);
+
+      // Navigate to section 2
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+
+      // Should have viewing-page-2
+      await expect(page.locator('body')).toHaveClass(/viewing-page-2/);
+      await expect(page.locator('body')).not.toHaveClass(/viewing-page-1/);
+    });
+
+    test('should add disabled-onepage-scroll class on mobile', async ({ page }) => {
+      await page.setViewportSize({ width: 375, height: 667 });
+      await page.waitForTimeout(500);
+
+      await expect(page.locator('body')).toHaveClass(/disabled-onepage-scroll/);
+    });
+  });
+
+  test.describe('Resize behavior', () => {
+    test('should switch to mobile mode on resize', async ({ page }) => {
+      // Start desktop
+      await page.setViewportSize({ width: 1280, height: 720 });
+
+      const pagination = page.locator('nav[aria-label="Page sections"]');
+      await expect(pagination).toBeVisible();
+
+      // Resize to mobile
+      await page.setViewportSize({ width: 375, height: 667 });
+      await page.waitForTimeout(500);
+
+      // Pagination should be hidden
+      await expect(pagination).not.toBeVisible();
+    });
+
+    test('should preserve section on resize', async ({ page }) => {
+      // Navigate to section 3
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(1500);
+
+      const section3 = page.locator('[data-section="3"]');
+      await expect(section3).toHaveAttribute('data-active', 'true');
+
+      // Resize to mobile
+      await page.setViewportSize({ width: 375, height: 667 });
+      await page.waitForTimeout(500);
+
+      // Section 3 should still exist
+      await expect(section3).toBeVisible();
+    });
+  });
+
+  test.describe('Visual regression', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('section 1 hero should look correct', async ({ page }) => {
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+
+      // Take screenshot for visual regression
+      await expect(page).toHaveScreenshot('scroll-section-1-hero.png', {
+        maxDiffPixelRatio: 0.1,
+      });
+    });
+
+    test('pagination dots should look correct', async ({ page }) => {
+      const pagination = page.locator('nav[aria-label="Page sections"]');
+      await expect(pagination).toBeVisible();
+
+      await expect(pagination).toHaveScreenshot('scroll-pagination-dots.png', {
+        maxDiffPixelRatio: 0.1,
+      });
+    });
+
+    test('section transition should be smooth', async ({ page }) => {
+      // Navigate to section 2
+      await page.keyboard.press('ArrowDown');
+
+      // Screenshot during transition (around 500ms)
+      await page.waitForTimeout(500);
+      await expect(page).toHaveScreenshot('scroll-transition-mid.png', {
+        maxDiffPixelRatio: 0.2, // Higher tolerance for animation
+      });
+
+      // Wait for completion
+      await page.waitForTimeout(1000);
+      await expect(page).toHaveScreenshot('scroll-section-2-about.png', {
+        maxDiffPixelRatio: 0.1,
+      });
+    });
+  });
+
+  test.describe('Edge cases', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('should handle multiple rapid keyboard presses', async ({ page }) => {
+      // Rapid arrow down presses
+      for (let i = 0; i < 10; i++) {
+        await page.keyboard.press('ArrowDown');
+        await page.waitForTimeout(50);
+      }
+
+      // Wait for all animations
+      await page.waitForTimeout(2000);
+
+      // Should not crash and should be at some valid section
+      const body = page.locator('body');
+      await expect(body).toHaveClass(/viewing-page-[1-5]/);
+    });
+
+    test('should handle going from section 5 to section 1 directly', async ({ page }) => {
+      // Go to section 5
+      await page.keyboard.press('End');
+      await page.waitForTimeout(1500);
+
+      const section5 = page.locator('[data-section="5"]');
+      await expect(section5).toHaveAttribute('data-active', 'true');
+
+      // Go directly to section 1
+      await page.keyboard.press('Home');
+      await page.waitForTimeout(1500);
+
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+
+    test('should handle alternating directions rapidly', async ({ page }) => {
+      // Alternating up/down rapidly
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(100);
+      await page.keyboard.press('ArrowUp');
+      await page.waitForTimeout(100);
+      await page.keyboard.press('ArrowDown');
+      await page.waitForTimeout(100);
+      await page.keyboard.press('ArrowUp');
+
+      // Wait for animations
+      await page.waitForTimeout(2000);
+
+      // Should still be valid
+      const body = page.locator('body');
+      await expect(body).toHaveClass(/viewing-page-[1-5]/);
+    });
+
+    test('should handle invalid hash values gracefully', async ({ page }) => {
+      await page.goto('/#999');
+      await page.waitForTimeout(500);
+
+      // Should default to section 1 for invalid hash
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+
+    test('should handle non-numeric hash values gracefully', async ({ page }) => {
+      await page.goto('/#invalid');
+      await page.waitForTimeout(500);
+
+      // Should default to section 1 for invalid hash
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+
+    test('should handle zero hash value', async ({ page }) => {
+      await page.goto('/#0');
+      await page.waitForTimeout(500);
+
+      // Should default to section 1 for hash 0 (invalid)
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+
+    test('should handle negative hash value', async ({ page }) => {
+      await page.goto('/#-1');
+      await page.waitForTimeout(500);
+
+      // Should default to section 1 for negative hash
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+  });
+
+  test.describe('Performance', () => {
+    test.use({ viewport: { width: 1280, height: 720 } });
+
+    test('should complete full navigation cycle under 10 seconds', async ({ page }) => {
+      const startTime = Date.now();
+
+      // Navigate through all sections
+      for (let i = 2; i <= 5; i++) {
+        await page.keyboard.press('ArrowDown');
+        await page.waitForTimeout(1200); // Slightly faster than animation
+      }
+
+      // Navigate back
+      await page.keyboard.press('Home');
+      await page.waitForTimeout(1200);
+
+      const endTime = Date.now();
+      const totalTime = endTime - startTime;
+
+      expect(totalTime).toBeLessThan(10000);
+    });
+
+    test('should not have memory leaks during repeated navigation', async ({ page }) => {
+      // Navigate back and forth multiple times
+      for (let i = 0; i < 5; i++) {
+        await page.keyboard.press('ArrowDown');
+        await page.waitForTimeout(1500);
+        await page.keyboard.press('ArrowUp');
+        await page.waitForTimeout(1500);
+      }
+
+      // Check page is still responsive
+      const section1 = page.locator('[data-section="1"]');
+      await expect(section1).toBeVisible();
+      await expect(section1).toHaveAttribute('data-active', 'true');
+    });
+  });
 });

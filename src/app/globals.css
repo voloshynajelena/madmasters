@@ -3,14 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #0f172a;
-  --color-primary-light: #1e293b;
-  --color-primary-lighter: #334155;
   --color-accent: #ff6b35;
   --color-accent-hover: #ff8555;
   --color-accent-glow: rgba(255, 107, 53, 0.4);
-  --color-surface: #ffffff;
-  --color-surface-muted: #f8fafc;
 
   --font-display: 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
@@ -19,11 +14,44 @@
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --duration-page: 1000ms;
   --duration-quiet: 500ms;
+}
+
+/* Light theme (default) */
+:root, .light {
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-primary: #0f172a;
+  --color-primary-light: #1e293b;
+  --color-primary-lighter: #334155;
+  --color-surface: #f8fafc;
+  --color-surface-muted: #f1f5f9;
+  --color-surface-hover: #e2e8f0;
+  --color-border: rgba(15, 23, 42, 0.1);
+  --color-text-muted: rgba(15, 23, 42, 0.6);
 
   /* Glass effect variables */
-  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+}
+
+/* Dark theme */
+.dark {
+  --color-background: #0f172a;
+  --color-foreground: #f8fafc;
+  --color-primary: #f8fafc;
+  --color-primary-light: #e2e8f0;
+  --color-primary-lighter: #cbd5e1;
+  --color-surface: rgba(30, 41, 59, 0.8);
+  --color-surface-muted: #1e293b;
+  --color-surface-hover: rgba(51, 65, 85, 0.6);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-text-muted: rgba(248, 250, 252, 0.6);
+
+  /* Glass effect variables */
+  --glass-bg: rgba(0, 0, 0, 0.2);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 @layer base {
@@ -32,7 +60,9 @@
   }
 
   body {
-    @apply bg-surface text-primary antialiased;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    @apply antialiased transition-colors duration-300;
     font-family: var(--font-body);
   }
 
