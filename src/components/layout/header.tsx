@@ -24,6 +24,7 @@ export function Header({ locale }: HeaderProps) {
     { href: `${prefix}/calculator`, label: 'Calculator' },
     { href: `${prefix}/brief`, label: 'Start Project', isHighlight: true },
     { href: `${prefix}/contact`, label: dict.nav.contact },
+    { href: '/login', label: 'Admin', isAdmin: true },
   ];
 
   return (

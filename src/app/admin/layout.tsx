@@ -28,7 +28,7 @@ export default async function AdminLayout({
   const user = await verifyAuth();
 
   if (!user) {
-    redirect('/admin/login');
+    redirect('/login');
   }
 
   return (
