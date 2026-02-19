@@ -223,7 +223,7 @@ export default function ContentPage() {
       ) : (
         <div className="space-y-4">
           {filteredContent.map((item) => (
-            <div key={item.id} className="bg-surface rounded-lg p-4">
+            <div key={item.id} className="bg-surface rounded-lg p-4 border border-white/10">
               <label className="block text-white/60 text-sm mb-2">
                 {formatKey(item.key)}
                 <span className="ml-2 text-white/30 text-xs">({item.type})</span>

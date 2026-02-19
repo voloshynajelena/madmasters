@@ -1,57 +1,40 @@
 import { NextResponse } from 'next/server';
-import { fetchFreshWorks, type FreshWorkOverride } from '@/lib/fresh-works';
 import { getAdminDb } from '@/lib/firebase/admin';
+import type { FreshWorkItem } from '@/lib/fresh-works';
 
 export const revalidate = 3600; // Revalidate every hour
 
 export async function GET() {
   try {
-    // Get overrides from Firestore
-    let overrides: FreshWorkOverride[] = [];
+    const db = getAdminDb();
 
-    try {
-      const db = getAdminDb();
-      const snapshot = await db.collection('freshWorkOverrides').get();
-      overrides = snapshot.docs.map((doc) => ({
-        sourceId: doc.id,
-        ...doc.data(),
-      })) as FreshWorkOverride[];
-    } catch (err) {
-      console.error('Error fetching overrides:', err);
-      // Continue without overrides
-    }
+    // Fetch all fresh works from Firestore (filter in memory to avoid composite index requirement)
+    const snapshot = await db
+      .collection('freshWorks')
+      .get();
 
-    // Fetch fresh works with overrides applied
-    const data = await fetchFreshWorks(overrides);
+    const items: FreshWorkItem[] = [];
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      // Filter out hidden items
+      if (!data.hidden) {
+        items.push({ ...data, id: doc.id } as FreshWorkItem);
+      }
+    });
 
-    // Cache the result in Firestore for fallback
-    try {
-      const db = getAdminDb();
-      await db.collection('freshWorkCache').doc('latest').set({
-        ...data,
-        fetchedAt: new Date(),
-      });
-    } catch (err) {
-      console.error('Error caching fresh works:', err);
-    }
+    // Sort: pinned items first, then by order
+    items.sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return (a.order || 0) - (b.order || 0);
+    });
 
-    return NextResponse.json(data);
+    return NextResponse.json({
+      items,
+      lastUpdated: new Date().toISOString(),
+    });
   } catch (error) {
     console.error('Error in fresh works API:', error);
-
-    // Try to return cached data as fallback
-    try {
-      const db = getAdminDb();
-      const cached = await db.collection('freshWorkCache').doc('latest').get();
-      if (cached.exists) {
-        return NextResponse.json({
-          ...cached.data(),
-          fromCache: true,
-        });
-      }
-    } catch {
-      // No cache available
-    }
 
     return NextResponse.json(
       { items: [], lastUpdated: new Date().toISOString(), error: 'Failed to fetch' },

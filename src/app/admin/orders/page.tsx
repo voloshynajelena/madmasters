@@ -142,7 +142,7 @@ export default function OrdersPage() {
           {loading ? (
             <div className="text-white/60">Loading...</div>
           ) : orders.length === 0 ? (
-            <div className="text-center py-12 bg-surface rounded-lg">
+            <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
               <p className="text-white/60">No orders found</p>
             </div>
           ) : (
@@ -151,8 +151,8 @@ export default function OrdersPage() {
                 <div
                   key={order.id}
                   onClick={() => setSelectedOrder(order)}
-                  className={`bg-surface rounded-lg p-4 cursor-pointer transition-colors ${
-                    selectedOrder?.id === order.id ? 'ring-2 ring-accent' : 'hover:bg-surface-hover'
+                  className={`bg-surface rounded-lg p-4 cursor-pointer transition-colors border ${
+                    selectedOrder?.id === order.id ? 'ring-2 ring-accent border-accent' : 'border-white/10 hover:bg-surface-hover'
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -180,7 +180,7 @@ export default function OrdersPage() {
 
         {/* Detail Panel */}
         {selectedOrder && (
-          <div className="w-96 bg-surface rounded-lg p-6 h-fit sticky top-6">
+          <div className="w-96 bg-surface rounded-lg p-6 h-fit sticky top-6 border border-white/10">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <span className={`px-2 py-1 rounded text-xs capitalize ${typeColors[selectedOrder.type]}`}>

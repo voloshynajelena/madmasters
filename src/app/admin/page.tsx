@@ -7,10 +7,16 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardCard
+          title="Portfolio"
+          count={0}
+          href="/admin/portfolio"
+          description="Manage portfolio projects"
+        />
+        <DashboardCard
           title="Case Studies"
           count={0}
           href="/admin/case-studies"
-          description="Manage portfolio items"
+          description="Additional case studies"
         />
         <DashboardCard
           title="Testimonials"
@@ -38,7 +44,7 @@ export default function AdminDashboard() {
         <h2 className="text-lg font-semibold text-white mb-4">
           Recent Orders
         </h2>
-        <div className="bg-surface rounded-xl p-6">
+        <div className="bg-surface rounded-xl p-6 border border-white/10">
           <p className="text-white/60 text-sm">
             No orders yet. Orders will appear here when visitors submit forms.
           </p>
@@ -65,7 +71,9 @@ function DashboardCard({
     <Link
       href={href}
       className={`block p-6 rounded-xl transition-all hover:scale-[1.02] ${
-        highlight ? 'bg-accent text-white' : 'bg-surface hover:bg-surface-hover'
+        highlight
+          ? 'bg-accent text-white border border-accent'
+          : 'bg-surface hover:bg-surface-hover border border-white/10'
       }`}
     >
       <div className="flex items-center justify-between mb-2">

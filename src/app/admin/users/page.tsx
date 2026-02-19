@@ -163,7 +163,7 @@ export default function UsersPage() {
 
       {/* Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-surface rounded-lg p-6 mb-8">
+        <form onSubmit={handleSubmit} className="bg-surface rounded-lg p-6 mb-8 border border-white/10">
           <h2 className="text-lg font-semibold text-white mb-4">
             {editingUser ? 'Edit User' : 'New User'}
           </h2>
@@ -243,11 +243,11 @@ export default function UsersPage() {
       {loading ? (
         <div className="text-white/60">Loading...</div>
       ) : users.length === 0 ? (
-        <div className="text-center py-12 bg-surface rounded-lg">
+        <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
           <p className="text-white/60">No users found</p>
         </div>
       ) : (
-        <div className="bg-surface rounded-lg overflow-hidden">
+        <div className="bg-surface rounded-lg overflow-hidden border border-white/10">
           <table className="w-full">
             <thead className="bg-surface-muted">
               <tr>

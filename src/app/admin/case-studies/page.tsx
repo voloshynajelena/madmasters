@@ -100,7 +100,7 @@ export default function CaseStudiesPage() {
       ) : error ? (
         <div className="text-red-400">{error}</div>
       ) : caseStudies.length === 0 ? (
-        <div className="text-center py-12 bg-surface rounded-lg">
+        <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
           <p className="text-white/60 mb-4">No case studies found</p>
           <Link
             href="/admin/case-studies/new"
@@ -110,7 +110,7 @@ export default function CaseStudiesPage() {
           </Link>
         </div>
       ) : (
-        <div className="bg-surface rounded-lg overflow-hidden">
+        <div className="bg-surface rounded-lg overflow-hidden border border-white/10">
           <table className="w-full">
             <thead className="bg-surface-muted">
               <tr>
