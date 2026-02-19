@@ -110,7 +110,6 @@ export function HeroVideo({
           )}
           autoPlay
           muted
-          loop
           playsInline // Critical for iOS Safari
           poster={posterSrc || undefined}
           preload="auto"

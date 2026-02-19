@@ -84,7 +84,7 @@ export default function ProjectPage() {
         <div className="container-section">
           {/* Breadcrumb */}
           <nav className="mb-8">
-            <ol className="flex items-center gap-2 text-sm text-foreground/60">
+            <ol className="flex items-center gap-2 text-sm text-gray-500">
               <li>
                 <Link href="/" className="hover:text-accent transition-colors">
                   Home
@@ -97,7 +97,7 @@ export default function ProjectPage() {
                 </Link>
               </li>
               <li>/</li>
-              <li className="text-foreground">{project.name}</li>
+              <li className="text-gray-800">{project.name}</li>
             </ol>
           </nav>
 
@@ -117,8 +117,8 @@ export default function ProjectPage() {
             <div className="lg:col-span-2 space-y-12">
               {/* Overview */}
               <section>
-                <h2 className="text-2xl font-bold mb-4">Overview</h2>
-                <p className="text-foreground/70 leading-relaxed text-lg">
+                <h2 className="text-2xl font-bold mb-4 text-gray-900">Overview</h2>
+                <p className="text-gray-700 leading-relaxed text-lg">
                   {project.fullDescription || project.description}
                 </p>
               </section>
@@ -126,8 +126,8 @@ export default function ProjectPage() {
               {/* Challenge */}
               {project.challenge && (
                 <section>
-                  <h2 className="text-2xl font-bold mb-4">The Challenge</h2>
-                  <p className="text-foreground/70 leading-relaxed">
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900">The Challenge</h2>
+                  <p className="text-gray-700 leading-relaxed">
                     {project.challenge}
                   </p>
                 </section>
@@ -136,8 +136,8 @@ export default function ProjectPage() {
               {/* Solution */}
               {project.solution && (
                 <section>
-                  <h2 className="text-2xl font-bold mb-4">Our Solution</h2>
-                  <p className="text-foreground/70 leading-relaxed">
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900">Our Solution</h2>
+                  <p className="text-gray-700 leading-relaxed">
                     {project.solution}
                   </p>
                 </section>
@@ -146,12 +146,12 @@ export default function ProjectPage() {
               {/* Results */}
               {project.results && project.results.length > 0 && (
                 <section>
-                  <h2 className="text-2xl font-bold mb-4">Results</h2>
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900">Results</h2>
                   <ul className="space-y-3">
                     {project.results.map((result, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-3 text-foreground/70"
+                        className="flex items-start gap-3 text-gray-700"
                       >
                         <span className="text-accent text-xl">✓</span>
                         <span>{result}</span>
@@ -164,7 +164,7 @@ export default function ProjectPage() {
               {/* Gallery */}
               {project.images.length > 1 && (
                 <section>
-                  <h2 className="text-2xl font-bold mb-6">Project Gallery</h2>
+                  <h2 className="text-2xl font-bold mb-6 text-gray-900">Project Gallery</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {project.images.slice(1).map((image, index) => (
                       <div
@@ -184,8 +184,8 @@ export default function ProjectPage() {
 
               {/* Testimonial */}
               {project.testimonial && (
-                <section className="bg-surface rounded-2xl p-8">
-                  <blockquote className="text-xl italic text-foreground/80 mb-4">
+                <section className="bg-gray-800 rounded-2xl p-8">
+                  <blockquote className="text-xl italic text-white/90 mb-4">
                     "{project.testimonial.quote}"
                   </blockquote>
                   <div className="flex items-center gap-3">
@@ -193,8 +193,8 @@ export default function ProjectPage() {
                       {project.testimonial.author.charAt(0)}
                     </div>
                     <div>
-                      <div className="font-semibold">{project.testimonial.author}</div>
-                      <div className="text-foreground/60 text-sm">
+                      <div className="font-semibold text-white">{project.testimonial.author}</div>
+                      <div className="text-white/60 text-sm">
                         {project.testimonial.role}
                       </div>
                     </div>
@@ -206,29 +206,29 @@ export default function ProjectPage() {
             {/* Sidebar */}
             <aside className="space-y-8">
               {/* Project Details */}
-              <div className="bg-surface rounded-2xl p-6 space-y-6">
-                <h3 className="font-bold text-lg border-b border-foreground/10 pb-3">
+              <div className="bg-gray-800 rounded-2xl p-6 space-y-6">
+                <h3 className="font-bold text-lg border-b border-white/10 pb-3 text-white">
                   Project Details
                 </h3>
 
                 <div>
-                  <div className="text-foreground/60 text-sm mb-1">Client</div>
-                  <div className="font-medium">{project.client}</div>
+                  <div className="text-white/60 text-sm mb-1">Client</div>
+                  <div className="font-medium text-white">{project.client}</div>
                 </div>
 
                 <div>
-                  <div className="text-foreground/60 text-sm mb-1">Industry</div>
-                  <div className="font-medium">{project.industry}</div>
+                  <div className="text-white/60 text-sm mb-1">Industry</div>
+                  <div className="font-medium text-white">{project.industry}</div>
                 </div>
 
                 <div>
-                  <div className="text-foreground/60 text-sm mb-1">Year</div>
-                  <div className="font-medium">{project.year}</div>
+                  <div className="text-white/60 text-sm mb-1">Year</div>
+                  <div className="font-medium text-white">{project.year}</div>
                 </div>
 
                 <div>
-                  <div className="text-foreground/60 text-sm mb-1">Category</div>
-                  <div className="font-medium capitalize">{project.category}</div>
+                  <div className="text-white/60 text-sm mb-1">Category</div>
+                  <div className="font-medium capitalize text-white">{project.category}</div>
                 </div>
 
                 {project.liveUrl && (
@@ -245,15 +245,15 @@ export default function ProjectPage() {
 
               {/* Services */}
               {project.services && project.services.length > 0 && (
-                <div className="bg-surface rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-foreground/10 pb-3 mb-4">
+                <div className="bg-gray-800 rounded-2xl p-6">
+                  <h3 className="font-bold text-lg border-b border-white/10 pb-3 mb-4 text-white">
                     Services Provided
                   </h3>
                   <ul className="space-y-2">
                     {project.services.map((service) => (
                       <li
                         key={service}
-                        className="flex items-center gap-2 text-foreground/70"
+                        className="flex items-center gap-2 text-white/80"
                       >
                         <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                         {service}
@@ -265,15 +265,15 @@ export default function ProjectPage() {
 
               {/* Technologies */}
               {project.technologies && project.technologies.length > 0 && (
-                <div className="bg-surface rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-foreground/10 pb-3 mb-4">
+                <div className="bg-gray-800 rounded-2xl p-6">
+                  <h3 className="font-bold text-lg border-b border-white/10 pb-3 mb-4 text-white">
                     Technologies Used
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {project.technologies.map((tech) => (
                       <span
                         key={tech}
-                        className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm"
+                        className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm"
                       >
                         {tech}
                       </span>
@@ -284,15 +284,15 @@ export default function ProjectPage() {
 
               {/* Tags */}
               {project.tags && project.tags.length > 0 && (
-                <div className="bg-surface rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-foreground/10 pb-3 mb-4">
+                <div className="bg-gray-800 rounded-2xl p-6">
+                  <h3 className="font-bold text-lg border-b border-white/10 pb-3 mb-4 text-white">
                     Tags
                   </h3>
                   <div className="flex flex-wrap gap-2">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-3 py-1 bg-foreground/5 text-foreground/70 rounded-full text-sm"
+                        className="px-3 py-1 bg-white/10 text-white/80 rounded-full text-sm"
                       >
                         {tag}
                       </span>
@@ -302,9 +302,9 @@ export default function ProjectPage() {
               )}
 
               {/* CTA */}
-              <div className="bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl p-6 text-center">
-                <h3 className="font-bold text-lg mb-2">Like what you see?</h3>
-                <p className="text-foreground/60 text-sm mb-4">
+              <div className="bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl p-6 text-center border border-accent/20">
+                <h3 className="font-bold text-lg mb-2 text-gray-900">Like what you see?</h3>
+                <p className="text-gray-600 text-sm mb-4">
                   Let's discuss your project and bring your vision to life.
                 </p>
                 <Link
@@ -320,7 +320,7 @@ export default function ProjectPage() {
           {/* Related Projects */}
           {relatedProjects.length > 0 && (
             <section className="mt-20">
-              <h2 className="text-2xl font-bold mb-8 text-center">
+              <h2 className="text-2xl font-bold mb-8 text-center text-gray-900">
                 Related Projects
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

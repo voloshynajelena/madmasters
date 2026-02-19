@@ -6,6 +6,7 @@ import type { Locale } from '@/i18n/config';
 import type { Dictionary } from '@/i18n/dictionaries';
 import { FullPageScroll, ScrollSection } from '@/components/scroll';
 import { HeroVideo, HeroOverlay } from '@/components/hero';
+import { HomeFreshWorks } from '@/components/home/home-fresh-works';
 
 interface HomePageProps {
   locale: Locale;
@@ -86,11 +87,11 @@ export function HomePage({ locale, dict }: HomePageProps) {
               {dict.sections.aboutTitle}
             </span>
 
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-4 text-primary">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-4 text-gray-900">
               WEB <span className="gradient-text">STUDIO</span>
             </h2>
 
-            <p className="text-sm text-primary/60 max-w-xl mx-auto mt-6">
+            <p className="text-sm text-gray-600 max-w-xl mx-auto mt-6">
               Every project meets W3C and Google Developers standards
             </p>
 
@@ -103,11 +104,11 @@ export function HomePage({ locale, dict }: HomePageProps) {
                 { value: 99, label: 'Success Rate', suffix: '%' },
               ].map((stat, i) => (
                 <div key={i} className="glass-card-light p-6">
-                  <div className="text-3xl md:text-4xl font-bold text-primary">
+                  <div className="text-3xl md:text-4xl font-bold text-gray-900">
                     <AnimatedCounter end={stat.value} active={activeSection >= 2} />
                     {stat.suffix}
                   </div>
-                  <div className="text-xs text-primary/50 mt-2 uppercase tracking-wider">{stat.label}</div>
+                  <div className="text-xs text-gray-500 mt-2 uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -120,8 +121,8 @@ export function HomePage({ locale, dict }: HomePageProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-primary mb-2">Modern Technology</h3>
-                <p className="text-primary/60 text-sm leading-relaxed">
+                <h3 className="font-semibold text-gray-900 mb-2">Modern Technology</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
                   We choose the most effective solutions for creating and operating your virtual office.
                   We define stylish and modern design with special attention to page speed and usability.
                 </p>
@@ -132,8 +133,8 @@ export function HomePage({ locale, dict }: HomePageProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-primary mb-2">SEO & Marketing</h3>
-                <p className="text-primary/60 text-sm leading-relaxed">
+                <h3 className="font-semibold text-gray-900 mb-2">SEO & Marketing</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">
                   Search engine optimization and website promotion is one of the most effective ways
                   to attract customers and increase visibility to your target audience.
                 </p>
@@ -148,7 +149,7 @@ export function HomePage({ locale, dict }: HomePageProps) {
                     <div className="w-14 h-14 rounded-2xl bg-white shadow-lg flex items-center justify-center text-accent mb-2 group-hover:shadow-glow-sm transition-shadow">
                       <ProcessIcon step={key} />
                     </div>
-                    <span className="text-[10px] uppercase tracking-widest text-primary/50 font-medium">
+                    <span className="text-[10px] uppercase tracking-widest text-gray-500 font-medium">
                       {label}
                     </span>
                   </div>
@@ -262,8 +263,8 @@ export function HomePage({ locale, dict }: HomePageProps) {
       <ScrollSection index={4} className="mesh-gradient">
         <div className="flex flex-col items-center justify-center h-full px-4 py-12">
           <div className="container-section text-center">
-            <span className="inline-block px-4 py-1 rounded-full bg-primary text-white text-xs font-medium tracking-wider mb-4">
-              OUR WORK
+            <span className="inline-block px-4 py-1 rounded-full bg-gray-800 text-white text-xs font-medium tracking-wider mb-4">
+              PORTFOLIO
             </span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
               {dict.sections.portfolioTitle}
@@ -272,35 +273,8 @@ export function HomePage({ locale, dict }: HomePageProps) {
               {dict.sections.portfolioSubtitle}
             </p>
 
-            {/* Portfolio Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto">
-              {[
-                { name: 'Orangeschool', desc: 'Linguistic center', img: '/content/img/portfolio/orangeschool.png' },
-                { name: 'Yudenko', desc: 'Designer', img: '/content/img/portfolio/yudenko.png' },
-                { name: 'Slim Beauty', desc: 'Massage', img: '/content/img/portfolio/slimbeauty.png' },
-                { name: 'Dneprlaw', desc: 'Legal', img: '/content/img/portfolio/dneprlaw.png' },
-                { name: 'Winplast', desc: 'Windows', img: '/content/img/portfolio/winplast.png' },
-                { name: 'Macarons', desc: 'Bakery', img: '/content/img/portfolio/macarons.png' },
-              ].map((item, index) => (
-                <div
-                  key={index}
-                  className="group relative aspect-square bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] cursor-pointer"
-                >
-                  <img
-                    src={item.img}
-                    alt={item.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col items-center justify-end p-4">
-                    <p className="text-white font-semibold">{item.name}</p>
-                    <p className="text-white/70 text-xs">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {/* Portfolio Grid - Dynamic Fresh Works */}
+            <HomeFreshWorks locale={locale} maxItems={3} />
 
             <div className="flex flex-wrap justify-center gap-4 mt-10">
               <Link
@@ -308,15 +282,6 @@ export function HomePage({ locale, dict }: HomePageProps) {
                 className="px-6 py-3 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors"
               >
                 {dict.cta.seeAll}
-              </Link>
-              <Link
-                href={`${prefix}/fresh`}
-                className="px-6 py-3 border-2 border-gray-300 text-gray-900 text-sm font-medium rounded-lg hover:border-gray-900 hover:bg-gray-100 transition-all flex items-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Fresh Works
               </Link>
             </div>
           </div>
@@ -332,7 +297,7 @@ export function HomePage({ locale, dict }: HomePageProps) {
 
           <div className="container-section text-center relative z-10">
             <img
-              src="/images/logo-light.png"
+              src="/images/logo-white.png"
               alt="Mad Masters"
               className="h-12 mx-auto mb-6 opacity-80"
               onError={(e) => {
@@ -362,26 +327,6 @@ export function HomePage({ locale, dict }: HomePageProps) {
               >
                 {dict.cta.getQuote}
               </Link>
-            </div>
-
-            {/* Social */}
-            <div className="flex justify-center gap-3 mt-12">
-              {[
-                { name: 'facebook', href: 'https://www.facebook.com/madmweb' },
-                { name: 'instagram', href: 'https://www.instagram.com/mad.masters/' },
-                { name: 'vk', href: 'https://new.vk.com/madmweb' },
-                { name: 'viber', href: 'viber://chat?number=+380964777690' },
-              ].map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all"
-                >
-                  <SocialIcon name={social.name} />
-                </a>
-              ))}
             </div>
 
             {/* Footer bottom */}

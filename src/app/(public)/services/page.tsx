@@ -97,12 +97,12 @@ export default function ServicesPage() {
                 className="p-8 rounded-lg"
                 style={{ backgroundColor: service.color }}
               >
-                <div className="text-primary/70 mb-4">{service.icon}</div>
-                <h2 className="text-2xl font-bold text-primary mb-4">{service.title}</h2>
-                <p className="text-primary/70 mb-6">{service.description}</p>
+                <div className="text-gray-700 mb-4">{service.icon}</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h2>
+                <p className="text-gray-700 mb-6">{service.description}</p>
                 <ul className="space-y-2">
                   {service.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-primary/60 text-sm">
+                    <li key={i} className="flex items-center gap-2 text-gray-600 text-sm">
                       <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
@@ -117,7 +117,7 @@ export default function ServicesPage() {
           <div className="text-center mt-12">
             <Link
               href="/contact"
-              className="inline-block px-8 py-4 bg-primary text-white text-sm tracking-wider hover:bg-primary-light transition-colors"
+              className="inline-block px-8 py-4 bg-accent text-white text-sm tracking-wider rounded-lg hover:bg-accent/90 transition-colors"
             >
               Get a Quote
             </Link>

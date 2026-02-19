@@ -8,7 +8,8 @@ interface PortfolioProject {
   slug: string;
   name: string;
   description: string;
-  category: string;
+  category?: string; // Legacy field
+  categories?: string[];
   client: string;
   industry: string;
   year: number;
@@ -16,7 +17,40 @@ interface PortfolioProject {
   liveUrl?: string;
   thumbnail: string;
   order: number;
+  hidden?: boolean;
+  showOnHomepage?: boolean;
   updatedAt?: string;
+}
+
+// Helper to get categories array (handles legacy single category)
+function getCategories(project: PortfolioProject): string[] {
+  if (project.categories && project.categories.length > 0) {
+    return project.categories;
+  }
+  if (project.category) {
+    return [project.category];
+  }
+  return [];
+}
+
+const categoryLabels: Record<string, string> = {
+  web: 'Web',
+  'e-commerce': 'E-Commerce',
+  branding: 'Branding',
+  marketing: 'Marketing',
+  mobile: 'Mobile',
+};
+
+// Generate slug from name for display
+function getDisplaySlug(project: PortfolioProject): string {
+  if (project.slug && !project.slug.includes(' ') && project.slug.length < 30) {
+    return project.slug;
+  }
+  // Generate from name
+  return project.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }
 
 export default function PortfolioPage() {
@@ -25,8 +59,8 @@ export default function PortfolioPage() {
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<'all' | 'draft' | 'published'>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [visibilityFilter, setVisibilityFilter] = useState<'all' | 'visible' | 'hidden'>('all');
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [seeding, setSeeding] = useState(false);
 
   const categories = ['all', 'web', 'e-commerce', 'branding', 'marketing', 'mobile'];
 
@@ -53,14 +87,21 @@ export default function PortfolioPage() {
     fetchProjects();
   }, [filter, categoryFilter]);
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+  // Apply visibility filter client-side
+  const filteredProjects = projects.filter((p) => {
+    if (visibilityFilter === 'visible') return !p.hidden;
+    if (visibilityFilter === 'hidden') return p.hidden;
+    return true;
+  });
 
-    setDeleting(id);
+  const handleDelete = async (project: PortfolioProject) => {
+    if (!confirm(`Delete "${project.name}"? This cannot be undone.`)) return;
+
+    setDeleting(project.id);
     try {
-      const res = await fetch(`/api/admin/portfolio/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/portfolio/${project.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete');
-      setProjects((prev) => prev.filter((p) => p.id !== id));
+      setProjects((prev) => prev.filter((p) => p.id !== project.id));
     } catch (err) {
       alert('Failed to delete project');
     } finally {
@@ -68,27 +109,9 @@ export default function PortfolioPage() {
     }
   };
 
-  const handleSeed = async () => {
-    if (!confirm('Seed portfolio with default data? This only works if the collection is empty.')) return;
-
-    setSeeding(true);
-    try {
-      const res = await fetch('/api/admin/portfolio/seed', { method: 'POST' });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error);
-
-      alert(data.message);
-      fetchProjects();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to seed');
-    } finally {
-      setSeeding(false);
-    }
-  };
-
   const toggleStatus = async (project: PortfolioProject) => {
     const newStatus = project.status === 'published' ? 'draft' : 'published';
+
     try {
       const res = await fetch(`/api/admin/portfolio/${project.id}`, {
         method: 'PUT',
@@ -105,6 +128,44 @@ export default function PortfolioPage() {
     }
   };
 
+  const toggleHidden = async (project: PortfolioProject) => {
+    const newHidden = !project.hidden;
+
+    try {
+      const res = await fetch(`/api/admin/portfolio/${project.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hidden: newHidden }),
+      });
+      if (res.ok) {
+        setProjects((prev) =>
+          prev.map((p) => (p.id === project.id ? { ...p, hidden: newHidden } : p))
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const toggleHomepage = async (project: PortfolioProject) => {
+    const newShowOnHomepage = !project.showOnHomepage;
+
+    try {
+      const res = await fetch(`/api/admin/portfolio/${project.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ showOnHomepage: newShowOnHomepage }),
+      });
+      if (res.ok) {
+        setProjects((prev) =>
+          prev.map((p) => (p.id === project.id ? { ...p, showOnHomepage: newShowOnHomepage } : p))
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
@@ -112,23 +173,12 @@ export default function PortfolioPage() {
           <h1 className="text-2xl font-bold text-white">Portfolio</h1>
           <p className="text-white/60 mt-1">Manage your portfolio projects</p>
         </div>
-        <div className="flex gap-3">
-          {projects.length === 0 && !loading && (
-            <button
-              onClick={handleSeed}
-              disabled={seeding}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-            >
-              {seeding ? 'Seeding...' : 'Seed Default Data'}
-            </button>
-          )}
-          <Link
-            href="/admin/portfolio/new"
-            className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
-          >
-            + New Project
-          </Link>
-        </div>
+        <Link
+          href="/admin/portfolio/new"
+          className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
+        >
+          + New Project
+        </Link>
       </div>
 
       {/* Filters */}
@@ -145,6 +195,21 @@ export default function PortfolioPage() {
               }`}
             >
               {status}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          {(['all', 'visible', 'hidden'] as const).map((visibility) => (
+            <button
+              key={visibility}
+              onClick={() => setVisibilityFilter(visibility)}
+              className={`px-4 py-2 rounded-lg text-sm capitalize transition-colors ${
+                visibilityFilter === visibility
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-surface text-white/70 hover:bg-surface-hover border border-white/10'
+              }`}
+            >
+              {visibility}
             </button>
           ))}
         </div>
@@ -173,19 +238,13 @@ export default function PortfolioPage() {
       ) : projects.length === 0 ? (
         <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
           <p className="text-white/60 mb-4">No portfolio projects found</p>
-          <div className="flex justify-center gap-4">
-            <button
-              onClick={handleSeed}
-              disabled={seeding}
-              className="text-blue-400 hover:underline"
-            >
-              Seed with default data
-            </button>
-            <span className="text-white/30">or</span>
-            <Link href="/admin/portfolio/new" className="text-accent hover:underline">
-              Create your first project
-            </Link>
-          </div>
+          <Link href="/admin/portfolio/new" className="text-accent hover:underline">
+            Create your first project
+          </Link>
+        </div>
+      ) : filteredProjects.length === 0 ? (
+        <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
+          <p className="text-white/60">No projects match the current filters</p>
         </div>
       ) : (
         <div className="bg-surface rounded-lg overflow-hidden border border-white/10">
@@ -197,12 +256,14 @@ export default function PortfolioPage() {
                 <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Category</th>
                 <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Client</th>
                 <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Status</th>
+                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Visible</th>
+                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Homepage</th>
                 <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Live URL</th>
                 <th className="text-right px-4 py-3 text-white/60 text-sm font-medium">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
-              {projects.map((project) => (
+              {filteredProjects.map((project) => (
                 <tr key={project.id} className="hover:bg-surface-hover transition-colors">
                   <td className="px-4 py-3 text-white/40 text-sm">{project.order}</td>
                   <td className="px-4 py-3">
@@ -216,12 +277,18 @@ export default function PortfolioPage() {
                       )}
                       <div>
                         <p className="text-white font-medium">{project.name}</p>
-                        <p className="text-white/40 text-sm">/{project.slug}</p>
+                        <p className="text-white/40 text-sm">/{getDisplaySlug(project)}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-white/70 capitalize">{project.category}</span>
+                    <div className="flex flex-wrap gap-1">
+                      {getCategories(project).map((cat) => (
+                        <span key={cat} className="px-2 py-0.5 bg-white/10 text-white/70 rounded text-xs">
+                          {categoryLabels[cat] || cat}
+                        </span>
+                      ))}
+                    </div>
                   </td>
                   <td className="px-4 py-3 text-white/70">{project.client}</td>
                   <td className="px-4 py-3">
@@ -234,6 +301,30 @@ export default function PortfolioPage() {
                       }`}
                     >
                       {project.status}
+                    </button>
+                  </td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => toggleHidden(project)}
+                      className={`inline-block px-2 py-1 rounded text-xs ${
+                        project.hidden
+                          ? 'bg-red-500/20 text-red-400'
+                          : 'bg-green-500/20 text-green-400'
+                      }`}
+                    >
+                      {project.hidden ? 'Hidden' : 'Visible'}
+                    </button>
+                  </td>
+                  <td className="px-4 py-3">
+                    <button
+                      onClick={() => toggleHomepage(project)}
+                      className={`inline-block px-2 py-1 rounded text-xs ${
+                        project.showOnHomepage
+                          ? 'bg-accent/20 text-accent'
+                          : 'bg-white/10 text-white/40'
+                      }`}
+                    >
+                      {project.showOnHomepage ? 'Featured' : 'No'}
                     </button>
                   </td>
                   <td className="px-4 py-3">
@@ -259,7 +350,7 @@ export default function PortfolioPage() {
                         Edit
                       </Link>
                       <button
-                        onClick={() => handleDelete(project.id, project.name)}
+                        onClick={() => handleDelete(project)}
                         disabled={deleting === project.id}
                         className="px-3 py-1 text-sm bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors disabled:opacity-50"
                       >

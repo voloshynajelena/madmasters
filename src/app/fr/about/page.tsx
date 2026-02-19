@@ -16,20 +16,20 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12">
               <div>
-                <h2 className="text-3xl font-bold text-primary mb-6">Qui sommes-nous</h2>
-                <p className="text-primary/70 mb-4">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Qui sommes-nous</h2>
+                <p className="text-gray-700 mb-4">
                   Mad Masters est une équipe de professionnels orientée client. Utilisant des
                   technologies modernes, la responsabilité, l'exécution précise des tâches,
                   l'efficacité maximale et un design réfléchi - c'est Mad Masters.
                 </p>
-                <p className="text-primary/70 mb-4">
+                <p className="text-gray-700 mb-4">
                   Nous incarnons magistralement vos idées et souhaits, car nous mettons toute
                   notre expérience et nos connaissances dans chaque projet.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-3xl font-bold text-primary mb-6">Nos valeurs</h2>
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Nos valeurs</h2>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
@@ -38,8 +38,8 @@ export default function AboutPage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-primary">Qualité d'abord</h3>
-                      <p className="text-primary/60 text-sm">Chaque projet respecte les normes W3C et Google</p>
+                      <h3 className="font-semibold text-gray-900">Qualité d'abord</h3>
+                      <p className="text-gray-600 text-sm">Chaque projet respecte les normes W3C et Google</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
@@ -49,8 +49,8 @@ export default function AboutPage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-primary">Vitesse et performance</h3>
-                      <p className="text-primary/60 text-sm">Optimisé pour Google PageSpeed</p>
+                      <h3 className="font-semibold text-gray-900">Vitesse et performance</h3>
+                      <p className="text-gray-600 text-sm">Optimisé pour Google PageSpeed</p>
                     </div>
                   </li>
                 </ul>

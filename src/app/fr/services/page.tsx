@@ -24,13 +24,13 @@ export default function ServicesPage() {
           <div className="grid md:grid-cols-2 gap-8">
             {services.map((service) => (
               <div key={service.id} className="p-8 rounded-lg" style={{ backgroundColor: service.color }}>
-                <h2 className="text-2xl font-bold text-primary mb-4">{service.title}</h2>
-                <p className="text-primary/70">{dict.services[service.id as keyof typeof dict.services]?.description}</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h2>
+                <p className="text-gray-700">{dict.services[service.id as keyof typeof dict.services]?.description}</p>
               </div>
             ))}
           </div>
           <div className="text-center mt-12">
-            <Link href="/fr/contact" className="inline-block px-8 py-4 bg-primary text-white text-sm tracking-wider hover:bg-primary-light transition-colors">
+            <Link href="/fr/contact" className="inline-block px-8 py-4 bg-accent text-white text-sm tracking-wider rounded-lg hover:bg-accent/90 transition-colors">
               Demander un devis
             </Link>
           </div>

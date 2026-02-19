@@ -4,13 +4,15 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
+type CategoryType = 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile';
+
 interface PortfolioProject {
   id?: string;
   slug: string;
   name: string;
   description: string;
   fullDescription: string;
-  category: 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile';
+  categories: CategoryType[];
   tags: string[];
   thumbnail: string;
   images: string[];
@@ -30,14 +32,23 @@ interface PortfolioProject {
   } | null;
   order: number;
   status: 'draft' | 'published';
+  hidden?: boolean;
 }
+
+const categoryOptions: { value: CategoryType; label: string }[] = [
+  { value: 'web', label: 'Web Development' },
+  { value: 'e-commerce', label: 'E-Commerce' },
+  { value: 'branding', label: 'Branding' },
+  { value: 'marketing', label: 'Marketing' },
+  { value: 'mobile', label: 'Mobile Apps' },
+];
 
 const defaultProject: PortfolioProject = {
   slug: '',
   name: '',
   description: '',
   fullDescription: '',
-  category: 'web',
+  categories: [],
   tags: [],
   thumbnail: '',
   images: [],
@@ -83,7 +94,18 @@ export default function PortfolioEditPage() {
       const res = await fetch(`/api/admin/portfolio/${params.id}`);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      setProject(data.project);
+
+      // Handle migration from old 'category' to new 'categories' array
+      let categories = data.categories || [];
+      if (categories.length === 0 && data.category) {
+        categories = [data.category];
+      }
+
+      setProject({
+        ...defaultProject,
+        ...data,
+        categories,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load project');
     } finally {
@@ -227,19 +249,32 @@ export default function PortfolioEditPage() {
                 className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-2 text-white focus:border-accent focus:outline-none"
               />
             </div>
-            <div>
-              <label className="block text-white/60 text-sm mb-1">Category *</label>
-              <select
-                value={project.category}
-                onChange={(e) => updateField('category', e.target.value as PortfolioProject['category'])}
-                className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-2 text-white focus:border-accent focus:outline-none"
-              >
-                <option value="web">Web Development</option>
-                <option value="e-commerce">E-Commerce</option>
-                <option value="branding">Branding</option>
-                <option value="marketing">Marketing</option>
-                <option value="mobile">Mobile Apps</option>
-              </select>
+            <div className="md:col-span-2">
+              <label className="block text-white/60 text-sm mb-2">Categories *</label>
+              <div className="flex flex-wrap gap-2">
+                {categoryOptions.map((cat) => {
+                  const isSelected = project.categories.includes(cat.value);
+                  return (
+                    <button
+                      key={cat.value}
+                      type="button"
+                      onClick={() => {
+                        const newCategories = isSelected
+                          ? project.categories.filter((c) => c !== cat.value)
+                          : [...project.categories, cat.value];
+                        updateField('categories', newCategories);
+                      }}
+                      className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                        isSelected
+                          ? 'bg-accent text-white'
+                          : 'bg-surface-muted border border-white/10 text-white/60 hover:bg-white/10'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
             <div>
               <label className="block text-white/60 text-sm mb-1">Year</label>

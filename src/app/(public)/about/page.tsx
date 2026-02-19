@@ -16,25 +16,25 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-12">
               <div>
-                <h2 className="text-3xl font-bold text-primary mb-6">Who We Are</h2>
-                <p className="text-primary/70 mb-4">
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Who We Are</h2>
+                <p className="text-gray-700 mb-4">
                   Mad Masters is a client-oriented team of professionals. Using modern
                   technologies, responsibility, precise execution of tasks, maximum efficiency
                   and thoughtful Design - this is about Mad Masters.
                 </p>
-                <p className="text-primary/70 mb-4">
+                <p className="text-gray-700 mb-4">
                   We masterfully embody your ideas and wishes, as we put all our experience
                   and knowledge into each project. Our employees are a team with solid
                   experience in web technologies.
                 </p>
-                <p className="text-primary/70">
+                <p className="text-gray-700">
                   Mad Masters works in such areas of web technologies as website creation and
                   support, Internet marketing, custom development, layout and much more.
                 </p>
               </div>
 
               <div>
-                <h2 className="text-3xl font-bold text-primary mb-6">Our Values</h2>
+                <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Values</h2>
                 <ul className="space-y-4">
                   <li className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0">
@@ -43,8 +43,8 @@ export default function AboutPage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-primary">Quality First</h3>
-                      <p className="text-primary/60 text-sm">Every project meets W3C and Google standards</p>
+                      <h3 className="font-semibold text-gray-900">Quality First</h3>
+                      <p className="text-gray-600 text-sm">Every project meets W3C and Google standards</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
@@ -54,8 +54,8 @@ export default function AboutPage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-primary">Speed & Performance</h3>
-                      <p className="text-primary/60 text-sm">Optimized for Google PageSpeed and Core Web Vitals</p>
+                      <h3 className="font-semibold text-gray-900">Speed & Performance</h3>
+                      <p className="text-gray-600 text-sm">Optimized for Google PageSpeed and Core Web Vitals</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
@@ -65,8 +65,8 @@ export default function AboutPage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-primary">Client-Oriented</h3>
-                      <p className="text-primary/60 text-sm">Your success is our priority</p>
+                      <h3 className="font-semibold text-gray-900">Client-Oriented</h3>
+                      <p className="text-gray-600 text-sm">Your success is our priority</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-4">
@@ -76,8 +76,8 @@ export default function AboutPage() {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-primary">Innovation</h3>
-                      <p className="text-primary/60 text-sm">Modern technologies and creative solutions</p>
+                      <h3 className="font-semibold text-gray-900">Innovation</h3>
+                      <p className="text-gray-600 text-sm">Modern technologies and creative solutions</p>
                     </div>
                   </li>
                 </ul>

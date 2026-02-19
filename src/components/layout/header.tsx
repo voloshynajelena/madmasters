@@ -19,8 +19,7 @@ export function Header({ locale }: HeaderProps) {
   const navItems = [
     { href: `${prefix}/about`, label: dict.nav.about },
     { href: `${prefix}/services`, label: dict.nav.services },
-    { href: `${prefix}/work`, label: dict.nav.work },
-    { href: `${prefix}/fresh`, label: 'Fresh Works', isNew: true },
+    { href: `${prefix}/work`, label: 'Portfolio' },
     { href: `${prefix}/calculator`, label: 'Calculator' },
     { href: `${prefix}/brief`, label: 'Start Project', isHighlight: true },
     { href: `${prefix}/contact`, label: dict.nav.contact },
@@ -169,11 +168,6 @@ export function Header({ locale }: HeaderProps) {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
-                  {item.isNew && (
-                    <span className="ml-2 text-xs px-2 py-0.5 bg-accent/20 text-accent rounded-full align-middle">
-                      NEW
-                    </span>
-                  )}
                 </Link>
               </li>
             ))}

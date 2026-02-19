@@ -83,20 +83,23 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
 
-    let query = db.collection('caseStudies').orderBy('order', 'asc');
-
-    if (status && (status === 'draft' || status === 'published')) {
-      query = query.where('status', '==', status);
-    }
-
-    const snapshot = await query.get();
-    const caseStudies = snapshot.docs.map(doc => ({
+    // Fetch all and filter in memory to avoid composite index requirement
+    const snapshot = await db.collection('caseStudies').get();
+    let caseStudies: any[] = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
       date: doc.data().date?.toDate?.()?.toISOString() || null,
       createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
       updatedAt: doc.data().updatedAt?.toDate?.()?.toISOString() || null,
     }));
+
+    // Filter by status
+    if (status && (status === 'draft' || status === 'published')) {
+      caseStudies = caseStudies.filter(cs => cs.status === status);
+    }
+
+    // Sort by order
+    caseStudies.sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return NextResponse.json({ caseStudies });
   } catch (error) {

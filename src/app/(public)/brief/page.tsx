@@ -203,19 +203,19 @@ export default function BriefPage() {
               {[1, 2, 3, 4].map(s => (
                 <div
                   key={s}
-                  className={`flex items-center justify-center w-10 h-10 rounded-full font-medium transition-colors ${
+                  className={`flex items-center justify-center w-10 h-10 rounded-full font-bold transition-colors ${
                     s === step
                       ? 'bg-accent text-white'
                       : s < step
                       ? 'bg-green-500 text-white'
-                      : 'bg-primary/10 text-primary/40'
+                      : 'bg-gray-200 text-gray-600'
                   }`}
                 >
                   {s < step ? '✓' : s}
                 </div>
               ))}
             </div>
-            <div className="flex justify-between text-xs text-primary/50 px-2">
+            <div className="flex justify-between text-xs text-gray-500 px-2">
               <span>Project</span>
               <span>Features</span>
               <span>Budget</span>
@@ -232,7 +232,7 @@ export default function BriefPage() {
           {/* Step 1: Project Type */}
           {step === 1 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-primary">What type of project is this?</h2>
+              <h2 className="text-xl font-semibold text-gray-900">What type of project is this?</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {projectTypes.map(type => (
                   <button
@@ -241,23 +241,23 @@ export default function BriefPage() {
                     className={`p-4 rounded-lg border-2 text-left transition-colors ${
                       formData.projectType === type.value
                         ? 'border-accent bg-accent/10'
-                        : 'border-primary/10 hover:border-primary/30'
+                        : 'border-gray-300 hover:border-gray-400 bg-white'
                     }`}
                   >
-                    <div className="font-medium text-primary">{type.label}</div>
-                    <div className="text-sm text-primary/60">{type.description}</div>
+                    <div className="font-medium text-gray-900">{type.label}</div>
+                    <div className="text-sm text-gray-600">{type.description}</div>
                   </button>
                 ))}
               </div>
 
               <div>
-                <label className="block text-primary/70 text-sm mb-2">
+                <label className="block text-gray-700 text-sm mb-2">
                   Briefly describe your project
                 </label>
                 <textarea
                   value={formData.projectDescription}
                   onChange={e => updateField('projectDescription', e.target.value)}
-                  className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none h-32"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:border-accent focus:outline-none h-32"
                   placeholder="What are you looking to build? What problem does it solve?"
                 />
               </div>
@@ -267,7 +267,7 @@ export default function BriefPage() {
           {/* Step 2: Features */}
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-primary">What features do you need?</h2>
+              <h2 className="text-xl font-semibold text-gray-900">What features do you need?</h2>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {featureOptions.map(feature => (
@@ -276,8 +276,8 @@ export default function BriefPage() {
                     onClick={() => toggleFeature(feature)}
                     className={`p-3 rounded-lg border text-sm text-left transition-colors ${
                       formData.features.includes(feature)
-                        ? 'border-accent bg-accent/10 text-primary'
-                        : 'border-primary/10 text-primary/70 hover:border-primary/30'
+                        ? 'border-accent bg-accent/10 text-gray-900'
+                        : 'border-gray-300 text-gray-700 hover:border-gray-400 bg-white'
                     }`}
                   >
                     {feature}
@@ -287,7 +287,7 @@ export default function BriefPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer ${
-                  formData.hasDesign ? 'border-accent bg-accent/10' : 'border-primary/10'
+                  formData.hasDesign ? 'border-accent bg-accent/10' : 'border-gray-300 bg-white'
                 }`}>
                   <input
                     type="checkbox"
@@ -296,13 +296,13 @@ export default function BriefPage() {
                     className="w-5 h-5 text-accent"
                   />
                   <div>
-                    <div className="font-medium text-primary">I have designs ready</div>
-                    <div className="text-sm text-primary/60">Figma, Sketch, or PSD files</div>
+                    <div className="font-medium text-gray-900">I have designs ready</div>
+                    <div className="text-sm text-gray-600">Figma, Sketch, or PSD files</div>
                   </div>
                 </label>
 
                 <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer ${
-                  formData.hasContent ? 'border-accent bg-accent/10' : 'border-primary/10'
+                  formData.hasContent ? 'border-accent bg-accent/10' : 'border-gray-300 bg-white'
                 }`}>
                   <input
                     type="checkbox"
@@ -311,20 +311,20 @@ export default function BriefPage() {
                     className="w-5 h-5 text-accent"
                   />
                   <div>
-                    <div className="font-medium text-primary">I have content ready</div>
-                    <div className="text-sm text-primary/60">Text, images, videos</div>
+                    <div className="font-medium text-gray-900">I have content ready</div>
+                    <div className="text-sm text-gray-600">Text, images, videos</div>
                   </div>
                 </label>
               </div>
 
               <div>
-                <label className="block text-primary/70 text-sm mb-2">
+                <label className="block text-gray-700 text-sm mb-2">
                   Reference websites (optional)
                 </label>
                 <textarea
                   value={formData.referenceUrls}
                   onChange={e => updateField('referenceUrls', e.target.value)}
-                  className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none h-24"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:border-accent focus:outline-none h-24"
                   placeholder="Share URLs of websites you like or want to be similar to"
                 />
               </div>
@@ -335,7 +335,7 @@ export default function BriefPage() {
           {step === 3 && (
             <div className="space-y-8">
               <div>
-                <h2 className="text-xl font-semibold text-primary mb-4">What's your budget?</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">What's your budget?</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {budgetRanges.map(budget => (
                     <button
@@ -344,10 +344,10 @@ export default function BriefPage() {
                       className={`p-4 rounded-lg border-2 text-left transition-colors ${
                         formData.budget === budget.value
                           ? 'border-accent bg-accent/10'
-                          : 'border-primary/10 hover:border-primary/30'
+                          : 'border-gray-300 hover:border-gray-400 bg-white'
                       }`}
                     >
-                      <div className="font-medium text-primary">{budget.label}</div>
+                      <div className="font-medium text-gray-900">{budget.label}</div>
                       <div className="text-accent font-semibold">{budget.range}</div>
                     </button>
                   ))}
@@ -355,7 +355,7 @@ export default function BriefPage() {
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-primary mb-4">What's your timeline?</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">What's your timeline?</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {timelineOptions.map(timeline => (
                     <button
@@ -364,25 +364,25 @@ export default function BriefPage() {
                       className={`p-4 rounded-lg border-2 text-center transition-colors ${
                         formData.timeline === timeline.value
                           ? 'border-accent bg-accent/10'
-                          : 'border-primary/10 hover:border-primary/30'
+                          : 'border-gray-300 hover:border-gray-400 bg-white'
                       }`}
                     >
-                      <div className="font-medium text-primary">{timeline.label}</div>
-                      <div className="text-sm text-primary/60">{timeline.description}</div>
+                      <div className="font-medium text-gray-900">{timeline.label}</div>
+                      <div className="text-sm text-gray-600">{timeline.description}</div>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-primary/70 text-sm mb-2">
+                <label className="block text-gray-700 text-sm mb-2">
                   Preferred start date (optional)
                 </label>
                 <input
                   type="date"
                   value={formData.startDate}
                   onChange={e => updateField('startDate', e.target.value)}
-                  className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:border-accent focus:outline-none"
                 />
               </div>
             </div>
@@ -391,57 +391,57 @@ export default function BriefPage() {
           {/* Step 4: Contact */}
           {step === 4 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-primary">How can we reach you?</h2>
+              <h2 className="text-xl font-semibold text-gray-900">How can we reach you?</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-primary/70 text-sm mb-2">Name *</label>
+                  <label className="block text-gray-700 text-sm mb-2">Name *</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={e => updateField('name', e.target.value)}
-                    className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:border-accent focus:outline-none"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-primary/70 text-sm mb-2">Company</label>
+                  <label className="block text-gray-700 text-sm mb-2">Company</label>
                   <input
                     type="text"
                     value={formData.company}
                     onChange={e => updateField('company', e.target.value)}
-                    className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:border-accent focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-primary/70 text-sm mb-2">Email *</label>
+                  <label className="block text-gray-700 text-sm mb-2">Email *</label>
                   <input
                     type="email"
                     value={formData.email}
                     onChange={e => updateField('email', e.target.value)}
-                    className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:border-accent focus:outline-none"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-primary/70 text-sm mb-2">Phone</label>
+                  <label className="block text-gray-700 text-sm mb-2">Phone</label>
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={e => updateField('phone', e.target.value)}
-                    className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:border-accent focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-primary/70 text-sm mb-2">
+                <label className="block text-gray-700 text-sm mb-2">
                   How did you find us?
                 </label>
                 <select
                   value={formData.howDidYouFindUs}
                   onChange={e => updateField('howDidYouFindUs', e.target.value)}
-                  className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:border-accent focus:outline-none"
                 >
                   <option value="">Select...</option>
                   <option value="google">Google Search</option>

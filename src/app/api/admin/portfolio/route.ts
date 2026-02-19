@@ -2,13 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin';
 
+export type CategoryType = 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile';
+
 export interface PortfolioProject {
   id?: string;
   slug: string;
   name: string;
   description: string;
   fullDescription?: string;
-  category: 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile';
+  category?: CategoryType; // Legacy single category
+  categories: CategoryType[]; // New multi-select categories
   tags: string[];
   thumbnail: string;
   images: string[];
@@ -28,6 +31,8 @@ export interface PortfolioProject {
   };
   order: number;
   status: 'draft' | 'published';
+  hidden?: boolean; // Hide from public website
+  showOnHomepage?: boolean; // Show on homepage
   createdAt?: string;
   updatedAt?: string;
 }
@@ -66,24 +71,26 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status');
     const category = searchParams.get('category');
 
-    let query: FirebaseFirestore.Query = db.collection(COLLECTION);
+    // Fetch from portfolio collection only
+    const portfolioSnapshot = await db.collection(COLLECTION).get();
+    let projects: PortfolioProject[] = [];
 
-    if (status && status !== 'all') {
-      query = query.where('status', '==', status);
-    }
-
-    if (category && category !== 'all') {
-      query = query.where('category', '==', category);
-    }
-
-    query = query.orderBy('order', 'asc');
-
-    const snapshot = await query.get();
-    const projects: PortfolioProject[] = [];
-
-    snapshot.forEach((doc) => {
+    portfolioSnapshot.forEach((doc) => {
       projects.push({ id: doc.id, ...doc.data() } as PortfolioProject);
     });
+
+    // Filter by status
+    if (status && status !== 'all') {
+      projects = projects.filter(p => p.status === status);
+    }
+
+    // Filter by category
+    if (category && category !== 'all') {
+      projects = projects.filter(p => p.category === category);
+    }
+
+    // Sort by order
+    projects.sort((a, b) => (a.order || 0) - (b.order || 0));
 
     return NextResponse.json({ projects });
   } catch (error) {
@@ -131,7 +138,7 @@ export async function POST(req: NextRequest) {
       name: data.name,
       description: data.description || '',
       fullDescription: data.fullDescription || '',
-      category: data.category || 'web',
+      categories: data.categories || [],
       tags: data.tags || [],
       thumbnail: data.thumbnail || '',
       images: data.images || [],
@@ -147,6 +154,8 @@ export async function POST(req: NextRequest) {
       testimonial: data.testimonial || null,
       order: maxOrder + 1,
       status: data.status || 'draft',
+      hidden: data.hidden || false,
+      showOnHomepage: data.showOnHomepage || false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

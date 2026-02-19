@@ -16,6 +16,22 @@ interface PortfolioProject {
   industry: string;
 }
 
+// Static fallback portfolio data
+const staticProjects: PortfolioProject[] = [
+  { id: '1', slug: 'orangeschool', name: 'Orange School', description: 'Linguistic center website with online booking', category: 'web', tags: ['Education', 'Booking'], thumbnail: '/content/img/portfolio/orangeschool.png', industry: 'Education' },
+  { id: '2', slug: 'yudenko', name: 'Yudenko', description: 'Designer portfolio showcasing creative work', category: 'web', tags: ['Portfolio', 'Creative'], thumbnail: '/content/img/portfolio/yudenko.png', industry: 'Design' },
+  { id: '3', slug: 'slimbeauty', name: 'Slim Beauty', description: 'Massage salon booking platform', category: 'web', tags: ['Wellness', 'Booking'], thumbnail: '/content/img/portfolio/slimbeauty.png', industry: 'Wellness' },
+  { id: '4', slug: 'dneprlaw', name: 'Dneprlaw', description: 'Legal services firm website', category: 'web', tags: ['Legal', 'Corporate'], thumbnail: '/content/img/portfolio/dneprlaw.png', industry: 'Legal' },
+  { id: '5', slug: 'winplast', name: 'Winplast', description: 'Windows & doors manufacturer', category: 'web', tags: ['Manufacturing', 'B2B'], thumbnail: '/content/img/portfolio/winplast.png', industry: 'Manufacturing' },
+  { id: '6', slug: 'macarons', name: 'Macarons', description: 'Artisan bakery e-commerce', category: 'e-commerce', tags: ['Food', 'E-commerce'], thumbnail: '/content/img/portfolio/macarons.png', industry: 'Food & Beverage' },
+  { id: '7', slug: 'avocado', name: 'Avocado', description: 'Health food e-commerce platform', category: 'e-commerce', tags: ['Health Food', 'Subscription'], thumbnail: '/content/img/portfolio/avocado.png', industry: 'Food & Beverage' },
+  { id: '8', slug: 'teplogarant', name: 'Teplogarant', description: 'Heating systems company', category: 'web', tags: ['Industrial', 'B2B'], thumbnail: '/content/img/portfolio/teplogarant.png', industry: 'HVAC' },
+  { id: '9', slug: 'photovis', name: 'Photovis', description: 'Photography studio website', category: 'web', tags: ['Photography', 'Portfolio'], thumbnail: '/content/img/portfolio/photovis.png', industry: 'Photography' },
+  { id: '10', slug: 'atlantika', name: 'Atlantika', description: 'Travel agency booking platform', category: 'e-commerce', tags: ['Travel', 'Booking'], thumbnail: '/content/img/portfolio/portfolio-atlantika.png', industry: 'Travel' },
+  { id: '11', slug: 'best-pc', name: 'Best PC', description: 'Computer hardware store', category: 'e-commerce', tags: ['Electronics', 'E-commerce'], thumbnail: '/content/img/portfolio/best-pc.png', industry: 'Retail' },
+  { id: '12', slug: 'btech', name: 'B-Tech', description: 'Technology consulting firm', category: 'web', tags: ['Technology', 'B2B'], thumbnail: '/content/img/portfolio/btech.png', industry: 'Technology' },
+];
+
 export default function WorkPage() {
   const [projects, setProjects] = useState<PortfolioProject[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,11 +45,16 @@ export default function WorkPage() {
     try {
       const res = await fetch('/api/portfolio');
       const data = await res.json();
-      if (res.ok) {
+      if (res.ok && data.projects && data.projects.length > 0) {
         setProjects(data.projects);
+      } else {
+        // Use static fallback data
+        setProjects(staticProjects);
       }
     } catch (err) {
       console.error('Failed to fetch portfolio:', err);
+      // Use static fallback data on error
+      setProjects(staticProjects);
     } finally {
       setLoading(false);
     }
@@ -44,7 +65,7 @@ export default function WorkPage() {
     : projects.filter(p => p.category === activeCategory);
 
   return (
-    <PageLayout locale="en" title="Our Work" subtitle="Portfolio of completed projects">
+    <PageLayout locale="en" title="Portfolio" subtitle="Our completed projects">
       <div className="py-16">
         <div className="container-section">
           {/* Category Filter */}
@@ -56,7 +77,7 @@ export default function WorkPage() {
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                   activeCategory === cat.id
                     ? 'bg-accent text-white shadow-lg shadow-accent/30'
-                    : 'bg-white/10 text-foreground/70 hover:bg-white/20 hover:text-foreground'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:text-gray-900'
                 }`}
               >
                 {cat.label}
@@ -76,47 +97,65 @@ export default function WorkPage() {
             </div>
           ) : (
             <>
-              {/* Projects Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {/* Projects Grid - Fresh Works Style */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredProjects.map((project) => (
                   <Link
                     key={project.slug}
                     href={`/work/${project.slug}`}
-                    className="group relative aspect-[4/3] bg-surface overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-500"
+                    className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
                   >
-                    <img
-                      src={project.thumbnail}
-                      alt={project.name}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                    {/* Content */}
-                    <div className="absolute inset-0 p-6 flex flex-col justify-end translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <span className="text-accent text-xs uppercase tracking-wider font-medium mb-2">
-                        {project.category}
-                      </span>
-                      <h3 className="text-white font-bold text-xl mb-1">{project.name}</h3>
-                      <p className="text-white/70 text-sm line-clamp-2">{project.description}</p>
-
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-1 mt-3">
-                        {project.tags.slice(0, 2).map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-2 py-0.5 bg-white/10 rounded text-white/60 text-xs"
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                    {/* Thumbnail */}
+                    <div className="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                      <img
+                        src={project.thumbnail}
+                        alt={project.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      {/* Category badge */}
+                      <div className="absolute bottom-4 left-4">
+                        <span className="px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide shadow-lg bg-accent text-white">
+                          {project.category}
+                        </span>
                       </div>
                     </div>
 
-                    {/* Always visible label */}
-                    <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent group-hover:opacity-0 transition-opacity duration-300">
-                      <h3 className="text-white font-semibold">{project.name}</h3>
-                      <p className="text-white/60 text-sm">{project.industry}</p>
+                    {/* Content */}
+                    <div className="p-6">
+                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-accent transition-colors mb-2">
+                        {project.name}
+                      </h3>
+
+                      <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                        {project.description}
+                      </p>
+
+                      {/* Tags */}
+                      {project.tags && project.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {project.tags.slice(0, 3).map((tag) => (
+                            <span
+                              key={tag}
+                              className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* View link */}
+                      <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <span className="text-sm text-gray-400">
+                          {project.industry}
+                        </span>
+                        <span className="text-accent font-medium text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
+                          View Project
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        </span>
+                      </div>
                     </div>
                   </Link>
                 ))}

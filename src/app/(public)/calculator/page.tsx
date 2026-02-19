@@ -107,7 +107,7 @@ export default function CalculatorPage() {
               <div className="md:col-span-2 space-y-8">
                 {/* Project Type */}
                 <div>
-                  <h3 className="text-lg font-bold text-primary mb-4">Project Type</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Project Type</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {(Object.keys(projectTypes) as ProjectType[]).map((type) => (
                       <button
@@ -116,11 +116,11 @@ export default function CalculatorPage() {
                         className={`p-4 rounded-lg text-left transition-colors ${
                           projectType === type
                             ? 'bg-accent text-white'
-                            : 'bg-white border border-primary/20 text-primary hover:border-accent'
+                            : 'bg-white border border-gray-300 text-gray-900 hover:border-accent'
                         }`}
                       >
                         <div className="font-semibold">{projectTypes[type].name}</div>
-                        <div className={`text-xs mt-1 ${projectType === type ? 'text-white/70' : 'text-primary/50'}`}>
+                        <div className={`text-xs mt-1 ${projectType === type ? 'text-white/70' : 'text-gray-500'}`}>
                           {projectTypes[type].description}
                         </div>
                       </button>
@@ -130,7 +130,7 @@ export default function CalculatorPage() {
 
                 {/* Design Option */}
                 <div>
-                  <h3 className="text-lg font-bold text-primary mb-4">Design</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Design</h3>
                   <div className="grid grid-cols-3 gap-3">
                     {(Object.keys(designOptions) as DesignOption[]).map((opt) => (
                       <button
@@ -139,7 +139,7 @@ export default function CalculatorPage() {
                         className={`p-4 rounded-lg text-center transition-colors ${
                           design === opt
                             ? 'bg-accent text-white'
-                            : 'bg-white border border-primary/20 text-primary hover:border-accent'
+                            : 'bg-white border border-gray-300 text-gray-900 hover:border-accent'
                         }`}
                       >
                         {designOptions[opt].name}
@@ -150,7 +150,7 @@ export default function CalculatorPage() {
 
                 {/* Features */}
                 <div>
-                  <h3 className="text-lg font-bold text-primary mb-4">Additional Features</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Additional Features</h3>
                   <div className="grid grid-cols-2 gap-3">
                     {features.map((feature) => (
                       <button
@@ -162,7 +162,7 @@ export default function CalculatorPage() {
                             ? 'bg-accent text-white'
                             : feature.included
                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                            : 'bg-white border border-primary/20 text-primary hover:border-accent'
+                            : 'bg-white border border-gray-300 text-gray-900 hover:border-accent'
                         }`}
                       >
                         <div
@@ -181,7 +181,7 @@ export default function CalculatorPage() {
                         <div className="flex-1">
                           <div className="font-medium">{feature.name}</div>
                           {!feature.included && (
-                            <div className={`text-xs ${selectedFeatures.includes(feature.id) ? 'text-white/70' : 'text-primary/50'}`}>
+                            <div className={`text-xs ${selectedFeatures.includes(feature.id) ? 'text-white/70' : 'text-gray-500'}`}>
                               +${feature.price}
                             </div>
                           )}
@@ -197,14 +197,14 @@ export default function CalculatorPage() {
 
               {/* Price Summary */}
               <div className="md:col-span-1">
-                <div className="bg-primary text-white rounded-lg p-6 sticky top-24">
+                <div className="bg-gray-900 text-white rounded-lg p-6 sticky top-24">
                   <h3 className="text-lg font-bold mb-4">Estimated Price</h3>
 
-                  <div className="text-4xl font-bold mb-6">
+                  <div className="text-4xl font-bold text-accent mb-6">
                     ${calculatePrice().toLocaleString()}
                   </div>
 
-                  <div className="text-white/60 text-sm space-y-2 mb-6">
+                  <div className="text-gray-400 text-sm space-y-2 mb-6">
                     <div className="flex justify-between">
                       <span>Base ({projectTypes[projectType].name})</span>
                       <span>${projectTypes[projectType].base}</span>
@@ -226,7 +226,7 @@ export default function CalculatorPage() {
                   {!showLeadForm && !submitted && (
                     <button
                       onClick={() => setShowLeadForm(true)}
-                      className="block w-full py-3 bg-white text-primary text-center font-medium rounded hover:bg-white/90 transition-colors"
+                      className="block w-full py-3 bg-accent text-white text-center font-medium rounded hover:bg-accent/90 transition-colors"
                     >
                       Get a Quote
                     </button>

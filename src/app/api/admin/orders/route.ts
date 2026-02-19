@@ -24,23 +24,34 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
     const type = searchParams.get('type');
 
-    let query = db.collection('orders').orderBy('createdAt', 'desc');
-
-    if (status && ['new', 'reviewed', 'archived'].includes(status)) {
-      query = query.where('status', '==', status);
-    }
-
-    if (type && ['brief', 'calculator', 'contact'].includes(type)) {
-      query = query.where('type', '==', type);
-    }
-
-    const snapshot = await query.limit(100).get();
-    const orders = snapshot.docs.map(doc => ({
+    // Fetch all orders and filter in memory to avoid composite index requirement
+    const snapshot = await db.collection('orders').get();
+    let orders: any[] = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
       createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
       reviewedAt: doc.data().reviewedAt?.toDate?.()?.toISOString() || null,
     }));
+
+    // Filter by status
+    if (status && ['new', 'reviewed', 'archived'].includes(status)) {
+      orders = orders.filter(o => o.status === status);
+    }
+
+    // Filter by type
+    if (type && ['brief', 'calculator', 'contact'].includes(type)) {
+      orders = orders.filter(o => o.type === type);
+    }
+
+    // Sort by createdAt desc
+    orders.sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
+
+    // Limit to 100
+    orders = orders.slice(0, 100);
 
     // Get counts by status
     const countsSnapshot = await db.collection('orders').get();

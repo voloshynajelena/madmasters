@@ -163,8 +163,8 @@ export default function BriefPageFr() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-primary mb-4">Brief Reçu!</h2>
-            <p className="text-primary/60 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Brief Reçu!</h2>
+            <p className="text-gray-600 mb-8">
               Merci pour votre brief détaillé. Nous examinerons vos besoins et vous recontacterons dans les 24 heures.
             </p>
             <button
@@ -190,14 +190,14 @@ export default function BriefPageFr() {
                 <div
                   key={s}
                   className={`flex items-center justify-center w-10 h-10 rounded-full font-medium transition-colors ${
-                    s === step ? 'bg-accent text-white' : s < step ? 'bg-green-500 text-white' : 'bg-primary/10 text-primary/40'
+                    s === step ? 'bg-accent text-white' : s < step ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
                   }`}
                 >
                   {s < step ? '✓' : s}
                 </div>
               ))}
             </div>
-            <div className="flex justify-between text-xs text-primary/50 px-2">
+            <div className="flex justify-between text-xs text-gray-500 px-2">
               <span>Projet</span>
               <span>Fonctionnalités</span>
               <span>Budget</span>
@@ -214,27 +214,27 @@ export default function BriefPageFr() {
           {/* Step 1 */}
           {step === 1 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-primary">Quel type de projet est-ce?</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Quel type de projet est-ce?</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {projectTypes.map(type => (
                   <button
                     key={type.value}
                     onClick={() => updateField('projectType', type.value)}
                     className={`p-4 rounded-lg border-2 text-left transition-colors ${
-                      formData.projectType === type.value ? 'border-accent bg-accent/10' : 'border-primary/10 hover:border-primary/30'
+                      formData.projectType === type.value ? 'border-accent bg-accent/10' : 'border-gray-300 hover:border-gray-400 bg-white'
                     }`}
                   >
-                    <div className="font-medium text-primary">{type.label}</div>
-                    <div className="text-sm text-primary/60">{type.description}</div>
+                    <div className="font-medium text-gray-900">{type.label}</div>
+                    <div className="text-sm text-gray-600">{type.description}</div>
                   </button>
                 ))}
               </div>
               <div>
-                <label className="block text-primary/70 text-sm mb-2">Décrivez brièvement votre projet</label>
+                <label className="block text-gray-700 text-sm mb-2">Décrivez brièvement votre projet</label>
                 <textarea
                   value={formData.projectDescription}
                   onChange={e => updateField('projectDescription', e.target.value)}
-                  className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none h-32"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-accent focus:outline-none h-32 bg-white"
                   placeholder="Que souhaitez-vous créer? Quel problème résout-il?"
                 />
               </div>
@@ -244,14 +244,14 @@ export default function BriefPageFr() {
           {/* Step 2 */}
           {step === 2 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-primary">Quelles fonctionnalités avez-vous besoin?</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Quelles fonctionnalités avez-vous besoin?</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {featureOptions.map(feature => (
                   <button
                     key={feature}
                     onClick={() => toggleFeature(feature)}
                     className={`p-3 rounded-lg border text-sm text-left transition-colors ${
-                      formData.features.includes(feature) ? 'border-accent bg-accent/10 text-primary' : 'border-primary/10 text-primary/70 hover:border-primary/30'
+                      formData.features.includes(feature) ? 'border-accent bg-accent/10 text-gray-900' : 'border-gray-300 text-gray-700 hover:border-gray-400 bg-white'
                     }`}
                   >
                     {feature}
@@ -259,18 +259,18 @@ export default function BriefPageFr() {
                 ))}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer ${formData.hasDesign ? 'border-accent bg-accent/10' : 'border-primary/10'}`}>
+                <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer ${formData.hasDesign ? 'border-accent bg-accent/10' : 'border-gray-300 bg-white'}`}>
                   <input type="checkbox" checked={formData.hasDesign} onChange={e => updateField('hasDesign', e.target.checked)} className="w-5 h-5" />
                   <div>
-                    <div className="font-medium text-primary">J'ai des designs prêts</div>
-                    <div className="text-sm text-primary/60">Fichiers Figma, Sketch ou PSD</div>
+                    <div className="font-medium text-gray-900">J'ai des designs prêts</div>
+                    <div className="text-sm text-gray-600">Fichiers Figma, Sketch ou PSD</div>
                   </div>
                 </label>
-                <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer ${formData.hasContent ? 'border-accent bg-accent/10' : 'border-primary/10'}`}>
+                <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer ${formData.hasContent ? 'border-accent bg-accent/10' : 'border-gray-300 bg-white'}`}>
                   <input type="checkbox" checked={formData.hasContent} onChange={e => updateField('hasContent', e.target.checked)} className="w-5 h-5" />
                   <div>
-                    <div className="font-medium text-primary">J'ai du contenu prêt</div>
-                    <div className="text-sm text-primary/60">Texte, images, vidéos</div>
+                    <div className="font-medium text-gray-900">J'ai du contenu prêt</div>
+                    <div className="text-sm text-gray-600">Texte, images, vidéos</div>
                   </div>
                 </label>
               </div>
@@ -281,35 +281,35 @@ export default function BriefPageFr() {
           {step === 3 && (
             <div className="space-y-8">
               <div>
-                <h2 className="text-xl font-semibold text-primary mb-4">Quel est votre budget?</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Quel est votre budget?</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {budgetRanges.map(budget => (
                     <button
                       key={budget.value}
                       onClick={() => updateField('budget', budget.value)}
                       className={`p-4 rounded-lg border-2 text-left transition-colors ${
-                        formData.budget === budget.value ? 'border-accent bg-accent/10' : 'border-primary/10 hover:border-primary/30'
+                        formData.budget === budget.value ? 'border-accent bg-accent/10' : 'border-gray-300 hover:border-gray-400 bg-white'
                       }`}
                     >
-                      <div className="font-medium text-primary">{budget.label}</div>
+                      <div className="font-medium text-gray-900">{budget.label}</div>
                       <div className="text-accent font-semibold">{budget.range}</div>
                     </button>
                   ))}
                 </div>
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-primary mb-4">Quel est votre délai?</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">Quel est votre délai?</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {timelineOptions.map(timeline => (
                     <button
                       key={timeline.value}
                       onClick={() => updateField('timeline', timeline.value)}
                       className={`p-4 rounded-lg border-2 text-center transition-colors ${
-                        formData.timeline === timeline.value ? 'border-accent bg-accent/10' : 'border-primary/10 hover:border-primary/30'
+                        formData.timeline === timeline.value ? 'border-accent bg-accent/10' : 'border-gray-300 hover:border-gray-400 bg-white'
                       }`}
                     >
-                      <div className="font-medium text-primary">{timeline.label}</div>
-                      <div className="text-sm text-primary/60">{timeline.description}</div>
+                      <div className="font-medium text-gray-900">{timeline.label}</div>
+                      <div className="text-sm text-gray-600">{timeline.description}</div>
                     </button>
                   ))}
                 </div>
@@ -320,36 +320,36 @@ export default function BriefPageFr() {
           {/* Step 4 */}
           {step === 4 && (
             <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-primary">Comment pouvons-nous vous contacter?</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Comment pouvons-nous vous contacter?</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-primary/70 text-sm mb-2">Nom *</label>
+                  <label className="block text-gray-700 text-sm mb-2">Nom *</label>
                   <input type="text" value={formData.name} onChange={e => updateField('name', e.target.value)}
-                    className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none" required />
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-accent focus:outline-none bg-white" required />
                 </div>
                 <div>
-                  <label className="block text-primary/70 text-sm mb-2">Entreprise</label>
+                  <label className="block text-gray-700 text-sm mb-2">Entreprise</label>
                   <input type="text" value={formData.company} onChange={e => updateField('company', e.target.value)}
-                    className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none" />
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-accent focus:outline-none bg-white" />
                 </div>
                 <div>
-                  <label className="block text-primary/70 text-sm mb-2">Email *</label>
+                  <label className="block text-gray-700 text-sm mb-2">Email *</label>
                   <input type="email" value={formData.email} onChange={e => updateField('email', e.target.value)}
-                    className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none" required />
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-accent focus:outline-none bg-white" required />
                 </div>
                 <div>
-                  <label className="block text-primary/70 text-sm mb-2">Téléphone</label>
+                  <label className="block text-gray-700 text-sm mb-2">Téléphone</label>
                   <input type="tel" value={formData.phone} onChange={e => updateField('phone', e.target.value)}
-                    className="w-full border border-primary/20 rounded-lg px-4 py-3 text-primary focus:border-accent focus:outline-none" />
+                    className="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-accent focus:outline-none bg-white" />
                 </div>
               </div>
             </div>
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between mt-12 pt-6 border-t border-primary/10">
+          <div className="flex justify-between mt-12 pt-6 border-t border-gray-200">
             <button onClick={() => setStep(s => s - 1)} disabled={step === 1}
-              className="px-6 py-3 text-primary/60 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+              className="px-6 py-3 text-gray-600 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
               ← Retour
             </button>
             {step < totalSteps ? (

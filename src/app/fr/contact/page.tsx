@@ -33,7 +33,7 @@ export default function ContactPage() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-primary/20 rounded-lg focus:outline-none focus:border-accent bg-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-accent bg-white text-gray-900"
                 />
                 <input
                   type="email"
@@ -41,7 +41,7 @@ export default function ContactPage() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 border border-primary/20 rounded-lg focus:outline-none focus:border-accent bg-white"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-accent bg-white text-gray-900"
                 />
                 <textarea
                   placeholder="Votre message *"
@@ -49,9 +49,9 @@ export default function ContactPage() {
                   rows={5}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-4 py-3 border border-primary/20 rounded-lg focus:outline-none focus:border-accent bg-white resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-accent bg-white resize-none text-gray-900"
                 />
-                <button type="submit" className="w-full px-8 py-4 bg-primary text-white text-sm tracking-wider hover:bg-primary-light transition-colors">
+                <button type="submit" className="w-full px-8 py-4 bg-accent text-white text-sm tracking-wider rounded-lg hover:bg-accent/90 transition-colors">
                   Envoyer le message
                 </button>
               </form>

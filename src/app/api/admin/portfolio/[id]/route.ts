@@ -41,7 +41,7 @@ export async function GET(
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ project: { id: doc.id, ...doc.data() } });
+    return NextResponse.json({ id: doc.id, ...doc.data() });
   } catch (error) {
     console.error('Error fetching project:', error);
     return NextResponse.json({ error: 'Failed to fetch project' }, { status: 500 });
@@ -85,7 +85,7 @@ export async function PUT(
       updatedAt: new Date().toISOString(),
     };
 
-    // Remove id from update data if present
+    // Remove fields that shouldn't be updated
     delete updateData.id;
 
     await docRef.update(updateData);
