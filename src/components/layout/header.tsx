@@ -53,16 +53,7 @@ export function Header({ locale }: HeaderProps) {
       {/* Hamburger Label */}
       <label
         htmlFor="hamburger"
-        className="hamburger cursor-pointer"
-        style={{
-          zIndex: 9999,
-          position: 'absolute',
-          display: 'block',
-          height: '20px',
-          width: '30px',
-          top: '78px',
-          right: 'calc(4vw + 12px)',
-        }}
+        className="hamburger cursor-pointer absolute block z-[9999] h-5 w-[30px] top-[30px] right-4 sm:top-[78px] sm:right-[calc(4vw+12px)]"
       >
         <i
           className="absolute w-full pointer-events-auto"
@@ -108,15 +99,13 @@ export function Header({ locale }: HeaderProps) {
 
       {/* Language Toggle */}
       <div
-        className="langs absolute z-10 text-center"
-        style={{
-          top: '130px',
-          right: '85px',
-          font: "800 12px/16px 'Vaud Display', Helvetica, sans-serif",
-          color: 'rgba(97, 97, 97, 0.5)',
-          transition: 'opacity 500ms cubic-bezier(.19, 1, .22, 1) 0ms',
-          opacity: isMenuOpen ? 0 : 1,
-        }}
+        className={cn(
+          "langs absolute z-10 text-center hidden sm:block",
+          "top-[80px] right-4 sm:top-[130px] sm:right-[85px]",
+          "font-extrabold text-xs leading-4 text-[rgba(97,97,97,0.5)]",
+          "transition-opacity duration-500",
+          isMenuOpen ? "opacity-0" : "opacity-100"
+        )}
       >
         <Link
           href="/"
@@ -151,18 +140,18 @@ export function Header({ locale }: HeaderProps) {
         )}
       >
         {/* Menu Content */}
-        <nav className="flex-1 flex flex-col justify-center px-8 md:px-16">
-          <ul className="space-y-1">
+        <nav className="flex-1 flex flex-col justify-center px-6 sm:px-8 md:px-16">
+          <ul className="space-y-0.5 sm:space-y-1">
             {navItems.map((item, index) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   className={cn(
-                    "block py-3 text-2xl md:text-3xl font-light tracking-wide transition-colors duration-200",
+                    "block py-2 sm:py-3 text-xl sm:text-2xl md:text-3xl font-light tracking-wide transition-colors duration-200",
                     item.isHighlight
                       ? "text-accent hover:text-accent/80"
                       : item.isAdmin
-                        ? "text-white/40 hover:text-white/60 text-lg md:text-xl"
+                        ? "text-white/40 hover:text-white/60 text-base sm:text-lg md:text-xl"
                         : "text-white/80 hover:text-white"
                   )}
                   onClick={() => setIsMenuOpen(false)}

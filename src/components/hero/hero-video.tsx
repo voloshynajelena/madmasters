@@ -34,18 +34,9 @@ export function HeroVideo({
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  // Check device type - don't load video on mobile to save bandwidth
+  // Always show video on all devices (including mobile)
   useEffect(() => {
-    const checkDevice = () => {
-      // Consider mobile/tablet if < 768px or touch device with small screen
-      const isMobile = window.innerWidth < 768;
-      const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      setIsMobileOrTablet(isMobile || (isTouch && window.innerWidth < 1024));
-    };
-
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
-    return () => window.removeEventListener('resize', checkDevice);
+    setIsMobileOrTablet(false);
   }, []);
 
   // Conditional video loading

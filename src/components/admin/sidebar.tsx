@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -20,6 +21,7 @@ const navItems = [
 
 export function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -102,11 +104,98 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
 
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 inset-x-0 h-16 bg-primary-dark z-50 flex items-center justify-between px-4">
-        <Link href="/admin" className="text-xl font-bold text-white">
+        <Link href="/admin" className="text-lg font-bold text-white">
           Mad Masters
         </Link>
-        {/* TODO: Mobile menu */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="w-10 h-10 flex items-center justify-center text-white"
+        >
+          {mobileMenuOpen ? (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          )}
+        </button>
       </header>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-40 bg-black/50" onClick={() => setMobileMenuOpen(false)} />
+      )}
+
+      {/* Mobile Menu Drawer */}
+      <div
+        className={cn(
+          "lg:hidden fixed top-16 right-0 bottom-0 w-64 bg-primary-dark z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto",
+          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        )}
+      >
+        <nav className="px-4 py-4 space-y-1">
+          {navItems.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              (item.href !== '/admin' && pathname.startsWith(item.href));
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-white/10 text-white'
+                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                )}
+              >
+                <item.icon className="w-5 h-5" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* View Website Link */}
+        <div className="px-4 py-2 border-t border-white/10 mt-2">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-accent hover:text-accent/80 hover:bg-white/5 transition-colors"
+          >
+            <ExternalLinkIcon className="w-5 h-5" />
+            View Website
+          </a>
+        </div>
+
+        {/* Theme Toggle */}
+        <div className="px-4 py-2 border-t border-white/10">
+          <div className="flex items-center justify-between px-4 py-2">
+            <span className="text-sm text-white/60">Theme</span>
+            <ThemeToggle />
+          </div>
+        </div>
+
+        {/* User / Logout */}
+        <div className="p-4 border-t border-white/10">
+          <div className="px-4 py-2 text-sm text-white/60 truncate">
+            {user.email}
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <LogoutIcon className="w-5 h-5" />
+            Log Out
+          </button>
+        </div>
+      </div>
+
       <div className="lg:hidden h-16" />
     </>
   );

@@ -168,65 +168,80 @@ export default function PortfolioPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Portfolio</h1>
-          <p className="text-white/60 mt-1">Manage your portfolio projects</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Portfolio</h1>
+          <p className="text-white/60 text-sm sm:text-base mt-1">Manage your portfolio projects</p>
         </div>
         <Link
           href="/admin/portfolio/new"
-          className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
+          className="inline-flex items-center justify-center px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors text-sm sm:text-base whitespace-nowrap"
         >
           + New Project
         </Link>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 mb-6">
-        <div className="flex gap-2">
-          {(['all', 'published', 'draft'] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-lg text-sm capitalize transition-colors ${
-                filter === status
-                  ? 'bg-accent text-white'
-                  : 'bg-surface text-white/70 hover:bg-surface-hover border border-white/10'
-              }`}
-            >
-              {status}
-            </button>
-          ))}
+      <div className="space-y-3 mb-6">
+        {/* Status Filter */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-white/40 text-xs uppercase tracking-wide w-16 shrink-0">Status</span>
+          <div className="flex flex-wrap gap-1.5">
+            {(['all', 'published', 'draft'] as const).map((status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm capitalize transition-colors ${
+                  filter === status
+                    ? 'bg-accent text-white'
+                    : 'bg-surface text-white/70 hover:bg-surface-hover border border-white/10'
+                }`}
+              >
+                {status}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2">
-          {(['all', 'visible', 'hidden'] as const).map((visibility) => (
-            <button
-              key={visibility}
-              onClick={() => setVisibilityFilter(visibility)}
-              className={`px-4 py-2 rounded-lg text-sm capitalize transition-colors ${
-                visibilityFilter === visibility
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-surface text-white/70 hover:bg-surface-hover border border-white/10'
-              }`}
-            >
-              {visibility}
-            </button>
-          ))}
+
+        {/* Visibility Filter */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-white/40 text-xs uppercase tracking-wide w-16 shrink-0">Visible</span>
+          <div className="flex flex-wrap gap-1.5">
+            {(['all', 'visible', 'hidden'] as const).map((visibility) => (
+              <button
+                key={visibility}
+                onClick={() => setVisibilityFilter(visibility)}
+                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm capitalize transition-colors ${
+                  visibilityFilter === visibility
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-surface text-white/70 hover:bg-surface-hover border border-white/10'
+                }`}
+              >
+                {visibility}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-2 rounded-lg text-sm capitalize transition-colors ${
-                categoryFilter === cat
-                  ? 'bg-white/20 text-white'
-                  : 'bg-surface text-white/50 hover:bg-surface-hover border border-white/10'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+
+        {/* Category Filter */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-white/40 text-xs uppercase tracking-wide w-16 shrink-0">Category</span>
+          <div className="flex flex-wrap gap-1.5">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategoryFilter(cat)}
+                className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm capitalize transition-colors ${
+                  categoryFilter === cat
+                    ? 'bg-white/20 text-white'
+                    : 'bg-surface text-white/50 hover:bg-surface-hover border border-white/10'
+                }`}
+              >
+                {cat === 'e-commerce' ? 'E-Com' : cat}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -247,122 +262,225 @@ export default function PortfolioPage() {
           <p className="text-white/60">No projects match the current filters</p>
         </div>
       ) : (
-        <div className="bg-surface rounded-lg overflow-hidden border border-white/10">
-          <table className="w-full">
-            <thead className="bg-surface-muted">
-              <tr>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium w-12">#</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Project</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Category</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Client</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Status</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Visible</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Homepage</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Live URL</th>
-                <th className="text-right px-4 py-3 text-white/60 text-sm font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/10">
-              {filteredProjects.map((project) => (
-                <tr key={project.id} className="hover:bg-surface-hover transition-colors">
-                  <td className="px-4 py-3 text-white/40 text-sm">{project.order}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      {project.thumbnail && (
-                        <img
-                          src={project.thumbnail}
-                          alt={project.name}
-                          className="w-12 h-9 object-cover rounded"
-                        />
-                      )}
-                      <div>
-                        <p className="text-white font-medium">{project.name}</p>
-                        <p className="text-white/40 text-sm">/{getDisplaySlug(project)}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {getCategories(project).map((cat) => (
-                        <span key={cat} className="px-2 py-0.5 bg-white/10 text-white/70 rounded text-xs">
-                          {categoryLabels[cat] || cat}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-white/70">{project.client}</td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => toggleStatus(project)}
-                      className={`inline-block px-2 py-1 rounded text-xs ${
-                        project.status === 'published'
-                          ? 'bg-green-500/20 text-green-400'
-                          : 'bg-yellow-500/20 text-yellow-400'
-                      }`}
+        <>
+          {/* Mobile Card View */}
+          <div className="lg:hidden space-y-4">
+            {filteredProjects.map((project) => (
+              <div key={project.id} className="bg-surface rounded-lg border border-white/10 p-4">
+                {/* Header */}
+                <div className="flex items-start gap-3 mb-3">
+                  {project.thumbnail && (
+                    <img
+                      src={project.thumbnail}
+                      alt={project.name}
+                      className="w-16 h-12 object-cover rounded shrink-0"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-white font-medium truncate">{project.name}</p>
+                    <p className="text-white/40 text-xs">/{getDisplaySlug(project)}</p>
+                    <p className="text-white/50 text-sm mt-1">{project.client}</p>
+                  </div>
+                  <span className="text-white/30 text-xs">#{project.order}</span>
+                </div>
+
+                {/* Categories */}
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {getCategories(project).map((cat) => (
+                    <span key={cat} className="px-2 py-0.5 bg-white/10 text-white/70 rounded text-xs">
+                      {categoryLabels[cat] || cat}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Status Toggles */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  <button
+                    onClick={() => toggleStatus(project)}
+                    className={`px-2 py-1 rounded text-xs ${
+                      project.status === 'published'
+                        ? 'bg-green-500/20 text-green-400'
+                        : 'bg-yellow-500/20 text-yellow-400'
+                    }`}
+                  >
+                    {project.status}
+                  </button>
+                  <button
+                    onClick={() => toggleHidden(project)}
+                    className={`px-2 py-1 rounded text-xs ${
+                      project.hidden
+                        ? 'bg-red-500/20 text-red-400'
+                        : 'bg-green-500/20 text-green-400'
+                    }`}
+                  >
+                    {project.hidden ? 'Hidden' : 'Visible'}
+                  </button>
+                  <button
+                    onClick={() => toggleHomepage(project)}
+                    className={`px-2 py-1 rounded text-xs ${
+                      project.showOnHomepage
+                        ? 'bg-accent/20 text-accent'
+                        : 'bg-white/10 text-white/40'
+                    }`}
+                  >
+                    {project.showOnHomepage ? 'Homepage' : 'Not Featured'}
+                  </button>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                  {project.liveUrl ? (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent hover:underline text-sm truncate max-w-[150px]"
                     >
-                      {project.status}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => toggleHidden(project)}
-                      className={`inline-block px-2 py-1 rounded text-xs ${
-                        project.hidden
-                          ? 'bg-red-500/20 text-red-400'
-                          : 'bg-green-500/20 text-green-400'
-                      }`}
+                      {project.liveUrl.replace(/^https?:\/\//, '')}
+                    </a>
+                  ) : (
+                    <span className="text-white/30 text-sm">No live URL</span>
+                  )}
+                  <div className="flex gap-2">
+                    <Link
+                      href={`/admin/portfolio/${project.id}`}
+                      className="px-3 py-1.5 text-sm bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
                     >
-                      {project.hidden ? 'Hidden' : 'Visible'}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3">
+                      Edit
+                    </Link>
                     <button
-                      onClick={() => toggleHomepage(project)}
-                      className={`inline-block px-2 py-1 rounded text-xs ${
-                        project.showOnHomepage
-                          ? 'bg-accent/20 text-accent'
-                          : 'bg-white/10 text-white/40'
-                      }`}
+                      onClick={() => handleDelete(project)}
+                      disabled={deleting === project.id}
+                      className="px-3 py-1.5 text-sm bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors disabled:opacity-50"
                     >
-                      {project.showOnHomepage ? 'Featured' : 'No'}
+                      {deleting === project.id ? '...' : 'Delete'}
                     </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    {project.liveUrl ? (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-accent hover:underline text-sm truncate block max-w-[150px]"
-                      >
-                        {project.liveUrl.replace(/^https?:\/\//, '')}
-                      </a>
-                    ) : (
-                      <span className="text-white/30 text-sm">-</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex gap-2 justify-end">
-                      <Link
-                        href={`/admin/portfolio/${project.id}`}
-                        className="px-3 py-1 text-sm bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
-                      >
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(project)}
-                        disabled={deleting === project.id}
-                        className="px-3 py-1 text-sm bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors disabled:opacity-50"
-                      >
-                        {deleting === project.id ? '...' : 'Delete'}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden lg:block bg-surface rounded-lg overflow-hidden border border-white/10">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-surface-muted">
+                  <tr>
+                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium w-12">#</th>
+                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Project</th>
+                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Category</th>
+                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Client</th>
+                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Status</th>
+                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Visible</th>
+                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Homepage</th>
+                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Live URL</th>
+                    <th className="text-right px-4 py-3 text-white/60 text-sm font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10">
+                  {filteredProjects.map((project) => (
+                    <tr key={project.id} className="hover:bg-surface-hover transition-colors">
+                      <td className="px-4 py-3 text-white/40 text-sm">{project.order}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          {project.thumbnail && (
+                            <img
+                              src={project.thumbnail}
+                              alt={project.name}
+                              className="w-12 h-9 object-cover rounded"
+                            />
+                          )}
+                          <div>
+                            <p className="text-white font-medium">{project.name}</p>
+                            <p className="text-white/40 text-sm">/{getDisplaySlug(project)}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap gap-1">
+                          {getCategories(project).map((cat) => (
+                            <span key={cat} className="px-2 py-0.5 bg-white/10 text-white/70 rounded text-xs">
+                              {categoryLabels[cat] || cat}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-white/70">{project.client}</td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => toggleStatus(project)}
+                          className={`inline-block px-2 py-1 rounded text-xs ${
+                            project.status === 'published'
+                              ? 'bg-green-500/20 text-green-400'
+                              : 'bg-yellow-500/20 text-yellow-400'
+                          }`}
+                        >
+                          {project.status}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => toggleHidden(project)}
+                          className={`inline-block px-2 py-1 rounded text-xs ${
+                            project.hidden
+                              ? 'bg-red-500/20 text-red-400'
+                              : 'bg-green-500/20 text-green-400'
+                          }`}
+                        >
+                          {project.hidden ? 'Hidden' : 'Visible'}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3">
+                        <button
+                          onClick={() => toggleHomepage(project)}
+                          className={`inline-block px-2 py-1 rounded text-xs ${
+                            project.showOnHomepage
+                              ? 'bg-accent/20 text-accent'
+                              : 'bg-white/10 text-white/40'
+                          }`}
+                        >
+                          {project.showOnHomepage ? 'Featured' : 'No'}
+                        </button>
+                      </td>
+                      <td className="px-4 py-3">
+                        {project.liveUrl ? (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent hover:underline text-sm truncate block max-w-[150px]"
+                          >
+                            {project.liveUrl.replace(/^https?:\/\//, '')}
+                          </a>
+                        ) : (
+                          <span className="text-white/30 text-sm">-</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex gap-2 justify-end">
+                          <Link
+                            href={`/admin/portfolio/${project.id}`}
+                            className="px-3 py-1 text-sm bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(project)}
+                            disabled={deleting === project.id}
+                            className="px-3 py-1 text-sm bg-red-500/20 text-red-400 rounded hover:bg-red-500/30 transition-colors disabled:opacity-50"
+                          >
+                            {deleting === project.id ? '...' : 'Delete'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
         </div>
+        </>
       )}
     </div>
   );

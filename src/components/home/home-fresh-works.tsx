@@ -87,7 +87,7 @@ export function HomeFreshWorks({ locale, maxItems = 6 }: HomeFreshWorksProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+    <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-3 sm:gap-6 max-w-5xl mx-auto">
       {displayItems.map((item, index) => {
         const slug = item.slug || generateSlug(item.name);
         const href = `${prefix}/work/${slug}`;
@@ -96,10 +96,10 @@ export function HomeFreshWorks({ locale, maxItems = 6 }: HomeFreshWorksProps) {
           <Link
             key={item.id || index}
             href={href}
-            className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
+            className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 flex flex-row sm:flex-col"
           >
             {/* Thumbnail */}
-            <div className="relative h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+            <div className="relative w-1/3 min-w-[120px] sm:w-full h-auto sm:h-48 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
               {item.thumbnail ? (
                 <img
                   src={item.thumbnail}
@@ -111,8 +111,8 @@ export function HomeFreshWorks({ locale, maxItems = 6 }: HomeFreshWorksProps) {
                   <span className="text-white/80 text-4xl font-bold">{item.name.charAt(0)}</span>
                 </div>
               )}
-              {/* Category badge */}
-              <div className="absolute bottom-4 left-4">
+              {/* Category badge - hidden on mobile */}
+              <div className="hidden sm:block absolute bottom-4 left-4">
                 <span className="px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide shadow-lg bg-accent text-white">
                   {categoryLabels[getFirstCategory(item)] || 'Web'}
                 </span>
@@ -120,18 +120,23 @@ export function HomeFreshWorks({ locale, maxItems = 6 }: HomeFreshWorksProps) {
             </div>
 
             {/* Content */}
-            <div className="p-6">
-              <h3 className="font-bold text-xl text-gray-900 group-hover:text-accent transition-colors mb-2">
+            <div className="flex-1 p-4 sm:p-6 flex flex-col justify-center sm:justify-start">
+              {/* Category badge - mobile only */}
+              <span className="sm:hidden px-2 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide bg-accent text-white self-start mb-2">
+                {categoryLabels[getFirstCategory(item)] || 'Web'}
+              </span>
+
+              <h3 className="font-bold text-base sm:text-xl text-gray-900 group-hover:text-accent transition-colors mb-1 sm:mb-2">
                 {item.name}
               </h3>
 
-              <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+              <p className="text-gray-600 text-xs sm:text-sm line-clamp-2 mb-2 sm:mb-4">
                 {item.description}
               </p>
 
-              {/* Tags */}
+              {/* Tags - hidden on mobile */}
               {item.tags && item.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="hidden sm:flex flex-wrap gap-2 mb-4">
                   {item.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
@@ -143,8 +148,8 @@ export function HomeFreshWorks({ locale, maxItems = 6 }: HomeFreshWorksProps) {
                 </div>
               )}
 
-              {/* View link */}
-              <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+              {/* View link - desktop */}
+              <div className="hidden sm:flex pt-4 border-t border-gray-100 items-center justify-between">
                 <span className="text-sm text-gray-400">
                   {item.industry || categoryLabels[getFirstCategory(item)] || 'Web'}
                 </span>
@@ -155,6 +160,14 @@ export function HomeFreshWorks({ locale, maxItems = 6 }: HomeFreshWorksProps) {
                   </svg>
                 </span>
               </div>
+
+              {/* View link - mobile */}
+              <span className="sm:hidden text-accent font-medium text-xs flex items-center gap-1 mt-auto">
+                View
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </span>
             </div>
           </Link>
         );

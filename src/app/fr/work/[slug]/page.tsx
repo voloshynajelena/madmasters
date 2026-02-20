@@ -112,13 +112,13 @@ export default function ProjectPageFr() {
           </div>
 
           {/* Project Info Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Main Content */}
-            <div className="lg:col-span-2 space-y-12">
+            <div className="lg:col-span-2 space-y-8 sm:space-y-12">
               {/* Overview */}
               <section>
-                <h2 className="text-2xl font-bold mb-4">Aperçu</h2>
-                <p className="text-foreground/70 leading-relaxed text-lg">
+                <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Aperçu</h2>
+                <p className="text-foreground/70 leading-relaxed text-base sm:text-lg">
                   {project.fullDescription || project.description}
                 </p>
               </section>
@@ -126,8 +126,8 @@ export default function ProjectPageFr() {
               {/* Challenge */}
               {project.challenge && (
                 <section>
-                  <h2 className="text-2xl font-bold mb-4">Le Défi</h2>
-                  <p className="text-foreground/70 leading-relaxed">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Le Défi</h2>
+                  <p className="text-foreground/70 leading-relaxed text-sm sm:text-base">
                     {project.challenge}
                   </p>
                 </section>
@@ -136,8 +136,8 @@ export default function ProjectPageFr() {
               {/* Solution */}
               {project.solution && (
                 <section>
-                  <h2 className="text-2xl font-bold mb-4">Notre Solution</h2>
-                  <p className="text-foreground/70 leading-relaxed">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">Notre Solution</h2>
+                  <p className="text-foreground/70 leading-relaxed text-sm sm:text-base">
                     {project.solution}
                   </p>
                 </section>
@@ -184,17 +184,17 @@ export default function ProjectPageFr() {
 
               {/* Testimonial */}
               {project.testimonial && (
-                <section className="bg-surface rounded-2xl p-8">
-                  <blockquote className="text-xl italic text-foreground/80 mb-4">
+                <section className="bg-surface rounded-2xl p-5 sm:p-8">
+                  <blockquote className="text-base sm:text-xl italic text-foreground/80 mb-3 sm:mb-4">
                     "{project.testimonial.quote}"
                   </blockquote>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold">
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-sm sm:text-base">
                       {project.testimonial.author.charAt(0)}
                     </div>
                     <div>
-                      <div className="font-semibold">{project.testimonial.author}</div>
-                      <div className="text-foreground/60 text-sm">
+                      <div className="font-semibold text-sm sm:text-base">{project.testimonial.author}</div>
+                      <div className="text-foreground/60 text-xs sm:text-sm">
                         {project.testimonial.role}
                       </div>
                     </div>
@@ -204,10 +204,10 @@ export default function ProjectPageFr() {
             </div>
 
             {/* Sidebar */}
-            <aside className="space-y-8">
+            <aside className="space-y-4 sm:space-y-8">
               {/* Project Details */}
-              <div className="bg-surface rounded-2xl p-6 space-y-6">
-                <h3 className="font-bold text-lg border-b border-foreground/10 pb-3">
+              <div className="bg-surface rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+                <h3 className="font-bold text-base sm:text-lg border-b border-foreground/10 pb-2 sm:pb-3">
                   Détails du Projet
                 </h3>
 
@@ -245,8 +245,8 @@ export default function ProjectPageFr() {
 
               {/* Services */}
               {project.services && project.services.length > 0 && (
-                <div className="bg-surface rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-foreground/10 pb-3 mb-4">
+                <div className="bg-surface rounded-2xl p-4 sm:p-6">
+                  <h3 className="font-bold text-base sm:text-lg border-b border-foreground/10 pb-2 sm:pb-3 mb-3 sm:mb-4">
                     Services Fournis
                   </h3>
                   <ul className="space-y-2">
@@ -265,8 +265,8 @@ export default function ProjectPageFr() {
 
               {/* Technologies */}
               {project.technologies && project.technologies.length > 0 && (
-                <div className="bg-surface rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-foreground/10 pb-3 mb-4">
+                <div className="bg-surface rounded-2xl p-4 sm:p-6">
+                  <h3 className="font-bold text-base sm:text-lg border-b border-foreground/10 pb-2 sm:pb-3 mb-3 sm:mb-4">
                     Technologies Utilisées
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -284,8 +284,8 @@ export default function ProjectPageFr() {
 
               {/* Tags */}
               {project.tags && project.tags.length > 0 && (
-                <div className="bg-surface rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-foreground/10 pb-3 mb-4">
+                <div className="bg-surface rounded-2xl p-4 sm:p-6">
+                  <h3 className="font-bold text-base sm:text-lg border-b border-foreground/10 pb-2 sm:pb-3 mb-3 sm:mb-4">
                     Tags
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -302,9 +302,9 @@ export default function ProjectPageFr() {
               )}
 
               {/* CTA */}
-              <div className="bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl p-6 text-center">
-                <h3 className="font-bold text-lg mb-2">Vous aimez ce que vous voyez?</h3>
-                <p className="text-foreground/60 text-sm mb-4">
+              <div className="bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl p-4 sm:p-6 text-center">
+                <h3 className="font-bold text-base sm:text-lg mb-2">Vous aimez ce que vous voyez?</h3>
+                <p className="text-foreground/60 text-xs sm:text-sm mb-3 sm:mb-4">
                   Discutons de votre projet et donnons vie à votre vision.
                 </p>
                 <Link
@@ -319,11 +319,11 @@ export default function ProjectPageFr() {
 
           {/* Related Projects */}
           {relatedProjects.length > 0 && (
-            <section className="mt-20">
-              <h2 className="text-2xl font-bold mb-8 text-center">
+            <section className="mt-12 sm:mt-20">
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center">
                 Projets Similaires
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 {relatedProjects.map((related) => (
                   <Link
                     key={related.slug}

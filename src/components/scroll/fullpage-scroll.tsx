@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { ScrollProvider } from './scroll-context';
 import { ScrollContainer } from './scroll-container';
 import { PaginationDots } from './pagination-dots';
@@ -18,6 +18,29 @@ export function FullPageScroll({
   showPagination = true,
   onSectionChange,
 }: FullPageScrollProps) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Mobile: Simple normal scroll
+  if (isMobile) {
+    return (
+      <ScrollProvider totalSections={totalSections} onSectionChange={onSectionChange}>
+        <div className="w-full">
+          <ScrollContainer>{children}</ScrollContainer>
+        </div>
+      </ScrollProvider>
+    );
+  }
+
+  // Desktop: Fixed viewport with full-page scroll
   return (
     <ScrollProvider totalSections={totalSections} onSectionChange={onSectionChange}>
       {/* Fixed viewport container */}

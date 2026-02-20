@@ -198,12 +198,12 @@ export default function BriefPage() {
       <div className="py-12">
         <div className="container-section max-w-3xl mx-auto">
           {/* Progress */}
-          <div className="mb-12">
+          <div className="mb-8 sm:mb-12">
             <div className="flex items-center justify-between mb-2">
               {[1, 2, 3, 4].map(s => (
                 <div
                   key={s}
-                  className={`flex items-center justify-center w-10 h-10 rounded-full font-bold transition-colors ${
+                  className={`flex items-center justify-center w-8 sm:w-10 h-8 sm:h-10 rounded-full font-bold text-sm sm:text-base transition-colors ${
                     s === step
                       ? 'bg-accent text-white'
                       : s < step
@@ -215,7 +215,7 @@ export default function BriefPage() {
                 </div>
               ))}
             </div>
-            <div className="flex justify-between text-xs text-gray-500 px-2">
+            <div className="flex justify-between text-[10px] sm:text-xs text-gray-500 px-1 sm:px-2">
               <span>Project</span>
               <span>Features</span>
               <span>Budget</span>
@@ -231,9 +231,9 @@ export default function BriefPage() {
 
           {/* Step 1: Project Type */}
           {step === 1 && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900">What type of project is this?</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4 sm:space-y-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">What type of project is this?</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {projectTypes.map(type => (
                   <button
                     key={type.value}
@@ -266,10 +266,10 @@ export default function BriefPage() {
 
           {/* Step 2: Features */}
           {step === 2 && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900">What features do you need?</h2>
+            <div className="space-y-4 sm:space-y-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">What features do you need?</h2>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                 {featureOptions.map(feature => (
                   <button
                     key={feature}
@@ -285,34 +285,34 @@ export default function BriefPage() {
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer ${
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                <label className={`flex items-center gap-3 p-3 sm:p-4 rounded-lg border cursor-pointer ${
                   formData.hasDesign ? 'border-accent bg-accent/10' : 'border-gray-300 bg-white'
                 }`}>
                   <input
                     type="checkbox"
                     checked={formData.hasDesign}
                     onChange={e => updateField('hasDesign', e.target.checked)}
-                    className="w-5 h-5 text-accent"
+                    className="w-4 sm:w-5 h-4 sm:h-5 text-accent"
                   />
                   <div>
-                    <div className="font-medium text-gray-900">I have designs ready</div>
-                    <div className="text-sm text-gray-600">Figma, Sketch, or PSD files</div>
+                    <div className="font-medium text-gray-900 text-sm sm:text-base">I have designs ready</div>
+                    <div className="text-xs sm:text-sm text-gray-600">Figma, Sketch, or PSD files</div>
                   </div>
                 </label>
 
-                <label className={`flex items-center gap-3 p-4 rounded-lg border cursor-pointer ${
+                <label className={`flex items-center gap-3 p-3 sm:p-4 rounded-lg border cursor-pointer ${
                   formData.hasContent ? 'border-accent bg-accent/10' : 'border-gray-300 bg-white'
                 }`}>
                   <input
                     type="checkbox"
                     checked={formData.hasContent}
                     onChange={e => updateField('hasContent', e.target.checked)}
-                    className="w-5 h-5 text-accent"
+                    className="w-4 sm:w-5 h-4 sm:h-5 text-accent"
                   />
                   <div>
-                    <div className="font-medium text-gray-900">I have content ready</div>
-                    <div className="text-sm text-gray-600">Text, images, videos</div>
+                    <div className="font-medium text-gray-900 text-sm sm:text-base">I have content ready</div>
+                    <div className="text-xs sm:text-sm text-gray-600">Text, images, videos</div>
                   </div>
                 </label>
               </div>
@@ -333,10 +333,10 @@ export default function BriefPage() {
 
           {/* Step 3: Budget & Timeline */}
           {step === 3 && (
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">What's your budget?</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">What's your budget?</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   {budgetRanges.map(budget => (
                     <button
                       key={budget.value}
@@ -355,8 +355,8 @@ export default function BriefPage() {
               </div>
 
               <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">What's your timeline?</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">What's your timeline?</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   {timelineOptions.map(timeline => (
                     <button
                       key={timeline.value}
@@ -390,10 +390,10 @@ export default function BriefPage() {
 
           {/* Step 4: Contact */}
           {step === 4 && (
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-gray-900">How can we reach you?</h2>
+            <div className="space-y-4 sm:space-y-6">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">How can we reach you?</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-gray-700 text-sm mb-2">Name *</label>
                   <input
@@ -455,11 +455,11 @@ export default function BriefPage() {
           )}
 
           {/* Navigation */}
-          <div className="flex justify-between mt-12 pt-6 border-t border-primary/10">
+          <div className="flex justify-between mt-8 sm:mt-12 pt-4 sm:pt-6 border-t border-primary/10">
             <button
               onClick={() => setStep(s => s - 1)}
               disabled={step === 1}
-              className="px-6 py-3 text-primary/60 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base text-primary/60 hover:text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               ← Back
             </button>
@@ -468,7 +468,7 @@ export default function BriefPage() {
               <button
                 onClick={() => setStep(s => s + 1)}
                 disabled={!canProceed()}
-                className="px-8 py-3 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Continue →
               </button>
@@ -476,7 +476,7 @@ export default function BriefPage() {
               <button
                 onClick={handleSubmit}
                 disabled={!canProceed() || submitting}
-                className="px-8 py-3 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {submitting ? 'Submitting...' : 'Submit Brief'}
               </button>

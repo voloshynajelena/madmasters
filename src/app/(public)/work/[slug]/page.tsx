@@ -112,13 +112,13 @@ export default function ProjectPage() {
           </div>
 
           {/* Project Info Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Main Content */}
-            <div className="lg:col-span-2 space-y-12">
+            <div className="lg:col-span-2 space-y-8 sm:space-y-12">
               {/* Overview */}
               <section>
-                <h2 className="text-2xl font-bold mb-4 text-gray-900">Overview</h2>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900">Overview</h2>
+                <p className="text-gray-700 leading-relaxed text-base sm:text-lg">
                   {project.fullDescription || project.description}
                 </p>
               </section>
@@ -126,8 +126,8 @@ export default function ProjectPage() {
               {/* Challenge */}
               {project.challenge && (
                 <section>
-                  <h2 className="text-2xl font-bold mb-4 text-gray-900">The Challenge</h2>
-                  <p className="text-gray-700 leading-relaxed">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900">The Challenge</h2>
+                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
                     {project.challenge}
                   </p>
                 </section>
@@ -136,8 +136,8 @@ export default function ProjectPage() {
               {/* Solution */}
               {project.solution && (
                 <section>
-                  <h2 className="text-2xl font-bold mb-4 text-gray-900">Our Solution</h2>
-                  <p className="text-gray-700 leading-relaxed">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900">Our Solution</h2>
+                  <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
                     {project.solution}
                   </p>
                 </section>
@@ -184,17 +184,17 @@ export default function ProjectPage() {
 
               {/* Testimonial */}
               {project.testimonial && (
-                <section className="bg-gray-800 rounded-2xl p-8">
-                  <blockquote className="text-xl italic text-white/90 mb-4">
+                <section className="bg-gray-800 rounded-2xl p-5 sm:p-8">
+                  <blockquote className="text-base sm:text-xl italic text-white/90 mb-3 sm:mb-4">
                     "{project.testimonial.quote}"
                   </blockquote>
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold">
+                    <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-sm sm:text-base">
                       {project.testimonial.author.charAt(0)}
                     </div>
                     <div>
-                      <div className="font-semibold text-white">{project.testimonial.author}</div>
-                      <div className="text-white/60 text-sm">
+                      <div className="font-semibold text-white text-sm sm:text-base">{project.testimonial.author}</div>
+                      <div className="text-white/60 text-xs sm:text-sm">
                         {project.testimonial.role}
                       </div>
                     </div>
@@ -204,10 +204,10 @@ export default function ProjectPage() {
             </div>
 
             {/* Sidebar */}
-            <aside className="space-y-8">
+            <aside className="space-y-4 sm:space-y-8">
               {/* Project Details */}
-              <div className="bg-gray-800 rounded-2xl p-6 space-y-6">
-                <h3 className="font-bold text-lg border-b border-white/10 pb-3 text-white">
+              <div className="bg-gray-800 rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
+                <h3 className="font-bold text-base sm:text-lg border-b border-white/10 pb-2 sm:pb-3 text-white">
                   Project Details
                 </h3>
 
@@ -245,8 +245,8 @@ export default function ProjectPage() {
 
               {/* Services */}
               {project.services && project.services.length > 0 && (
-                <div className="bg-gray-800 rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-white/10 pb-3 mb-4 text-white">
+                <div className="bg-gray-800 rounded-2xl p-4 sm:p-6">
+                  <h3 className="font-bold text-base sm:text-lg border-b border-white/10 pb-2 sm:pb-3 mb-3 sm:mb-4 text-white">
                     Services Provided
                   </h3>
                   <ul className="space-y-2">
@@ -265,8 +265,8 @@ export default function ProjectPage() {
 
               {/* Technologies */}
               {project.technologies && project.technologies.length > 0 && (
-                <div className="bg-gray-800 rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-white/10 pb-3 mb-4 text-white">
+                <div className="bg-gray-800 rounded-2xl p-4 sm:p-6">
+                  <h3 className="font-bold text-base sm:text-lg border-b border-white/10 pb-2 sm:pb-3 mb-3 sm:mb-4 text-white">
                     Technologies Used
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -284,8 +284,8 @@ export default function ProjectPage() {
 
               {/* Tags */}
               {project.tags && project.tags.length > 0 && (
-                <div className="bg-gray-800 rounded-2xl p-6">
-                  <h3 className="font-bold text-lg border-b border-white/10 pb-3 mb-4 text-white">
+                <div className="bg-gray-800 rounded-2xl p-4 sm:p-6">
+                  <h3 className="font-bold text-base sm:text-lg border-b border-white/10 pb-2 sm:pb-3 mb-3 sm:mb-4 text-white">
                     Tags
                   </h3>
                   <div className="flex flex-wrap gap-2">
@@ -302,9 +302,9 @@ export default function ProjectPage() {
               )}
 
               {/* CTA */}
-              <div className="bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl p-6 text-center border border-accent/20">
-                <h3 className="font-bold text-lg mb-2 text-gray-900">Like what you see?</h3>
-                <p className="text-gray-600 text-sm mb-4">
+              <div className="bg-gradient-to-br from-accent/20 to-accent/5 rounded-2xl p-4 sm:p-6 text-center border border-accent/20">
+                <h3 className="font-bold text-base sm:text-lg mb-2 text-gray-900">Like what you see?</h3>
+                <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4">
                   Let's discuss your project and bring your vision to life.
                 </p>
                 <Link
@@ -319,11 +319,11 @@ export default function ProjectPage() {
 
           {/* Related Projects */}
           {relatedProjects.length > 0 && (
-            <section className="mt-20">
-              <h2 className="text-2xl font-bold mb-8 text-center text-gray-900">
+            <section className="mt-12 sm:mt-20">
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center text-gray-900">
                 Related Projects
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 {relatedProjects.map((related) => (
                   <Link
                     key={related.slug}

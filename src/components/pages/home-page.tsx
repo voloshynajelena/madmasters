@@ -42,24 +42,24 @@ export function HomePage({ locale, dict }: HomePageProps) {
       <ScrollSection index={1} className="bg-primary">
         <HeroVideo mp4Src="/videos/hero.mp4" />
         <HeroOverlay />
-        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 text-balance">
+        <div className="relative z-10 flex flex-col items-center justify-center h-full text-center text-white px-4 sm:px-6 pt-24 sm:pt-0">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light mb-3 sm:mb-6 text-balance leading-tight">
             {dict.hero.headline}
           </h1>
-          <div className="w-24 h-px bg-white/40 mb-6" />
-          <p className="text-base md:text-lg text-white/70 max-w-2xl mb-10 font-light">
+          <div className="w-12 sm:w-24 h-px bg-white/40 mb-3 sm:mb-6" />
+          <p className="text-xs sm:text-base md:text-lg text-white/70 max-w-xs sm:max-w-2xl mb-6 sm:mb-10 font-light leading-relaxed">
             {dict.hero.subheadline}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0">
             <Link
               href={`${prefix}/brief`}
-              className="px-8 py-4 bg-accent text-white text-sm tracking-wider hover:bg-accent-hover transition-all hover:shadow-glow rounded-lg"
+              className="px-6 sm:px-8 py-3 sm:py-4 bg-accent text-white text-sm tracking-wider hover:bg-accent-hover transition-all hover:shadow-glow rounded-lg text-center"
             >
               {dict.cta.startProject || 'START PROJECT'}
             </Link>
             <Link
               href={`${prefix}/work`}
-              className="px-8 py-4 border border-white/40 text-white text-sm tracking-wider hover:border-white hover:bg-white/10 transition-colors rounded-lg backdrop-blur-sm"
+              className="px-6 sm:px-8 py-3 sm:py-4 border border-white/40 text-white text-sm tracking-wider hover:border-white hover:bg-white/10 transition-colors rounded-lg backdrop-blur-sm text-center"
             >
               {dict.cta.viewWork}
             </Link>
@@ -67,9 +67,9 @@ export function HomePage({ locale, dict }: HomePageProps) {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/50 animate-pulse">
-          <span className="text-xs tracking-widest mb-2">SCROLL</span>
-          <svg className="w-5 h-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/50 animate-pulse">
+          <span className="text-[10px] sm:text-xs tracking-widest mb-1 sm:mb-2">SCROLL</span>
+          <svg className="w-4 sm:w-5 h-4 sm:h-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
@@ -96,26 +96,26 @@ export function HomePage({ locale, dict }: HomePageProps) {
             </p>
 
             {/* Stats counters */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mt-8 sm:mt-12">
               {[
                 { value: 150, label: 'Projects Completed', suffix: '+' },
                 { value: 8, label: 'Years Experience', suffix: '+' },
                 { value: 50, label: 'Happy Clients', suffix: '+' },
                 { value: 99, label: 'Success Rate', suffix: '%' },
               ].map((stat, i) => (
-                <div key={i} className="glass-card-light p-6">
-                  <div className="text-3xl md:text-4xl font-bold text-gray-900">
+                <div key={i} className="glass-card-light p-4 sm:p-6">
+                  <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
                     <AnimatedCounter end={stat.value} active={activeSection >= 2} />
                     {stat.suffix}
                   </div>
-                  <div className="text-xs text-gray-500 mt-2 uppercase tracking-wider">{stat.label}</div>
+                  <div className="text-[10px] sm:text-xs text-gray-500 mt-1 sm:mt-2 uppercase tracking-wider">{stat.label}</div>
                 </div>
               ))}
             </div>
 
             {/* Two columns */}
-            <div className="grid md:grid-cols-2 gap-8 mt-12 text-left max-w-4xl mx-auto">
-              <div className="glass-card-light p-6">
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-8 mt-8 sm:mt-12 text-left max-w-4xl mx-auto">
+              <div className="glass-card-light p-4 sm:p-6">
                 <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
                   <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -127,13 +127,13 @@ export function HomePage({ locale, dict }: HomePageProps) {
                   We define stylish and modern design with special attention to page speed and usability.
                 </p>
               </div>
-              <div className="glass-card-light p-6">
-                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-4">
-                  <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="glass-card-light p-4 sm:p-6">
+                <div className="w-8 sm:w-10 h-8 sm:h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-3 sm:mb-4">
+                  <svg className="w-4 sm:w-5 h-4 sm:h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">SEO & Marketing</h3>
+                <h3 className="font-semibold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">SEO & Marketing</h3>
                 <p className="text-gray-600 text-sm leading-relaxed">
                   Search engine optimization and website promotion is one of the most effective ways
                   to attract customers and increase visibility to your target audience.
@@ -142,21 +142,21 @@ export function HomePage({ locale, dict }: HomePageProps) {
             </div>
 
             {/* Process Steps - Modern */}
-            <div className="flex flex-wrap justify-center items-center gap-4 mt-16">
+            <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 mt-10 sm:mt-16">
               {Object.entries(dict.process).map(([key, label], index) => (
                 <div key={key} className="flex items-center group">
-                  <div className="flex flex-col items-center px-4">
-                    <div className="w-14 h-14 rounded-2xl bg-white shadow-lg flex items-center justify-center text-accent mb-2 group-hover:shadow-glow-sm transition-shadow">
+                  <div className="flex flex-col items-center px-2 sm:px-4">
+                    <div className="w-10 sm:w-14 h-10 sm:h-14 rounded-xl sm:rounded-2xl bg-white shadow-lg flex items-center justify-center text-accent mb-1 sm:mb-2 group-hover:shadow-glow-sm transition-shadow">
                       <ProcessIcon step={key} />
                     </div>
-                    <span className="text-[10px] uppercase tracking-widest text-gray-500 font-medium">
+                    <span className="text-[8px] sm:text-[10px] uppercase tracking-wider sm:tracking-widest text-gray-500 font-medium">
                       {label}
                     </span>
                   </div>
                   {index < 4 && (
-                    <div className="hidden md:flex items-center">
-                      <div className="w-8 h-px bg-accent/20" />
-                      <div className="w-2 h-2 rounded-full bg-accent/20" />
+                    <div className="hidden sm:flex items-center">
+                      <div className="w-4 sm:w-8 h-px bg-accent/20" />
+                      <div className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-accent/20" />
                     </div>
                   )}
                 </div>
@@ -170,7 +170,7 @@ export function HomePage({ locale, dict }: HomePageProps) {
       <ScrollSection index={3} className="mesh-gradient-dark">
         <div className="flex flex-col items-center justify-center h-full px-4 py-12">
           <div className="container-section">
-            <div className="text-center mb-10">
+            <div className="text-center mb-6 sm:mb-10">
               <span className="inline-block px-4 py-1 rounded-full bg-white/10 text-white/70 text-xs font-medium tracking-wider mb-4">
                 WHAT WE DO
               </span>
@@ -179,28 +179,28 @@ export function HomePage({ locale, dict }: HomePageProps) {
               </h2>
             </div>
 
-            {/* Bento Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            {/* Bento Grid - Mobile: 2 columns, Desktop: 4 columns */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto">
               {/* Large card - Web Development */}
-              <div className="col-span-2 row-span-2 glass-card p-8 group cursor-pointer hover:border-accent/30 transition-all">
+              <div className="col-span-2 sm:col-span-2 md:row-span-2 glass-card p-4 sm:p-8 group cursor-pointer hover:border-accent/30 transition-all">
                 <div className="h-full flex flex-col justify-between">
                   <div>
-                    <div className="w-14 h-14 rounded-2xl bg-accent/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <div className="w-10 sm:w-14 h-10 sm:h-14 rounded-xl sm:rounded-2xl bg-accent/20 flex items-center justify-center mb-3 sm:mb-6 group-hover:scale-110 transition-transform">
                       <ServiceIcon service="web" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">
+                    <h3 className="text-lg sm:text-2xl font-bold text-white mb-2 sm:mb-3">
                       {dict.services.web.title}
                     </h3>
-                    <p className="text-white/60 text-sm leading-relaxed">
+                    <p className="text-white/60 text-xs sm:text-sm leading-relaxed line-clamp-2 sm:line-clamp-none">
                       {dict.services.web.description}
                     </p>
                   </div>
                   <Link
                     href={`${prefix}/services`}
-                    className="inline-flex items-center text-accent text-sm mt-6 group-hover:gap-3 gap-2 transition-all"
+                    className="inline-flex items-center text-accent text-xs sm:text-sm mt-3 sm:mt-6 group-hover:gap-3 gap-2 transition-all"
                   >
                     Learn more
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-3 sm:w-4 h-3 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
                   </Link>
@@ -208,13 +208,13 @@ export function HomePage({ locale, dict }: HomePageProps) {
               </div>
 
               {/* Marketing */}
-              <div className="col-span-2 glass-card p-6 group cursor-pointer hover:border-accent/30 transition-all">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+              <div className="col-span-2 glass-card p-4 sm:p-6 group cursor-pointer hover:border-accent/30 transition-all">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-accent/20 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <ServiceIcon service="marketing" />
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white mb-1">
+                  <div className="min-w-0">
+                    <h3 className="text-base sm:text-lg font-bold text-white mb-1">
                       {dict.services.marketing.title}
                     </h3>
                     <p className="text-white/50 text-xs line-clamp-2">
@@ -225,31 +225,31 @@ export function HomePage({ locale, dict }: HomePageProps) {
               </div>
 
               {/* Custom Solutions */}
-              <div className="glass-card p-6 group cursor-pointer hover:border-accent/30 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <div className="glass-card p-4 sm:p-6 group cursor-pointer hover:border-accent/30 transition-all">
+                <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                   <ServiceIcon service="custom" />
                 </div>
-                <h3 className="text-sm font-bold text-white mb-1">Custom</h3>
+                <h3 className="text-sm sm:text-base font-bold text-white mb-1">Custom</h3>
                 <p className="text-white/50 text-xs">Tailored solutions</p>
               </div>
 
               {/* Support */}
-              <div className="glass-card p-6 group cursor-pointer hover:border-accent/30 transition-all">
-                <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <div className="glass-card p-4 sm:p-6 group cursor-pointer hover:border-accent/30 transition-all">
+                <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                   <ServiceIcon service="support" />
                 </div>
-                <h3 className="text-sm font-bold text-white mb-1">Support</h3>
+                <h3 className="text-sm sm:text-base font-bold text-white mb-1">Support</h3>
                 <p className="text-white/50 text-xs">24/7 maintenance</p>
               </div>
             </div>
 
             {/* CTA */}
-            <div className="text-center mt-10">
+            <div className="text-center mt-6 sm:mt-10">
               <Link
                 href={`${prefix}/calculator`}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent-hover transition-all hover:shadow-glow"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-accent text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-accent-hover transition-all hover:shadow-glow"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-4 sm:w-5 h-4 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
                 Calculate Project Cost

@@ -90,20 +90,20 @@ export default function ServicesPage() {
     <PageLayout locale="en" title="Our Services" subtitle="What we can do for you">
       <div className="py-16">
         <div className="container-section">
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid sm:grid-cols-2 gap-4 sm:gap-8">
             {services.map((service) => (
               <div
                 key={service.id}
-                className="p-8 rounded-lg"
+                className="p-5 sm:p-8 rounded-lg"
                 style={{ backgroundColor: service.color }}
               >
-                <div className="text-gray-700 mb-4">{service.icon}</div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h2>
-                <p className="text-gray-700 mb-6">{service.description}</p>
-                <ul className="space-y-2">
+                <div className="text-gray-700 mb-3 sm:mb-4 [&>svg]:w-10 [&>svg]:h-10 sm:[&>svg]:w-12 sm:[&>svg]:h-12">{service.icon}</div>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">{service.title}</h2>
+                <p className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base">{service.description}</p>
+                <ul className="space-y-1.5 sm:space-y-2">
                   {service.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-gray-600 text-sm">
-                      <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <li key={i} className="flex items-center gap-2 text-gray-600 text-xs sm:text-sm">
+                      <svg className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-accent flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                       {feature}

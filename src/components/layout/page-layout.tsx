@@ -27,17 +27,17 @@ export function PageLayout({
       {/* Hero Section */}
       {title && (
         <section
-          className="relative h-[40vh] flex items-center justify-center"
+          className="relative h-[30vh] sm:h-[35vh] md:h-[40vh] flex items-center justify-center px-4"
           style={{ backgroundColor: '#1a1a1a' }}
         >
           <div className="text-center text-white">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4">
               {title}
             </h1>
             {subtitle && (
               <>
-                <div className="w-24 h-px bg-white/40 mx-auto mb-4" />
-                <p className="text-white/60 text-lg">{subtitle}</p>
+                <div className="w-16 sm:w-24 h-px bg-white/40 mx-auto mb-3 sm:mb-4" />
+                <p className="text-white/60 text-base sm:text-lg">{subtitle}</p>
               </>
             )}
           </div>

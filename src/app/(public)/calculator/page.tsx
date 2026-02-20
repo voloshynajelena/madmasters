@@ -102,13 +102,13 @@ export default function CalculatorPage() {
       <div className="py-16">
         <div className="container-section">
           <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
               {/* Options */}
-              <div className="md:col-span-2 space-y-8">
+              <div className="lg:col-span-2 space-y-6 sm:space-y-8">
                 {/* Project Type */}
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Project Type</h3>
-                  <div className="grid grid-cols-2 gap-3">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Project Type</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     {(Object.keys(projectTypes) as ProjectType[]).map((type) => (
                       <button
                         key={type}
@@ -130,13 +130,13 @@ export default function CalculatorPage() {
 
                 {/* Design Option */}
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Design</h3>
-                  <div className="grid grid-cols-3 gap-3">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Design</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                     {(Object.keys(designOptions) as DesignOption[]).map((opt) => (
                       <button
                         key={opt}
                         onClick={() => setDesign(opt)}
-                        className={`p-4 rounded-lg text-center transition-colors ${
+                        className={`p-3 sm:p-4 rounded-lg text-center text-sm sm:text-base transition-colors ${
                           design === opt
                             ? 'bg-accent text-white'
                             : 'bg-white border border-gray-300 text-gray-900 hover:border-accent'
@@ -150,8 +150,8 @@ export default function CalculatorPage() {
 
                 {/* Features */}
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Additional Features</h3>
-                  <div className="grid grid-cols-2 gap-3">
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Additional Features</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     {features.map((feature) => (
                       <button
                         key={feature.id}
@@ -196,11 +196,11 @@ export default function CalculatorPage() {
               </div>
 
               {/* Price Summary */}
-              <div className="md:col-span-1">
-                <div className="bg-gray-900 text-white rounded-lg p-6 sticky top-24">
-                  <h3 className="text-lg font-bold mb-4">Estimated Price</h3>
+              <div className="lg:col-span-1">
+                <div className="bg-gray-900 text-white rounded-lg p-4 sm:p-6 lg:sticky lg:top-24">
+                  <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">Estimated Price</h3>
 
-                  <div className="text-4xl font-bold text-accent mb-6">
+                  <div className="text-3xl sm:text-4xl font-bold text-accent mb-4 sm:mb-6">
                     ${calculatePrice().toLocaleString()}
                   </div>
 
