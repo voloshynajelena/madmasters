@@ -4,6 +4,7 @@ import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin';
 import { z } from 'zod';
 
 const contentBlockSchema = z.object({
+  page: z.string().optional(), // 'home', 'about', 'services', 'contact', 'work'
   section: z.string(),
   key: z.string(),
   type: z.enum(['text', 'richtext', 'image', 'link']),
@@ -76,7 +77,9 @@ export async function POST(request: NextRequest) {
     const data = contentBlockSchema.parse(body);
 
     const db = getAdminDb();
-    const docId = `${data.section}_${data.key}`;
+    const docId = data.page
+      ? `${data.page}_${data.section}_${data.key}`
+      : `${data.section}_${data.key}`;
 
     await db.collection('content').doc(docId).set({
       ...data,
@@ -111,7 +114,9 @@ export async function PUT(request: NextRequest) {
     const batch = db.batch();
 
     for (const item of items) {
-      const docId = `${item.section}_${item.key}`;
+      const docId = item.page
+        ? `${item.page}_${item.section}_${item.key}`
+        : `${item.section}_${item.key}`;
       const ref = db.collection('content').doc(docId);
       batch.set(ref, {
         ...item,

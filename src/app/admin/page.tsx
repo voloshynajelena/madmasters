@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function AdminDashboard() {
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-8">Dashboard</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-8">Dashboard</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardCard
@@ -41,11 +41,11 @@ export default function AdminDashboard() {
 
       {/* Recent Orders */}
       <div className="mt-12">
-        <h2 className="text-lg font-semibold text-white mb-4">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
           Recent Orders
         </h2>
-        <div className="bg-surface rounded-xl p-6 border border-white/10">
-          <p className="text-white/60 text-sm">
+        <div className="bg-surface rounded-xl p-6 border border-border">
+          <p className="text-text-muted text-sm">
             No orders yet. Orders will appear here when visitors submit forms.
           </p>
         </div>
@@ -73,11 +73,11 @@ function DashboardCard({
       className={`block p-6 rounded-xl transition-all hover:scale-[1.02] ${
         highlight
           ? 'bg-accent text-white border border-accent'
-          : 'bg-surface hover:bg-surface-hover border border-white/10'
+          : 'bg-surface hover:bg-surface-hover border border-border'
       }`}
     >
       <div className="flex items-center justify-between mb-2">
-        <h3 className={`font-semibold ${highlight ? '' : 'text-white'}`}>
+        <h3 className={`font-semibold ${highlight ? '' : 'text-foreground'}`}>
           {title}
         </h3>
         <span
@@ -90,7 +90,7 @@ function DashboardCard({
       </div>
       <p
         className={`text-sm ${
-          highlight ? 'text-white/80' : 'text-white/60'
+          highlight ? 'text-white/80' : 'text-text-muted'
         }`}
       >
         {description}

@@ -85,15 +85,15 @@ export default function OrdersPage() {
   const statusColors = {
     new: 'bg-yellow-500/20 text-yellow-400',
     reviewed: 'bg-blue-500/20 text-blue-400',
-    archived: 'bg-white/10 text-white/40',
+    archived: 'bg-surface-hover text-text-muted',
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">Orders</h1>
-          <p className="text-white/60 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">Orders</h1>
+          <p className="text-text-muted mt-1">
             {counts.new > 0 && <span className="text-yellow-400">{counts.new} new</span>}
             {counts.new > 0 && ' • '}
             {counts.total} total inquiries
@@ -111,7 +111,7 @@ export default function OrdersPage() {
               className={`px-4 py-2 rounded-lg text-sm capitalize transition-colors ${
                 filter === status
                   ? 'bg-accent text-white'
-                  : 'bg-surface text-white/70 hover:bg-surface-hover'
+                  : 'bg-surface text-text-muted hover:bg-surface-hover'
               }`}
             >
               {status}
@@ -126,8 +126,8 @@ export default function OrdersPage() {
               onClick={() => setTypeFilter(type)}
               className={`px-3 py-2 rounded-lg text-sm capitalize transition-colors ${
                 typeFilter === type
-                  ? 'bg-white/20 text-white'
-                  : 'bg-surface text-white/50 hover:bg-surface-hover'
+                  ? 'bg-accent text-white'
+                  : 'bg-surface text-text-muted hover:bg-surface-hover'
               }`}
             >
               {type}
@@ -140,10 +140,10 @@ export default function OrdersPage() {
         {/* List */}
         <div className="flex-1">
           {loading ? (
-            <div className="text-white/60">Loading...</div>
+            <div className="text-text-muted">Loading...</div>
           ) : orders.length === 0 ? (
-            <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
-              <p className="text-white/60">No orders found</p>
+            <div className="text-center py-12 bg-surface rounded-lg border border-border">
+              <p className="text-text-muted">No orders found</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -152,7 +152,7 @@ export default function OrdersPage() {
                   key={order.id}
                   onClick={() => setSelectedOrder(order)}
                   className={`bg-surface rounded-lg p-4 cursor-pointer transition-colors border ${
-                    selectedOrder?.id === order.id ? 'ring-2 ring-accent border-accent' : 'border-white/10 hover:bg-surface-hover'
+                    selectedOrder?.id === order.id ? 'ring-2 ring-accent border-accent' : 'border-border hover:bg-surface-hover'
                   }`}
                 >
                   <div className="flex items-start justify-between">
@@ -165,10 +165,10 @@ export default function OrdersPage() {
                           {order.status}
                         </span>
                       </div>
-                      <p className="text-white font-medium truncate">{order.name}</p>
-                      <p className="text-white/50 text-sm truncate">{order.email}</p>
+                      <p className="text-foreground font-medium truncate">{order.name}</p>
+                      <p className="text-text-muted text-sm truncate">{order.email}</p>
                     </div>
-                    <div className="text-white/40 text-xs text-right">
+                    <div className="text-text-muted text-xs text-right">
                       {order.createdAt && new Date(order.createdAt).toLocaleDateString()}
                     </div>
                   </div>
@@ -180,7 +180,7 @@ export default function OrdersPage() {
 
         {/* Detail Panel */}
         {selectedOrder && (
-          <div className="w-96 bg-surface rounded-lg p-6 h-fit sticky top-6 border border-white/10">
+          <div className="w-96 bg-surface rounded-lg p-6 h-fit sticky top-6 border border-border">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <span className={`px-2 py-1 rounded text-xs capitalize ${typeColors[selectedOrder.type]}`}>
@@ -192,7 +192,7 @@ export default function OrdersPage() {
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="text-white/40 hover:text-white"
+                className="text-text-muted hover:text-foreground"
               >
                 ✕
               </button>
@@ -200,12 +200,12 @@ export default function OrdersPage() {
 
             <div className="space-y-4">
               <div>
-                <label className="text-white/40 text-xs uppercase">Name</label>
-                <p className="text-white">{selectedOrder.name}</p>
+                <label className="text-text-muted text-xs uppercase">Name</label>
+                <p className="text-foreground">{selectedOrder.name}</p>
               </div>
               <div>
-                <label className="text-white/40 text-xs uppercase">Email</label>
-                <p className="text-white">
+                <label className="text-text-muted text-xs uppercase">Email</label>
+                <p className="text-foreground">
                   <a href={`mailto:${selectedOrder.email}`} className="hover:text-accent">
                     {selectedOrder.email}
                   </a>
@@ -213,8 +213,8 @@ export default function OrdersPage() {
               </div>
               {selectedOrder.phone && (
                 <div>
-                  <label className="text-white/40 text-xs uppercase">Phone</label>
-                  <p className="text-white">
+                  <label className="text-text-muted text-xs uppercase">Phone</label>
+                  <p className="text-foreground">
                     <a href={`tel:${selectedOrder.phone}`} className="hover:text-accent">
                       {selectedOrder.phone}
                     </a>
@@ -223,39 +223,39 @@ export default function OrdersPage() {
               )}
               {selectedOrder.message && (
                 <div>
-                  <label className="text-white/40 text-xs uppercase">Message</label>
-                  <p className="text-white/80 text-sm whitespace-pre-wrap">{selectedOrder.message}</p>
+                  <label className="text-text-muted text-xs uppercase">Message</label>
+                  <p className="text-foreground text-sm whitespace-pre-wrap">{selectedOrder.message}</p>
                 </div>
               )}
               {selectedOrder.data && Object.keys(selectedOrder.data).length > 0 && (
                 <div>
-                  <label className="text-white/40 text-xs uppercase">Additional Data</label>
-                  <pre className="text-white/60 text-xs bg-surface-muted rounded p-2 mt-1 overflow-auto">
+                  <label className="text-text-muted text-xs uppercase">Additional Data</label>
+                  <pre className="text-text-muted text-xs bg-surface-muted rounded p-2 mt-1 overflow-auto">
                     {JSON.stringify(selectedOrder.data, null, 2)}
                   </pre>
                 </div>
               )}
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <label className="text-white/40 text-xs uppercase">Locale</label>
-                  <p className="text-white/70">{selectedOrder.locale}</p>
+                  <label className="text-text-muted text-xs uppercase">Locale</label>
+                  <p className="text-text-muted">{selectedOrder.locale}</p>
                 </div>
                 <div>
-                  <label className="text-white/40 text-xs uppercase">Page</label>
-                  <p className="text-white/70">{selectedOrder.page}</p>
+                  <label className="text-text-muted text-xs uppercase">Page</label>
+                  <p className="text-text-muted">{selectedOrder.page}</p>
                 </div>
               </div>
               <div>
-                <label className="text-white/40 text-xs uppercase">Date</label>
-                <p className="text-white/70">
+                <label className="text-text-muted text-xs uppercase">Date</label>
+                <p className="text-text-muted">
                   {selectedOrder.createdAt && new Date(selectedOrder.createdAt).toLocaleString()}
                 </p>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="mt-6 pt-4 border-t border-white/10">
-              <label className="text-white/40 text-xs uppercase mb-2 block">Update Status</label>
+            <div className="mt-6 pt-4 border-t border-border">
+              <label className="text-text-muted text-xs uppercase mb-2 block">Update Status</label>
               <div className="flex gap-2">
                 {selectedOrder.status !== 'reviewed' && (
                   <button
@@ -270,7 +270,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(selectedOrder.id, 'archived')}
                     disabled={updating === selectedOrder.id}
-                    className="flex-1 px-3 py-2 bg-white/10 text-white/60 rounded hover:bg-white/20 disabled:opacity-50 text-sm"
+                    className="flex-1 px-3 py-2 bg-surface-hover text-text-muted rounded hover:bg-surface-muted disabled:opacity-50 text-sm"
                   >
                     Archive
                   </button>

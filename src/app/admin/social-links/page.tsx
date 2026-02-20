@@ -114,8 +114,8 @@ export default function SocialLinksAdmin() {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Social Links</h1>
-          <p className="text-gray-600 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-foreground">Social Links</h1>
+          <p className="text-text-muted text-sm mt-1">
             Manage social media links displayed in the footer ({enabledCount} active)
           </p>
         </div>
@@ -144,8 +144,8 @@ export default function SocialLinksAdmin() {
         <div
           className={`mb-6 p-4 rounded-lg ${
             message.type === 'success'
-              ? 'bg-green-50 text-green-800 border border-green-200'
-              : 'bg-red-50 text-red-800 border border-red-200'
+              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+              : 'bg-red-500/20 text-red-400 border border-red-500/30'
           }`}
         >
           {message.text}
@@ -157,13 +157,13 @@ export default function SocialLinksAdmin() {
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-accent" />
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="divide-y divide-gray-100">
+        <div className="bg-surface rounded-xl border border-border overflow-hidden">
+          <div className="divide-y divide-border">
             {links.map((link, index) => (
               <div
                 key={link.id}
                 className={`p-4 flex flex-col sm:flex-row sm:items-center gap-4 ${
-                  link.enabled ? 'bg-white' : 'bg-gray-50'
+                  link.enabled ? 'bg-surface' : 'bg-surface-muted'
                 }`}
               >
                 {/* Reorder buttons */}
@@ -171,7 +171,7 @@ export default function SocialLinksAdmin() {
                   <button
                     onClick={() => handleMoveUp(index)}
                     disabled={index === 0}
-                    className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                    className="p-1 text-text-muted hover:text-foreground disabled:opacity-30"
                     title="Move up"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -181,7 +181,7 @@ export default function SocialLinksAdmin() {
                   <button
                     onClick={() => handleMoveDown(index)}
                     disabled={index === links.length - 1}
-                    className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"
+                    className="p-1 text-text-muted hover:text-foreground disabled:opacity-30"
                     title="Move down"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -193,13 +193,13 @@ export default function SocialLinksAdmin() {
                 {/* Icon & Name */}
                 <div className="flex items-center gap-3 min-w-[140px]">
                   <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    link.enabled ? 'bg-accent/10 text-accent' : 'bg-gray-100 text-gray-400'
+                    link.enabled ? 'bg-accent/20 text-accent' : 'bg-surface-hover text-text-muted'
                   }`}>
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                       <path d={link.icon} />
                     </svg>
                   </div>
-                  <span className={`font-medium ${link.enabled ? 'text-gray-900' : 'text-gray-500'}`}>
+                  <span className={`font-medium ${link.enabled ? 'text-foreground' : 'text-text-muted'}`}>
                     {link.name}
                   </span>
                 </div>
@@ -211,19 +211,19 @@ export default function SocialLinksAdmin() {
                     placeholder={`https://${link.id}.com/yourprofile`}
                     value={link.url}
                     onChange={(e) => handleUrlChange(link.id, e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-accent bg-white"
+                    className="w-full px-3 py-2 bg-surface-muted border border-border rounded-lg text-sm text-foreground placeholder-text-muted focus:outline-none focus:border-accent"
                   />
                 </div>
 
                 {/* Toggle */}
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs ${link.enabled ? 'text-green-600' : 'text-gray-400'}`}>
+                  <span className={`text-xs ${link.enabled ? 'text-green-400' : 'text-text-muted'}`}>
                     {link.enabled ? 'Visible' : 'Hidden'}
                   </span>
                   <button
                     onClick={() => handleToggle(link.id)}
                     className={`relative w-12 h-6 rounded-full transition-colors ${
-                      link.enabled ? 'bg-accent' : 'bg-gray-200'
+                      link.enabled ? 'bg-accent' : 'bg-surface-hover'
                     }`}
                   >
                     <div
@@ -239,9 +239,9 @@ export default function SocialLinksAdmin() {
         </div>
       )}
 
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-        <h3 className="font-medium text-blue-900 mb-2">Tips</h3>
-        <ul className="text-sm text-blue-800 space-y-1">
+      <div className="mt-6 p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+        <h3 className="font-medium text-blue-400 mb-2">Tips</h3>
+        <ul className="text-sm text-blue-300/80 space-y-1">
           <li>- Only links with URLs and enabled status will appear in the footer</li>
           <li>- Use arrows to reorder how links appear</li>
           <li>- Most relevant social networks for business are listed first</li>

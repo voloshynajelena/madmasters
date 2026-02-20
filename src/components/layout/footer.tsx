@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getDictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
+import { useContent } from '@/hooks/use-content';
 
 interface SocialLink {
   id: string;
@@ -22,6 +23,7 @@ export function Footer({ locale }: FooterProps) {
   const dict = getDictionary(locale);
   const prefix = locale === 'en' ? '' : `/${locale}`;
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+  const { get } = useContent(undefined, locale);
 
   useEffect(() => {
     fetch('/api/social-links')
@@ -38,14 +40,14 @@ export function Footer({ locale }: FooterProps) {
           <div className="sm:col-span-2">
             <img
               src="/images/logo-white.png"
-              alt="Mad Masters"
+              alt={get('footer.company_name', 'Mad Masters')}
               className="h-10 mb-4"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
             />
             <p className="text-white/60 text-sm max-w-md">
-              Creative team that embodies the client's ideas with the help of code and coffee in a worthy representation on the Internet
+              {get('footer.tagline', "Creative team that embodies the client's ideas with the help of code and coffee in a worthy representation on the Internet")}
             </p>
           </div>
 
@@ -81,12 +83,12 @@ export function Footer({ locale }: FooterProps) {
             <h3 className="font-bold mb-4 text-white/80">Contact</h3>
             <ul className="space-y-2 text-sm text-white/60">
               <li>
-                <a href="mailto:madmweb@gmail.com" className="hover:text-white transition-colors">
-                  madmweb@gmail.com
+                <a href={`mailto:${get('contact.email', 'madmweb@gmail.com')}`} className="hover:text-white transition-colors">
+                  {get('contact.email', 'madmweb@gmail.com')}
                 </a>
               </li>
-              <li>Mon-Thu: 09:00-19:00</li>
-              <li>Fri: 09:00-18:00</li>
+              <li>{get('contact.hours_weekday', 'Mon-Thu: 09:00-19:00')}</li>
+              <li>{get('contact.hours_friday', 'Fri: 09:00-18:00')}</li>
             </ul>
 
             {/* Social Links */}
@@ -113,7 +115,7 @@ export function Footer({ locale }: FooterProps) {
 
         {/* Copyright */}
         <div className="mt-12 pt-6 border-t border-white/10 text-center text-xs text-white/40">
-          &copy; {new Date().getFullYear()} Mad Masters &mdash; {dict.footer.rights}
+          &copy; {new Date().getFullYear()} {get('footer.company_name', 'Mad Masters')} &mdash; {dict.footer.rights}
         </div>
       </div>
     </footer>

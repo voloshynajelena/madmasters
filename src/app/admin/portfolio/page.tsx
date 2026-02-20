@@ -171,8 +171,8 @@ export default function PortfolioPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white">Portfolio</h1>
-          <p className="text-white/60 text-sm sm:text-base mt-1">Manage your portfolio projects</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Portfolio</h1>
+          <p className="text-text-muted text-sm sm:text-base mt-1">Manage your portfolio projects</p>
         </div>
         <Link
           href="/admin/portfolio/new"
@@ -186,7 +186,7 @@ export default function PortfolioPage() {
       <div className="space-y-3 mb-6">
         {/* Status Filter */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-white/40 text-xs uppercase tracking-wide w-16 shrink-0">Status</span>
+          <span className="text-text-muted text-xs uppercase tracking-wide w-16 shrink-0">Status</span>
           <div className="flex flex-wrap gap-1.5">
             {(['all', 'published', 'draft'] as const).map((status) => (
               <button
@@ -195,7 +195,7 @@ export default function PortfolioPage() {
                 className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm capitalize transition-colors ${
                   filter === status
                     ? 'bg-accent text-white'
-                    : 'bg-surface text-white/70 hover:bg-surface-hover border border-white/10'
+                    : 'bg-surface text-text-muted hover:bg-surface-hover border border-border'
                 }`}
               >
                 {status}
@@ -206,7 +206,7 @@ export default function PortfolioPage() {
 
         {/* Visibility Filter */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-white/40 text-xs uppercase tracking-wide w-16 shrink-0">Visible</span>
+          <span className="text-text-muted text-xs uppercase tracking-wide w-16 shrink-0">Visible</span>
           <div className="flex flex-wrap gap-1.5">
             {(['all', 'visible', 'hidden'] as const).map((visibility) => (
               <button
@@ -215,7 +215,7 @@ export default function PortfolioPage() {
                 className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm capitalize transition-colors ${
                   visibilityFilter === visibility
                     ? 'bg-blue-600 text-white'
-                    : 'bg-surface text-white/70 hover:bg-surface-hover border border-white/10'
+                    : 'bg-surface text-text-muted hover:bg-surface-hover border border-border'
                 }`}
               >
                 {visibility}
@@ -226,7 +226,7 @@ export default function PortfolioPage() {
 
         {/* Category Filter */}
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-white/40 text-xs uppercase tracking-wide w-16 shrink-0">Category</span>
+          <span className="text-text-muted text-xs uppercase tracking-wide w-16 shrink-0">Category</span>
           <div className="flex flex-wrap gap-1.5">
             {categories.map((cat) => (
               <button
@@ -234,8 +234,8 @@ export default function PortfolioPage() {
                 onClick={() => setCategoryFilter(cat)}
                 className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm capitalize transition-colors ${
                   categoryFilter === cat
-                    ? 'bg-white/20 text-white'
-                    : 'bg-surface text-white/50 hover:bg-surface-hover border border-white/10'
+                    ? 'bg-accent text-white'
+                    : 'bg-surface text-text-muted hover:bg-surface-hover border border-border'
                 }`}
               >
                 {cat === 'e-commerce' ? 'E-Com' : cat}
@@ -247,26 +247,26 @@ export default function PortfolioPage() {
 
       {/* Content */}
       {loading ? (
-        <div className="text-white/60">Loading...</div>
+        <div className="text-text-muted">Loading...</div>
       ) : error ? (
         <div className="text-red-400">{error}</div>
       ) : projects.length === 0 ? (
-        <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
-          <p className="text-white/60 mb-4">No portfolio projects found</p>
+        <div className="text-center py-12 bg-surface rounded-lg border border-border">
+          <p className="text-text-muted mb-4">No portfolio projects found</p>
           <Link href="/admin/portfolio/new" className="text-accent hover:underline">
             Create your first project
           </Link>
         </div>
       ) : filteredProjects.length === 0 ? (
-        <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
-          <p className="text-white/60">No projects match the current filters</p>
+        <div className="text-center py-12 bg-surface rounded-lg border border-border">
+          <p className="text-text-muted">No projects match the current filters</p>
         </div>
       ) : (
         <>
           {/* Mobile Card View */}
           <div className="lg:hidden space-y-4">
             {filteredProjects.map((project) => (
-              <div key={project.id} className="bg-surface rounded-lg border border-white/10 p-4">
+              <div key={project.id} className="bg-surface rounded-lg border border-border p-4">
                 {/* Header */}
                 <div className="flex items-start gap-3 mb-3">
                   {project.thumbnail && (
@@ -277,17 +277,17 @@ export default function PortfolioPage() {
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-white font-medium truncate">{project.name}</p>
-                    <p className="text-white/40 text-xs">/{getDisplaySlug(project)}</p>
-                    <p className="text-white/50 text-sm mt-1">{project.client}</p>
+                    <p className="text-foreground font-medium truncate">{project.name}</p>
+                    <p className="text-text-muted text-xs">/{getDisplaySlug(project)}</p>
+                    <p className="text-text-muted text-sm mt-1">{project.client}</p>
                   </div>
-                  <span className="text-white/30 text-xs">#{project.order}</span>
+                  <span className="text-text-muted opacity-50 text-xs">#{project.order}</span>
                 </div>
 
                 {/* Categories */}
                 <div className="flex flex-wrap gap-1 mb-3">
                   {getCategories(project).map((cat) => (
-                    <span key={cat} className="px-2 py-0.5 bg-white/10 text-white/70 rounded text-xs">
+                    <span key={cat} className="px-2 py-0.5 bg-surface-hover text-text-muted rounded text-xs">
                       {categoryLabels[cat] || cat}
                     </span>
                   ))}
@@ -320,7 +320,7 @@ export default function PortfolioPage() {
                     className={`px-2 py-1 rounded text-xs ${
                       project.showOnHomepage
                         ? 'bg-accent/20 text-accent'
-                        : 'bg-white/10 text-white/40'
+                        : 'bg-surface-hover text-text-muted'
                     }`}
                   >
                     {project.showOnHomepage ? 'Homepage' : 'Not Featured'}
@@ -328,7 +328,7 @@ export default function PortfolioPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                <div className="flex items-center justify-between pt-3 border-t border-border">
                   {project.liveUrl ? (
                     <a
                       href={project.liveUrl}
@@ -339,12 +339,12 @@ export default function PortfolioPage() {
                       {project.liveUrl.replace(/^https?:\/\//, '')}
                     </a>
                   ) : (
-                    <span className="text-white/30 text-sm">No live URL</span>
+                    <span className="text-text-muted text-sm">No live URL</span>
                   )}
                   <div className="flex gap-2">
                     <Link
                       href={`/admin/portfolio/${project.id}`}
-                      className="px-3 py-1.5 text-sm bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
+                      className="px-3 py-1.5 text-sm bg-surface-hover text-foreground rounded hover:bg-border transition-colors"
                     >
                       Edit
                     </Link>
@@ -362,26 +362,26 @@ export default function PortfolioPage() {
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden lg:block bg-surface rounded-lg overflow-hidden border border-white/10">
+          <div className="hidden lg:block bg-surface rounded-lg overflow-hidden border border-border">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-surface-muted">
                   <tr>
-                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium w-12">#</th>
-                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Project</th>
-                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Category</th>
-                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Client</th>
-                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Status</th>
-                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Visible</th>
-                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Homepage</th>
-                    <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Live URL</th>
-                    <th className="text-right px-4 py-3 text-white/60 text-sm font-medium">Actions</th>
+                    <th className="text-left px-4 py-3 text-text-muted text-sm font-medium w-12">#</th>
+                    <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Project</th>
+                    <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Category</th>
+                    <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Client</th>
+                    <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Status</th>
+                    <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Visible</th>
+                    <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Homepage</th>
+                    <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Live URL</th>
+                    <th className="text-right px-4 py-3 text-text-muted text-sm font-medium">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/10">
+                <tbody className="divide-y divide-border">
                   {filteredProjects.map((project) => (
                     <tr key={project.id} className="hover:bg-surface-hover transition-colors">
-                      <td className="px-4 py-3 text-white/40 text-sm">{project.order}</td>
+                      <td className="px-4 py-3 text-text-muted text-sm">{project.order}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           {project.thumbnail && (
@@ -392,21 +392,21 @@ export default function PortfolioPage() {
                             />
                           )}
                           <div>
-                            <p className="text-white font-medium">{project.name}</p>
-                            <p className="text-white/40 text-sm">/{getDisplaySlug(project)}</p>
+                            <p className="text-foreground font-medium">{project.name}</p>
+                            <p className="text-text-muted text-sm">/{getDisplaySlug(project)}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-1">
                           {getCategories(project).map((cat) => (
-                            <span key={cat} className="px-2 py-0.5 bg-white/10 text-white/70 rounded text-xs">
+                            <span key={cat} className="px-2 py-0.5 bg-surface-hover text-text-muted rounded text-xs">
                               {categoryLabels[cat] || cat}
                             </span>
                           ))}
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-white/70">{project.client}</td>
+                      <td className="px-4 py-3 text-text-muted">{project.client}</td>
                       <td className="px-4 py-3">
                         <button
                           onClick={() => toggleStatus(project)}
@@ -437,7 +437,7 @@ export default function PortfolioPage() {
                           className={`inline-block px-2 py-1 rounded text-xs ${
                             project.showOnHomepage
                               ? 'bg-accent/20 text-accent'
-                              : 'bg-white/10 text-white/40'
+                              : 'bg-surface-hover text-text-muted'
                           }`}
                         >
                           {project.showOnHomepage ? 'Featured' : 'No'}
@@ -454,14 +454,14 @@ export default function PortfolioPage() {
                             {project.liveUrl.replace(/^https?:\/\//, '')}
                           </a>
                         ) : (
-                          <span className="text-white/30 text-sm">-</span>
+                          <span className="text-text-muted text-sm">-</span>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex gap-2 justify-end">
                           <Link
                             href={`/admin/portfolio/${project.id}`}
-                            className="px-3 py-1 text-sm bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
+                            className="px-3 py-1 text-sm bg-surface-hover text-foreground rounded hover:bg-border transition-colors"
                           >
                             Edit
                           </Link>

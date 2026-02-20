@@ -8,26 +8,66 @@ interface ContentMap {
 
 // Default content fallbacks
 const defaultContent: ContentMap = {
-  'hero.title': 'We Build Digital Experiences',
-  'hero.subtitle': 'Transform your ideas into powerful digital products that drive results.',
-  'hero.cta_primary': 'Start Your Project',
-  'hero.cta_secondary': 'View Our Work',
-  'about.title': 'About Mad Masters',
-  'about.description': 'We are a team of passionate developers, designers, and strategists dedicated to building exceptional digital products.',
-  'about.years_experience': '10+',
-  'about.projects_completed': '150+',
-  'about.happy_clients': '50+',
+  // Homepage - Hero section
+  'hero.badge': 'Who We Are',
+  'hero.title': 'WEB STUDIO',
+  'hero.subtitle': 'Every project meets W3C and Google Developers standards',
+
+  // Homepage - Stats section
+  'stats.projects_value': '150+',
+  'stats.projects_label': 'Projects Completed',
+  'stats.experience_value': '8+',
+  'stats.experience_label': 'Years Experience',
+  'stats.clients_value': '50+',
+  'stats.clients_label': 'Happy Clients',
+  'stats.success_value': '99%',
+  'stats.success_label': 'Success Rate',
+
+  // Homepage - About section
+  'about.card1_title': 'Modern Technology',
+  'about.card1_description': 'We choose the most effective solutions for creating and operating your virtual office.',
+  'about.card2_title': 'SEO & Marketing',
+  'about.card2_description': 'Search engine optimization and website promotion to attract customers.',
+
+  // Homepage - Services section
   'services.title': 'Our Services',
   'services.subtitle': 'Comprehensive digital solutions for modern businesses',
+
+  // Homepage - Contact section
   'contact.title': 'Get In Touch',
   'contact.subtitle': "Ready to start your project? Let's talk.",
-  'contact.email': 'hello@madmasters.pro',
+
+  // Homepage - Footer section
+  'footer.tagline': "Creative team that embodies the client's ideas with the help of code and coffee in a worthy representation on the Internet",
+  'footer.company_name': 'Mad Masters',
+
+  // Contact page
+  'info.email': 'madmweb@gmail.com',
+  'info.phone': '+380 96 477 7690',
+  'info.hours_weekday': 'Mon-Thu: 09:00-19:00',
+  'info.hours_friday': 'Fri: 09:00-18:00',
+
+  // Shorthand aliases for backward compatibility
+  'contact.email': 'madmweb@gmail.com',
   'contact.phone': '+380 96 477 7690',
-  'footer.copyright': '© 2024 Mad Masters. All rights reserved.',
-  'footer.tagline': 'Building the future, one pixel at a time.',
+  'contact.hours_weekday': 'Mon-Thu: 09:00-19:00',
+  'contact.hours_friday': 'Fri: 09:00-18:00',
 };
 
-export function useContent(section?: string, locale: string = 'en') {
+interface UseContentOptions {
+  page?: string;
+  section?: string;
+  locale?: string;
+}
+
+export function useContent(sectionOrOptions?: string | UseContentOptions, localeArg: string = 'en') {
+  // Support both old signature and new options object
+  const options: UseContentOptions = typeof sectionOrOptions === 'string'
+    ? { section: sectionOrOptions, locale: localeArg }
+    : sectionOrOptions || {};
+
+  const { page, section, locale = 'en' } = options;
+
   const [content, setContent] = useState<ContentMap>(defaultContent);
   const [loading, setLoading] = useState(true);
 
@@ -35,6 +75,7 @@ export function useContent(section?: string, locale: string = 'en') {
     async function fetchContent() {
       try {
         const params = new URLSearchParams({ locale });
+        if (page) params.set('page', page);
         if (section) params.set('section', section);
 
         const res = await fetch(`/api/content?${params}`);
@@ -51,7 +92,7 @@ export function useContent(section?: string, locale: string = 'en') {
     }
 
     fetchContent();
-  }, [section, locale]);
+  }, [page, section, locale]);
 
   const get = (key: string, fallback?: string): string => {
     return content[key] || fallback || defaultContent[key] || '';

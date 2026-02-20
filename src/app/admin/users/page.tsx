@@ -141,8 +141,8 @@ export default function UsersPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">Users</h1>
-          <p className="text-white/60 mt-1">Manage user accounts and permissions</p>
+          <h1 className="text-2xl font-bold text-foreground">Users</h1>
+          <p className="text-text-muted mt-1">Manage user accounts and permissions</p>
         </div>
         <button
           onClick={() => {
@@ -163,46 +163,46 @@ export default function UsersPage() {
 
       {/* Form */}
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-surface rounded-lg p-6 mb-8 border border-white/10">
-          <h2 className="text-lg font-semibold text-white mb-4">
+        <form onSubmit={handleSubmit} className="bg-surface rounded-lg p-6 mb-8 border border-border">
+          <h2 className="text-lg font-semibold text-foreground mb-4">
             {editingUser ? 'Edit User' : 'New User'}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-white/60 text-sm mb-1">Email *</label>
+              <label className="block text-text-muted text-sm mb-1">Email *</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData((p) => ({ ...p, email: e.target.value }))}
-                className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-2 text-white focus:border-accent focus:outline-none disabled:opacity-50"
+                className="w-full bg-surface-muted border border-border rounded-lg px-4 py-2 text-foreground focus:border-accent focus:outline-none disabled:opacity-50"
                 required
                 disabled={!!editingUser}
               />
             </div>
             <div>
-              <label className="block text-white/60 text-sm mb-1">
+              <label className="block text-text-muted text-sm mb-1">
                 {editingUser ? 'New Password (leave blank to keep current)' : 'Password *'}
               </label>
               <input
                 type="password"
                 value={formData.password}
                 onChange={(e) => setFormData((p) => ({ ...p, password: e.target.value }))}
-                className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-2 text-white focus:border-accent focus:outline-none"
+                className="w-full bg-surface-muted border border-border rounded-lg px-4 py-2 text-foreground focus:border-accent focus:outline-none"
                 required={!editingUser}
                 minLength={6}
               />
             </div>
             <div>
-              <label className="block text-white/60 text-sm mb-1">Display Name</label>
+              <label className="block text-text-muted text-sm mb-1">Display Name</label>
               <input
                 type="text"
                 value={formData.displayName}
                 onChange={(e) => setFormData((p) => ({ ...p, displayName: e.target.value }))}
-                className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-2 text-white focus:border-accent focus:outline-none"
+                className="w-full bg-surface-muted border border-border rounded-lg px-4 py-2 text-foreground focus:border-accent focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-white/60 text-sm mb-1">Role *</label>
+              <label className="block text-text-muted text-sm mb-1">Role *</label>
               <select
                 value={formData.role}
                 onChange={(e) =>
@@ -211,7 +211,7 @@ export default function UsersPage() {
                     role: e.target.value as 'admin' | 'editor' | 'copywriter',
                   }))
                 }
-                className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-2 text-white focus:border-accent focus:outline-none"
+                className="w-full bg-surface-muted border border-border rounded-lg px-4 py-2 text-foreground focus:border-accent focus:outline-none"
               >
                 <option value="copywriter">Copywriter</option>
                 <option value="editor">Editor</option>
@@ -220,7 +220,7 @@ export default function UsersPage() {
             </div>
           </div>
 
-          <div className="text-sm text-white/40 mb-4">
+          <div className="text-sm text-text-muted mb-4">
             <strong>Role permissions:</strong>
             <ul className="mt-2 space-y-1">
               <li><span className="text-purple-400">Admin</span> — Full access to all features including user management</li>
@@ -241,32 +241,32 @@ export default function UsersPage() {
 
       {/* Users List */}
       {loading ? (
-        <div className="text-white/60">Loading...</div>
+        <div className="text-text-muted">Loading...</div>
       ) : users.length === 0 ? (
-        <div className="text-center py-12 bg-surface rounded-lg border border-white/10">
-          <p className="text-white/60">No users found</p>
+        <div className="text-center py-12 bg-surface rounded-lg border border-border">
+          <p className="text-text-muted">No users found</p>
         </div>
       ) : (
-        <div className="bg-surface rounded-lg overflow-hidden border border-white/10">
+        <div className="bg-surface rounded-lg overflow-hidden border border-border">
           <table className="w-full">
             <thead className="bg-surface-muted">
               <tr>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">User</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Role</th>
-                <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Last Login</th>
-                <th className="text-right px-4 py-3 text-white/60 text-sm font-medium">Actions</th>
+                <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">User</th>
+                <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Role</th>
+                <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Last Login</th>
+                <th className="text-right px-4 py-3 text-text-muted text-sm font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border">
               {users.map((user) => (
                 <tr key={user.id} className="hover:bg-surface-hover transition-colors">
                   <td className="px-4 py-3">
                     <div>
-                      <p className="text-white font-medium">
+                      <p className="text-foreground font-medium">
                         {user.displayName || user.email}
                       </p>
                       {user.displayName && (
-                        <p className="text-white/40 text-sm">{user.email}</p>
+                        <p className="text-text-muted text-sm">{user.email}</p>
                       )}
                     </div>
                   </td>
@@ -277,7 +277,7 @@ export default function UsersPage() {
                       {user.role}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-white/50 text-sm">
+                  <td className="px-4 py-3 text-text-muted text-sm">
                     {user.lastLoginAt
                       ? new Date(user.lastLoginAt).toLocaleDateString()
                       : 'Never'}
@@ -286,7 +286,7 @@ export default function UsersPage() {
                     <div className="flex gap-2 justify-end">
                       <button
                         onClick={() => handleEdit(user)}
-                        className="px-3 py-1 text-sm bg-white/10 text-white rounded hover:bg-white/20 transition-colors"
+                        className="px-3 py-1 text-sm bg-surface-hover text-foreground rounded hover:bg-border transition-colors"
                       >
                         Edit
                       </button>

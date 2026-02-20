@@ -7,6 +7,7 @@ import type { Dictionary } from '@/i18n/dictionaries';
 import { FullPageScroll, ScrollSection } from '@/components/scroll';
 import { HeroVideo, HeroOverlay } from '@/components/hero';
 import { HomeFreshWorks } from '@/components/home/home-fresh-works';
+import { useContent } from '@/hooks/use-content';
 
 interface HomePageProps {
   locale: Locale;
@@ -35,6 +36,7 @@ function useCounter(end: number, duration: number = 2000, start: boolean = true)
 export function HomePage({ locale, dict }: HomePageProps) {
   const prefix = locale === 'en' ? '' : `/${locale}`;
   const [activeSection, setActiveSection] = useState(1);
+  const { get } = useContent(undefined, locale);
 
   return (
     <FullPageScroll totalSections={5} onSectionChange={setActiveSection}>
@@ -84,24 +86,40 @@ export function HomePage({ locale, dict }: HomePageProps) {
 
           <div className="container-section text-center relative z-10">
             <span className="inline-block px-4 py-1 rounded-full bg-accent/10 text-accent text-xs font-medium tracking-wider mb-6">
-              {dict.sections.aboutTitle}
+              {get('hero.badge', dict.sections.aboutTitle)}
             </span>
 
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-4 text-gray-900">
-              WEB <span className="gradient-text">STUDIO</span>
+              {get('hero.title', 'WEB').split(' ')[0]} <span className="gradient-text">{get('hero.title', 'WEB STUDIO').split(' ').slice(1).join(' ') || 'STUDIO'}</span>
             </h2>
 
             <p className="text-sm text-gray-600 max-w-xl mx-auto mt-6">
-              Every project meets W3C and Google Developers standards
+              {get('hero.subtitle', 'Every project meets W3C and Google Developers standards')}
             </p>
 
             {/* Stats counters */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mt-8 sm:mt-12">
               {[
-                { value: 150, label: 'Projects Completed', suffix: '+' },
-                { value: 8, label: 'Years Experience', suffix: '+' },
-                { value: 50, label: 'Happy Clients', suffix: '+' },
-                { value: 99, label: 'Success Rate', suffix: '%' },
+                {
+                  value: parseInt(get('stats.projects_value', '150+').replace(/\D/g, '')) || 150,
+                  label: get('stats.projects_label', 'Projects Completed'),
+                  suffix: get('stats.projects_value', '150+').replace(/\d/g, '') || '+'
+                },
+                {
+                  value: parseInt(get('stats.experience_value', '8+').replace(/\D/g, '')) || 8,
+                  label: get('stats.experience_label', 'Years Experience'),
+                  suffix: get('stats.experience_value', '8+').replace(/\d/g, '') || '+'
+                },
+                {
+                  value: parseInt(get('stats.clients_value', '50+').replace(/\D/g, '')) || 50,
+                  label: get('stats.clients_label', 'Happy Clients'),
+                  suffix: get('stats.clients_value', '50+').replace(/\d/g, '') || '+'
+                },
+                {
+                  value: parseInt(get('stats.success_value', '99%').replace(/\D/g, '')) || 99,
+                  label: get('stats.success_label', 'Success Rate'),
+                  suffix: get('stats.success_value', '99%').replace(/\d/g, '') || '%'
+                },
               ].map((stat, i) => (
                 <div key={i} className="glass-card-light p-4 sm:p-6">
                   <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">

@@ -1,0 +1,265 @@
+{
+  "projects": [
+    {
+      "key": "librora",
+      "name": "Librora",
+      "client": "Internal Product",
+      "status": "active",
+      "type": "internal",
+      "oneLiner": "Reading companion: track reading, manage book collection, discover insights.",
+      "essence": "User-facing reading tracker / personal library product. Helps users build reading habits, organize their book collections, track progress, and discover new books based on their preferences.",
+      "productUrls": ["https://librora.io/"],
+      "owner": "TBD",
+      "techLead": "TBD",
+      "team": [],
+      "tags": ["reading", "productivity", "consumer", "mobile-friendly"],
+      "stack": {
+        "frontend": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined during tech discovery"
+        },
+        "backend": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined during tech discovery"
+        },
+        "database": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined during tech discovery"
+        },
+        "hosting": {
+          "name": "TBD",
+          "notes": "Domain registered and live"
+        },
+        "auth": {
+          "name": "TBD",
+          "notes": "To be determined"
+        },
+        "cicd": {
+          "name": "TBD",
+          "notes": ""
+        },
+        "analytics": {
+          "name": "TBD",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "TBD",
+          "notes": ""
+        }
+      },
+      "environments": [
+        {
+          "type": "PROD",
+          "url": "https://librora.io/",
+          "notes": "Production environment"
+        }
+      ],
+      "links": [
+        {
+          "type": "WEBSITE",
+          "label": "Public website",
+          "url": "https://librora.io/",
+          "notes": "Main product website"
+        }
+      ],
+      "instructions": {
+        "localSetupMd": "## Local Setup\n\nTBD - Documentation pending tech stack finalization.\n\n### Prerequisites\n- Node.js (version TBD)\n- npm/yarn\n\n### Steps\n1. Clone the repository\n2. Install dependencies\n3. Set up environment variables\n4. Run development server",
+        "deployMd": "## Deployment\n\nTBD - Deployment process to be documented.\n\n### Staging\n- TBD\n\n### Production\n- TBD",
+        "testingMd": "## Testing\n\nTBD - Testing strategy to be defined.\n\n### Unit Tests\n- TBD\n\n### E2E Tests\n- TBD",
+        "runbookMd": "## Runbook\n\nTBD - Operational runbook to be created.\n\n### Common Issues\n- TBD\n\n### Emergency Contacts\n- TBD",
+        "knownIssuesMd": "## Known Issues\n\nNo known issues documented yet."
+      },
+      "operations": {
+        "sla": "TBD",
+        "backups": "TBD",
+        "pii": "unknown",
+        "dataRegion": "TBD",
+        "secretsLocation": "1Password vault: Librora",
+        "onCallRotation": "TBD",
+        "incidentProcess": "TBD"
+      },
+      "security": {
+        "authMethod": "TBD",
+        "dataEncryption": "TBD",
+        "complianceNotes": "TBD"
+      }
+    },
+    {
+      "key": "litrlly",
+      "name": "Litrlly",
+      "client": "Internal Product",
+      "status": "active",
+      "type": "internal",
+      "oneLiner": "AI-powered English pronunciation learning app with voice recording and feedback.",
+      "essence": "B2C learning app focused on pronunciation practice and instant analysis. Uses AI to provide real-time feedback on English pronunciation, helping users improve their speaking skills through interactive exercises and personalized coaching.",
+      "productUrls": ["https://litrlly.app/"],
+      "owner": "TBD",
+      "techLead": "TBD",
+      "team": [],
+      "tags": ["edtech", "ai", "pronunciation", "learning", "voice", "consumer"],
+      "stack": {
+        "frontend": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined during tech discovery"
+        },
+        "backend": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined during tech discovery"
+        },
+        "database": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined during tech discovery"
+        },
+        "hosting": {
+          "name": "TBD",
+          "notes": "Domain registered and live"
+        },
+        "auth": {
+          "name": "TBD",
+          "notes": "To be determined"
+        },
+        "cicd": {
+          "name": "TBD",
+          "notes": ""
+        },
+        "analytics": {
+          "name": "TBD",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "TBD",
+          "notes": ""
+        }
+      },
+      "environments": [
+        {
+          "type": "PROD",
+          "url": "https://litrlly.app/",
+          "notes": "Production environment"
+        }
+      ],
+      "links": [
+        {
+          "type": "WEBSITE",
+          "label": "Public website",
+          "url": "https://litrlly.app/",
+          "notes": "Main product website"
+        }
+      ],
+      "instructions": {
+        "localSetupMd": "## Local Setup\n\nTBD - Documentation pending tech stack finalization.\n\n### Prerequisites\n- Node.js (version TBD)\n- npm/yarn\n- Microphone access for voice features\n\n### Steps\n1. Clone the repository\n2. Install dependencies\n3. Set up environment variables\n4. Configure AI/ML services\n5. Run development server",
+        "deployMd": "## Deployment\n\nTBD - Deployment process to be documented.\n\n### Staging\n- TBD\n\n### Production\n- TBD\n\n### AI Model Deployment\n- TBD",
+        "testingMd": "## Testing\n\nTBD - Testing strategy to be defined.\n\n### Unit Tests\n- TBD\n\n### E2E Tests\n- TBD\n\n### Voice/Audio Tests\n- TBD",
+        "runbookMd": "## Runbook\n\nTBD - Operational runbook to be created.\n\n### Common Issues\n- Audio processing failures\n- AI service connectivity\n\n### Emergency Contacts\n- TBD",
+        "knownIssuesMd": "## Known Issues\n\nNo known issues documented yet."
+      },
+      "operations": {
+        "sla": "TBD",
+        "backups": "TBD",
+        "pii": "unknown",
+        "dataRegion": "TBD",
+        "secretsLocation": "1Password vault: Litrlly",
+        "onCallRotation": "TBD",
+        "incidentProcess": "TBD"
+      },
+      "security": {
+        "authMethod": "TBD",
+        "dataEncryption": "TBD - voice recordings may require encryption",
+        "complianceNotes": "Consider GDPR for voice data storage"
+      }
+    },
+    {
+      "key": "litrlly-kids",
+      "name": "Litrlly Kids",
+      "client": "Internal Product",
+      "status": "active",
+      "type": "internal",
+      "oneLiner": "Fun interactive English learning for kids (grammar, reading, listening, speaking).",
+      "essence": "Kids-focused learning experience with age-appropriate content, gamification, and child-safe UX constraints. Part of the Litrlly product family but with distinct branding, simplified interfaces, and content curated for younger learners.",
+      "productUrls": ["https://kids.litrlly.app/"],
+      "owner": "TBD",
+      "techLead": "TBD",
+      "team": [],
+      "tags": ["edtech", "kids", "learning", "gamification", "parental-controls", "consumer"],
+      "stack": {
+        "frontend": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined - may share codebase with Litrlly main app"
+        },
+        "backend": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined - may share backend with Litrlly"
+        },
+        "database": {
+          "name": "TBD",
+          "version": "TBD",
+          "notes": "To be determined"
+        },
+        "hosting": {
+          "name": "TBD",
+          "notes": "Subdomain of litrlly.app"
+        },
+        "auth": {
+          "name": "TBD",
+          "notes": "Parental controls required"
+        },
+        "cicd": {
+          "name": "TBD",
+          "notes": ""
+        },
+        "analytics": {
+          "name": "TBD",
+          "notes": "Must be COPPA compliant"
+        },
+        "monitoring": {
+          "name": "TBD",
+          "notes": ""
+        }
+      },
+      "environments": [
+        {
+          "type": "PROD",
+          "url": "https://kids.litrlly.app/",
+          "notes": "Production environment"
+        }
+      ],
+      "links": [
+        {
+          "type": "WEBSITE",
+          "label": "Public website",
+          "url": "https://kids.litrlly.app/",
+          "notes": "Kids version product website"
+        }
+      ],
+      "instructions": {
+        "localSetupMd": "## Local Setup\n\nTBD - Documentation pending tech stack finalization.\n\n### Prerequisites\n- Node.js (version TBD)\n- npm/yarn\n\n### Steps\n1. Clone the repository\n2. Install dependencies\n3. Set up environment variables\n4. Run development server\n\n### Notes\n- May share setup with main Litrlly app",
+        "deployMd": "## Deployment\n\nTBD - Deployment process to be documented.\n\n### Staging\n- TBD\n\n### Production\n- TBD\n\n### Content Review\n- All content must be reviewed for age-appropriateness before deployment",
+        "testingMd": "## Testing\n\nTBD - Testing strategy to be defined.\n\n### Unit Tests\n- TBD\n\n### E2E Tests\n- TBD\n\n### Accessibility Tests\n- Must ensure child-friendly UI",
+        "runbookMd": "## Runbook\n\nTBD - Operational runbook to be created.\n\n### Common Issues\n- TBD\n\n### Emergency Contacts\n- TBD\n\n### Content Moderation\n- TBD",
+        "knownIssuesMd": "## Known Issues\n\nNo known issues documented yet."
+      },
+      "operations": {
+        "sla": "TBD",
+        "backups": "TBD",
+        "pii": "high",
+        "dataRegion": "TBD",
+        "secretsLocation": "1Password vault: Litrlly Kids",
+        "onCallRotation": "TBD",
+        "incidentProcess": "TBD"
+      },
+      "security": {
+        "authMethod": "TBD - must include parental verification",
+        "dataEncryption": "TBD - children's data requires strong encryption",
+        "complianceNotes": "COPPA compliance required. GDPR-K considerations. Parental consent mechanisms needed."
+      }
+    }
+  ]
+}
