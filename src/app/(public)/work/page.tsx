@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { PageLayout } from '@/components/layout/page-layout';
 import { categories, type PortfolioCategory } from '@/data/portfolio';
+import { useContent } from '@/hooks/use-content';
 
 interface PortfolioProject {
   id: string;
@@ -36,6 +37,7 @@ export default function WorkPage() {
   const [projects, setProjects] = useState<PortfolioProject[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<PortfolioCategory>('all');
+  const { get } = useContent({ page: 'work', locale: 'en' });
 
   useEffect(() => {
     fetchProjects();
@@ -65,7 +67,11 @@ export default function WorkPage() {
     : projects.filter(p => p.category === activeCategory);
 
   return (
-    <PageLayout locale="en" title="Portfolio" subtitle="Our completed projects">
+    <PageLayout
+      locale="en"
+      title={get('header.title', 'Portfolio')}
+      subtitle={get('header.subtitle', 'Our completed projects')}
+    >
       <div className="py-16">
         <div className="container-section">
           {/* Category Filter */}
@@ -196,16 +202,16 @@ export default function WorkPage() {
               <div className="text-foreground/60 text-xs sm:text-sm">Projects Completed</div>
             </div>
             <div className="text-center p-4 sm:p-6 bg-surface rounded-xl">
-              <div className="text-2xl sm:text-3xl font-bold text-accent mb-1">50+</div>
-              <div className="text-foreground/60 text-xs sm:text-sm">Happy Clients</div>
+              <div className="text-2xl sm:text-3xl font-bold text-accent mb-1">{get('stats.clients_value', '50+')}</div>
+              <div className="text-foreground/60 text-xs sm:text-sm">{get('stats.clients_label', 'Happy Clients')}</div>
             </div>
             <div className="text-center p-4 sm:p-6 bg-surface rounded-xl">
-              <div className="text-2xl sm:text-3xl font-bold text-accent mb-1">10+</div>
-              <div className="text-foreground/60 text-xs sm:text-sm">Years Experience</div>
+              <div className="text-2xl sm:text-3xl font-bold text-accent mb-1">{get('stats.years_value', '10+')}</div>
+              <div className="text-foreground/60 text-xs sm:text-sm">{get('stats.years_label', 'Years Experience')}</div>
             </div>
             <div className="text-center p-4 sm:p-6 bg-surface rounded-xl">
-              <div className="text-2xl sm:text-3xl font-bold text-accent mb-1">100%</div>
-              <div className="text-foreground/60 text-xs sm:text-sm">Client Satisfaction</div>
+              <div className="text-2xl sm:text-3xl font-bold text-accent mb-1">{get('stats.satisfaction_value', '100%')}</div>
+              <div className="text-foreground/60 text-xs sm:text-sm">{get('stats.satisfaction_label', 'Client Satisfaction')}</div>
             </div>
           </div>
         </div>

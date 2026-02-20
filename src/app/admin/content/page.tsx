@@ -13,6 +13,7 @@ interface ContentBlock {
     fr?: { value: string; alt?: string };
   };
   updatedAt: string | null;
+  updatedBy?: string;
 }
 
 interface SiteMapPage {
@@ -21,76 +22,84 @@ interface SiteMapPage {
   path: string;
   icon: JSX.Element;
   disabled?: boolean;
-  children?: SiteMapPage[];
-  sections?: string[]; // For homepage tabs
+  sections?: string[];
 }
 
-// Default content structure organized by page
+// Default content - MUST MATCH actual page content
 const defaultContent: Omit<ContentBlock, 'id' | 'updatedAt'>[] = [
-  // Homepage - Hero section
-  { page: 'home', section: 'hero', key: 'badge', type: 'text', locales: { en: { value: 'Who We Are' } } },
-  { page: 'home', section: 'hero', key: 'title', type: 'text', locales: { en: { value: 'WEB STUDIO' } } },
-  { page: 'home', section: 'hero', key: 'subtitle', type: 'text', locales: { en: { value: 'Every project meets W3C and Google Developers standards' } } },
+  // ==================== HOMEPAGE ====================
+  { page: 'home', section: 'hero', key: 'badge', type: 'text', locales: { en: { value: 'Who We Are' }, fr: { value: 'Qui sommes-nous' } } },
+  { page: 'home', section: 'hero', key: 'title', type: 'text', locales: { en: { value: 'WEB STUDIO' }, fr: { value: 'STUDIO WEB' } } },
+  { page: 'home', section: 'hero', key: 'subtitle', type: 'text', locales: { en: { value: 'Every project meets W3C and Google Developers standards' }, fr: { value: 'Chaque projet répond aux normes W3C et Google Developers' } } },
 
-  // Homepage - Stats section
   { page: 'home', section: 'stats', key: 'projects_value', type: 'text', locales: { en: { value: '150+' } } },
-  { page: 'home', section: 'stats', key: 'projects_label', type: 'text', locales: { en: { value: 'Projects Completed' } } },
+  { page: 'home', section: 'stats', key: 'projects_label', type: 'text', locales: { en: { value: 'Projects Completed' }, fr: { value: 'Projets Réalisés' } } },
   { page: 'home', section: 'stats', key: 'experience_value', type: 'text', locales: { en: { value: '8+' } } },
-  { page: 'home', section: 'stats', key: 'experience_label', type: 'text', locales: { en: { value: 'Years Experience' } } },
+  { page: 'home', section: 'stats', key: 'experience_label', type: 'text', locales: { en: { value: 'Years Experience' }, fr: { value: 'Années d\'Expérience' } } },
   { page: 'home', section: 'stats', key: 'clients_value', type: 'text', locales: { en: { value: '50+' } } },
-  { page: 'home', section: 'stats', key: 'clients_label', type: 'text', locales: { en: { value: 'Happy Clients' } } },
+  { page: 'home', section: 'stats', key: 'clients_label', type: 'text', locales: { en: { value: 'Happy Clients' }, fr: { value: 'Clients Satisfaits' } } },
   { page: 'home', section: 'stats', key: 'success_value', type: 'text', locales: { en: { value: '99%' } } },
-  { page: 'home', section: 'stats', key: 'success_label', type: 'text', locales: { en: { value: 'Success Rate' } } },
+  { page: 'home', section: 'stats', key: 'success_label', type: 'text', locales: { en: { value: 'Success Rate' }, fr: { value: 'Taux de Réussite' } } },
 
-  // Homepage - About section
-  { page: 'home', section: 'about', key: 'card1_title', type: 'text', locales: { en: { value: 'Modern Technology' } } },
-  { page: 'home', section: 'about', key: 'card1_description', type: 'richtext', locales: { en: { value: 'We choose the most effective solutions for creating and operating your virtual office. We define stylish and modern design with special attention to page speed and usability.' } } },
-  { page: 'home', section: 'about', key: 'card2_title', type: 'text', locales: { en: { value: 'SEO & Marketing' } } },
-  { page: 'home', section: 'about', key: 'card2_description', type: 'richtext', locales: { en: { value: 'Search engine optimization and website promotion is one of the most effective ways to attract customers and increase visibility to your target audience.' } } },
+  { page: 'home', section: 'about', key: 'card1_title', type: 'text', locales: { en: { value: 'Modern Technology' }, fr: { value: 'Technologie Moderne' } } },
+  { page: 'home', section: 'about', key: 'card1_description', type: 'richtext', locales: { en: { value: 'We choose the most effective solutions for creating and operating your virtual office. We define stylish and modern design with special attention to page speed and usability.' }, fr: { value: 'Nous choisissons les solutions les plus efficaces pour créer et exploiter votre bureau virtuel.' } } },
+  { page: 'home', section: 'about', key: 'card2_title', type: 'text', locales: { en: { value: 'SEO & Marketing' }, fr: { value: 'SEO & Marketing' } } },
+  { page: 'home', section: 'about', key: 'card2_description', type: 'richtext', locales: { en: { value: 'Search engine optimization and website promotion is one of the most effective ways to attract customers and increase visibility to your target audience.' }, fr: { value: 'L\'optimisation des moteurs de recherche et la promotion de sites Web est l\'un des moyens les plus efficaces d\'attirer des clients.' } } },
 
-  // Homepage - Services section
-  { page: 'home', section: 'services', key: 'title', type: 'text', locales: { en: { value: 'Our Services' } } },
-  { page: 'home', section: 'services', key: 'web_title', type: 'text', locales: { en: { value: 'Web Development' } } },
-  { page: 'home', section: 'services', key: 'web_description', type: 'richtext', locales: { en: { value: 'Custom websites and web applications built with modern technologies.' } } },
-  { page: 'home', section: 'services', key: 'marketing_title', type: 'text', locales: { en: { value: 'Digital Marketing' } } },
-  { page: 'home', section: 'services', key: 'marketing_description', type: 'text', locales: { en: { value: 'SEO, PPC, and social media marketing strategies.' } } },
+  { page: 'home', section: 'services', key: 'badge', type: 'text', locales: { en: { value: 'WHAT WE DO' }, fr: { value: 'CE QUE NOUS FAISONS' } } },
+  { page: 'home', section: 'services', key: 'title', type: 'text', locales: { en: { value: 'Our Services' }, fr: { value: 'Nos Services' } } },
 
-  // Homepage - Contact section
-  { page: 'home', section: 'contact', key: 'title', type: 'text', locales: { en: { value: 'Get In Touch' } } },
-  { page: 'home', section: 'contact', key: 'subtitle', type: 'text', locales: { en: { value: "Ready to start your project? Let's talk." } } },
+  { page: 'home', section: 'contact', key: 'title', type: 'text', locales: { en: { value: 'Get In Touch' }, fr: { value: 'Contactez-nous' } } },
+  { page: 'home', section: 'contact', key: 'subtitle', type: 'text', locales: { en: { value: "Ready to start your project? Let's talk." }, fr: { value: 'Prêt à démarrer votre projet ? Parlons-en.' } } },
 
-  // Homepage - Footer section
-  { page: 'home', section: 'footer', key: 'tagline', type: 'text', locales: { en: { value: "Creative team that embodies the client's ideas with the help of code and coffee in a worthy representation on the Internet" } } },
+  { page: 'home', section: 'footer', key: 'tagline', type: 'richtext', locales: { en: { value: "Creative team that embodies the client's ideas with the help of code and coffee in a worthy representation on the Internet" }, fr: { value: "Équipe créative qui incarne les idées du client à l'aide de code et de café" } } },
   { page: 'home', section: 'footer', key: 'company_name', type: 'text', locales: { en: { value: 'Mad Masters' } } },
 
-  // About page
-  { page: 'about', section: 'main', key: 'title', type: 'text', locales: { en: { value: 'About Us' } } },
-  { page: 'about', section: 'main', key: 'subtitle', type: 'text', locales: { en: { value: 'Learn more about our team' } } },
-  { page: 'about', section: 'main', key: 'description', type: 'richtext', locales: { en: { value: 'We are a team of passionate developers, designers, and strategists dedicated to building exceptional digital products.' } } },
-  { page: 'about', section: 'main', key: 'mission_title', type: 'text', locales: { en: { value: 'Our Mission' } } },
-  { page: 'about', section: 'main', key: 'mission_description', type: 'richtext', locales: { en: { value: 'To deliver high-quality digital solutions that help businesses grow and succeed in the modern world.' } } },
+  // ==================== ABOUT PAGE ====================
+  { page: 'about', section: 'header', key: 'title', type: 'text', locales: { en: { value: 'About Mad Masters' }, fr: { value: 'À propos de Mad Masters' } } },
+  { page: 'about', section: 'header', key: 'subtitle', type: 'text', locales: { en: { value: 'Web Studio' }, fr: { value: 'Studio Web' } } },
+  { page: 'about', section: 'content', key: 'who_title', type: 'text', locales: { en: { value: 'Who We Are' }, fr: { value: 'Qui sommes-nous' } } },
+  { page: 'about', section: 'content', key: 'who_paragraph1', type: 'richtext', locales: { en: { value: 'Mad Masters is a client-oriented team of professionals. Using modern technologies, responsibility, precise execution of tasks, maximum efficiency and thoughtful Design - this is about Mad Masters.' }, fr: { value: 'Mad Masters est une équipe de professionnels orientés client.' } } },
+  { page: 'about', section: 'content', key: 'who_paragraph2', type: 'richtext', locales: { en: { value: 'We masterfully embody your ideas and wishes, as we put all our experience and knowledge into each project. Our employees are a team with solid experience in web technologies.' }, fr: { value: 'Nous incarnons magistralement vos idées et vos souhaits.' } } },
+  { page: 'about', section: 'content', key: 'who_paragraph3', type: 'richtext', locales: { en: { value: 'Mad Masters works in such areas of web technologies as website creation and support, Internet marketing, custom development, layout and much more.' }, fr: { value: 'Mad Masters travaille dans des domaines tels que la création et le support de sites Web, le marketing Internet.' } } },
+  { page: 'about', section: 'values', key: 'title', type: 'text', locales: { en: { value: 'Our Values' }, fr: { value: 'Nos Valeurs' } } },
+  { page: 'about', section: 'values', key: 'quality_title', type: 'text', locales: { en: { value: 'Quality First' }, fr: { value: 'La Qualité d\'Abord' } } },
+  { page: 'about', section: 'values', key: 'quality_description', type: 'text', locales: { en: { value: 'Every project meets W3C and Google standards' }, fr: { value: 'Chaque projet répond aux normes W3C et Google' } } },
+  { page: 'about', section: 'values', key: 'speed_title', type: 'text', locales: { en: { value: 'Speed & Performance' }, fr: { value: 'Vitesse et Performance' } } },
+  { page: 'about', section: 'values', key: 'speed_description', type: 'text', locales: { en: { value: 'Optimized for Google PageSpeed and Core Web Vitals' }, fr: { value: 'Optimisé pour Google PageSpeed et Core Web Vitals' } } },
+  { page: 'about', section: 'values', key: 'client_title', type: 'text', locales: { en: { value: 'Client-Oriented' }, fr: { value: 'Orienté Client' } } },
+  { page: 'about', section: 'values', key: 'client_description', type: 'text', locales: { en: { value: 'Your success is our priority' }, fr: { value: 'Votre succès est notre priorité' } } },
+  { page: 'about', section: 'values', key: 'innovation_title', type: 'text', locales: { en: { value: 'Innovation' }, fr: { value: 'Innovation' } } },
+  { page: 'about', section: 'values', key: 'innovation_description', type: 'text', locales: { en: { value: 'Modern technologies and creative solutions' }, fr: { value: 'Technologies modernes et solutions créatives' } } },
 
-  // Services page
-  { page: 'services', section: 'main', key: 'title', type: 'text', locales: { en: { value: 'Our Services' } } },
-  { page: 'services', section: 'main', key: 'subtitle', type: 'text', locales: { en: { value: 'Comprehensive digital solutions' } } },
-  { page: 'services', section: 'web', key: 'title', type: 'text', locales: { en: { value: 'Web Development' } } },
-  { page: 'services', section: 'web', key: 'description', type: 'richtext', locales: { en: { value: 'Custom websites and web applications tailored to your needs.' } } },
-  { page: 'services', section: 'marketing', key: 'title', type: 'text', locales: { en: { value: 'Digital Marketing' } } },
-  { page: 'services', section: 'marketing', key: 'description', type: 'richtext', locales: { en: { value: 'Comprehensive marketing strategies to grow your online presence.' } } },
-  { page: 'services', section: 'design', key: 'title', type: 'text', locales: { en: { value: 'UI/UX Design' } } },
-  { page: 'services', section: 'design', key: 'description', type: 'richtext', locales: { en: { value: 'Beautiful and intuitive designs that engage users.' } } },
+  // ==================== SERVICES PAGE ====================
+  { page: 'services', section: 'header', key: 'title', type: 'text', locales: { en: { value: 'Our Services' }, fr: { value: 'Nos Services' } } },
+  { page: 'services', section: 'header', key: 'subtitle', type: 'text', locales: { en: { value: 'What we can do for you' }, fr: { value: 'Ce que nous pouvons faire pour vous' } } },
+  { page: 'services', section: 'web', key: 'title', type: 'text', locales: { en: { value: 'Web Development' }, fr: { value: 'Développement Web' } } },
+  { page: 'services', section: 'web', key: 'description', type: 'richtext', locales: { en: { value: 'Professional website creation with modern technologies, responsive design, and optimal performance.' }, fr: { value: 'Création de sites Web professionnels avec des technologies modernes.' } } },
+  { page: 'services', section: 'marketing', key: 'title', type: 'text', locales: { en: { value: 'Online Marketing' }, fr: { value: 'Marketing en Ligne' } } },
+  { page: 'services', section: 'marketing', key: 'description', type: 'richtext', locales: { en: { value: 'Comprehensive digital marketing strategies to increase your online visibility and attract customers.' }, fr: { value: 'Stratégies de marketing numérique pour augmenter votre visibilité.' } } },
+  { page: 'services', section: 'custom', key: 'title', type: 'text', locales: { en: { value: 'Custom Development' }, fr: { value: 'Développement Sur Mesure' } } },
+  { page: 'services', section: 'custom', key: 'description', type: 'richtext', locales: { en: { value: 'Tailored software solutions designed specifically for your business needs and workflows.' }, fr: { value: 'Solutions logicielles sur mesure conçues spécifiquement pour votre entreprise.' } } },
+  { page: 'services', section: 'support', key: 'title', type: 'text', locales: { en: { value: 'Support & Maintenance' }, fr: { value: 'Support et Maintenance' } } },
+  { page: 'services', section: 'support', key: 'description', type: 'richtext', locales: { en: { value: 'Ongoing technical support and maintenance to keep your digital presence running smoothly.' }, fr: { value: 'Support technique et maintenance pour maintenir votre présence numérique.' } } },
 
-  // Contact page
-  { page: 'contact', section: 'main', key: 'title', type: 'text', locales: { en: { value: 'Contact Us' } } },
-  { page: 'contact', section: 'main', key: 'subtitle', type: 'text', locales: { en: { value: 'Get in touch' } } },
+  // ==================== WORK PAGE ====================
+  { page: 'work', section: 'header', key: 'title', type: 'text', locales: { en: { value: 'Portfolio' }, fr: { value: 'Portfolio' } } },
+  { page: 'work', section: 'header', key: 'subtitle', type: 'text', locales: { en: { value: 'Our completed projects' }, fr: { value: 'Nos projets réalisés' } } },
+  { page: 'work', section: 'stats', key: 'clients_value', type: 'text', locales: { en: { value: '50+' } } },
+  { page: 'work', section: 'stats', key: 'clients_label', type: 'text', locales: { en: { value: 'Happy Clients' }, fr: { value: 'Clients Satisfaits' } } },
+  { page: 'work', section: 'stats', key: 'years_value', type: 'text', locales: { en: { value: '10+' } } },
+  { page: 'work', section: 'stats', key: 'years_label', type: 'text', locales: { en: { value: 'Years Experience' }, fr: { value: 'Années d\'Expérience' } } },
+  { page: 'work', section: 'stats', key: 'satisfaction_value', type: 'text', locales: { en: { value: '100%' } } },
+  { page: 'work', section: 'stats', key: 'satisfaction_label', type: 'text', locales: { en: { value: 'Client Satisfaction' }, fr: { value: 'Satisfaction Client' } } },
+
+  // ==================== CONTACT PAGE ====================
+  { page: 'contact', section: 'header', key: 'title', type: 'text', locales: { en: { value: 'Contact Us' }, fr: { value: 'Contactez-nous' } } },
+  { page: 'contact', section: 'header', key: 'subtitle', type: 'text', locales: { en: { value: 'Get in touch' }, fr: { value: 'Prenez contact' } } },
   { page: 'contact', section: 'info', key: 'email', type: 'text', locales: { en: { value: 'madmweb@gmail.com' } } },
-  { page: 'contact', section: 'info', key: 'phone', type: 'text', locales: { en: { value: '+380 96 477 7690' } } },
-  { page: 'contact', section: 'info', key: 'hours_weekday', type: 'text', locales: { en: { value: 'Mon-Thu: 09:00-19:00' } } },
-  { page: 'contact', section: 'info', key: 'hours_friday', type: 'text', locales: { en: { value: 'Fri: 09:00-18:00' } } },
-
-  // Work page
-  { page: 'work', section: 'main', key: 'title', type: 'text', locales: { en: { value: 'Our Work' } } },
-  { page: 'work', section: 'main', key: 'subtitle', type: 'text', locales: { en: { value: 'Featured projects' } } },
+  { page: 'contact', section: 'info', key: 'hours_weekday', type: 'text', locales: { en: { value: 'Mon-Thu: 09:00-19:00' }, fr: { value: 'Lun-Jeu: 09:00-19:00' } } },
+  { page: 'contact', section: 'info', key: 'hours_friday', type: 'text', locales: { en: { value: 'Fri: 09:00-18:00' }, fr: { value: 'Ven: 09:00-18:00' } } },
 ];
 
 // Icons
@@ -131,84 +140,16 @@ const LockIcon = () => (
   </svg>
 );
 
-const PencilIcon = () => (
-  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-  </svg>
-);
-
-const XIcon = () => (
-  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-  </svg>
-);
-
-const ChevronIcon = ({ expanded }: { expanded: boolean }) => (
-  <svg className={`w-3 h-3 transition-transform ${expanded ? 'rotate-90' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-  </svg>
-);
-
 // Sitemap tree configuration
 const siteMap: SiteMapPage[] = [
-  {
-    id: 'home',
-    label: 'Home',
-    path: '/',
-    icon: <HomeIcon />,
-    sections: ['hero', 'stats', 'about', 'services', 'contact', 'footer'],
-  },
-  {
-    id: 'about',
-    label: 'About',
-    path: '/about',
-    icon: <InfoIcon />,
-  },
-  {
-    id: 'services',
-    label: 'Services',
-    path: '/services',
-    icon: <ServicesIcon />,
-  },
-  {
-    id: 'work',
-    label: 'Work',
-    path: '/work',
-    icon: <WorkIcon />,
-  },
-  {
-    id: 'contact',
-    label: 'Contact',
-    path: '/contact',
-    icon: <ContactIcon />,
-  },
-  {
-    id: 'portfolio',
-    label: 'Portfolio Items',
-    path: '/work/*',
-    icon: <LockIcon />,
-    disabled: true,
-  },
-  {
-    id: 'brief',
-    label: 'Brief',
-    path: '/brief',
-    icon: <LockIcon />,
-    disabled: true,
-  },
-  {
-    id: 'calculator',
-    label: 'Calculator',
-    path: '/calculator',
-    icon: <LockIcon />,
-    disabled: true,
-  },
+  { id: 'home', label: 'Home', path: '/', icon: <HomeIcon />, sections: ['hero', 'stats', 'about', 'services', 'contact', 'footer'] },
+  { id: 'about', label: 'About', path: '/about', icon: <InfoIcon /> },
+  { id: 'services', label: 'Services', path: '/services', icon: <ServicesIcon /> },
+  { id: 'work', label: 'Work', path: '/work', icon: <WorkIcon /> },
+  { id: 'contact', label: 'Contact', path: '/contact', icon: <ContactIcon /> },
+  { id: 'portfolio', label: 'Portfolio Items', path: '/work/*', icon: <LockIcon />, disabled: true },
+  { id: 'brief', label: 'Brief', path: '/brief', icon: <LockIcon />, disabled: true },
+  { id: 'calculator', label: 'Calculator', path: '/calculator', icon: <LockIcon />, disabled: true },
 ];
 
 export default function ContentPage() {
@@ -220,8 +161,7 @@ export default function ContentPage() {
   const [activeLocale, setActiveLocale] = useState<'en' | 'fr'>('en');
   const [hasChanges, setHasChanges] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editValue, setEditValue] = useState('');
+  const [lastUpdated, setLastUpdated] = useState<{ date: string; by: string } | null>(null);
 
   useEffect(() => {
     fetchContent();
@@ -233,9 +173,26 @@ export default function ContentPage() {
       const data = await res.json();
 
       if (res.ok && data.content && data.content.length > 0) {
-        setContent(data.content);
+        const fetchedIds = new Set(data.content.map((c: ContentBlock) => c.id));
+        const missingDefaults = defaultContent
+          .filter((item) => !fetchedIds.has(`${item.page}_${item.section}_${item.key}`))
+          .map((item) => ({
+            ...item,
+            id: `${item.page}_${item.section}_${item.key}`,
+            updatedAt: null,
+          }));
+        setContent([...data.content, ...missingDefaults]);
+
+        // Find most recent update
+        const sorted = [...data.content].sort((a: ContentBlock, b: ContentBlock) => {
+          if (!a.updatedAt) return 1;
+          if (!b.updatedAt) return -1;
+          return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        });
+        if (sorted[0]?.updatedAt) {
+          setLastUpdated({ date: sorted[0].updatedAt, by: sorted[0].updatedBy || 'Unknown' });
+        }
       } else {
-        // Initialize with default content
         const initialContent = defaultContent.map((item) => ({
           ...item,
           id: `${item.page}_${item.section}_${item.key}`,
@@ -245,7 +202,6 @@ export default function ContentPage() {
       }
     } catch (err) {
       console.error(err);
-      // Use defaults on error
       const initialContent = defaultContent.map((item) => ({
         ...item,
         id: `${item.page}_${item.section}_${item.key}`,
@@ -257,17 +213,7 @@ export default function ContentPage() {
     }
   };
 
-  const startEditing = (item: ContentBlock) => {
-    setEditingId(item.id);
-    setEditValue(item.locales[activeLocale]?.value || item.locales.en.value);
-  };
-
-  const cancelEditing = () => {
-    setEditingId(null);
-    setEditValue('');
-  };
-
-  const saveEditing = (id: string) => {
+  const updateContent = (id: string, value: string) => {
     setContent((prev) =>
       prev.map((item) => {
         if (item.id === id) {
@@ -275,7 +221,7 @@ export default function ContentPage() {
             ...item,
             locales: {
               ...item.locales,
-              [activeLocale]: { ...item.locales[activeLocale], value: editValue },
+              [activeLocale]: { ...item.locales[activeLocale], value },
             },
           };
         }
@@ -283,8 +229,6 @@ export default function ContentPage() {
       })
     );
     setHasChanges(true);
-    setEditingId(null);
-    setEditValue('');
   };
 
   const handleSave = async () => {
@@ -292,7 +236,7 @@ export default function ContentPage() {
     setMessage(null);
 
     try {
-      const items = content.map(({ id, updatedAt, ...rest }) => rest);
+      const items = content.map(({ id, updatedAt, updatedBy, ...rest }) => rest);
 
       const res = await fetch('/api/admin/content', {
         method: 'PUT',
@@ -314,7 +258,6 @@ export default function ContentPage() {
     }
   };
 
-  // Get content for current page
   const getPageContent = () => {
     if (activePage === 'home') {
       return content.filter((item) => item.page === 'home' && item.section === activeSection);
@@ -343,6 +286,31 @@ export default function ContentPage() {
     return groups;
   };
 
+  const formatSectionTitle = (section: string) => {
+    const titles: Record<string, string> = {
+      header: 'Page Header',
+      content: 'Main Content',
+      values: 'Our Values',
+      info: 'Contact Information',
+      stats: 'Statistics',
+      web: 'Web Development',
+      marketing: 'Marketing',
+      custom: 'Custom Development',
+      support: 'Support',
+    };
+    return titles[section] || section.charAt(0).toUpperCase() + section.slice(1);
+  };
+
+  // Determine grid layout based on content count in section
+  const getGridClass = (items: ContentBlock[]) => {
+    // Stats and values often look better in 2 columns
+    const hasShortItems = items.every(item => item.type === 'text' && (item.locales.en.value?.length || 0) < 50);
+    if (hasShortItems && items.length >= 4) {
+      return 'grid grid-cols-1 sm:grid-cols-2 gap-4';
+    }
+    return 'space-y-4';
+  };
+
   return (
     <div className="flex gap-6 h-[calc(100vh-120px)]">
       {/* Sitemap Tree - Left Panel */}
@@ -358,9 +326,7 @@ export default function ContentPage() {
               onClick={() => {
                 if (!page.disabled) {
                   setActivePage(page.id);
-                  if (page.sections) {
-                    setActiveSection(page.sections[0]);
-                  }
+                  if (page.sections) setActiveSection(page.sections[0]);
                 }
               }}
               disabled={page.disabled}
@@ -374,9 +340,7 @@ export default function ContentPage() {
             >
               <span className={page.disabled ? 'opacity-50' : ''}>{page.icon}</span>
               <span className="text-sm font-medium">{page.label}</span>
-              {page.disabled && (
-                <span className="ml-auto text-xs opacity-60">Locked</span>
-              )}
+              {page.disabled && <span className="ml-auto text-xs opacity-60">Locked</span>}
             </button>
           ))}
         </div>
@@ -393,9 +357,7 @@ export default function ContentPage() {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            {hasChanges && (
-              <span className="text-yellow-400 text-sm">Unsaved changes</span>
-            )}
+            {hasChanges && <span className="text-yellow-400 text-sm">Unsaved changes</span>}
             <button
               onClick={handleSave}
               disabled={saving || !hasChanges}
@@ -407,13 +369,11 @@ export default function ContentPage() {
         </div>
 
         {message && (
-          <div
-            className={`px-4 py-3 rounded-lg mb-4 ${
-              message.type === 'success'
-                ? 'bg-green-500/20 border border-green-500/30 text-green-400'
-                : 'bg-red-500/20 border border-red-500/30 text-red-400'
-            }`}
-          >
+          <div className={`px-4 py-3 rounded-lg mb-4 ${
+            message.type === 'success'
+              ? 'bg-green-500/20 border border-green-500/30 text-green-400'
+              : 'bg-red-500/20 border border-red-500/30 text-red-400'
+          }`}>
             {message.text}
           </div>
         )}
@@ -442,9 +402,7 @@ export default function ContentPage() {
           <button
             onClick={() => setActiveLocale('en')}
             className={`px-3 py-1 rounded text-sm transition-colors ${
-              activeLocale === 'en'
-                ? 'bg-accent text-white'
-                : 'bg-surface text-text-muted hover:text-foreground'
+              activeLocale === 'en' ? 'bg-accent text-white' : 'bg-surface text-text-muted hover:text-foreground'
             }`}
           >
             English
@@ -452,67 +410,61 @@ export default function ContentPage() {
           <button
             onClick={() => setActiveLocale('fr')}
             className={`px-3 py-1 rounded text-sm transition-colors ${
-              activeLocale === 'fr'
-                ? 'bg-accent text-white'
-                : 'bg-surface text-text-muted hover:text-foreground'
+              activeLocale === 'fr' ? 'bg-accent text-white' : 'bg-surface text-text-muted hover:text-foreground'
             }`}
           >
             French
           </button>
         </div>
 
-        {/* Content Editor */}
-        <div className="flex-1 overflow-y-auto bg-surface rounded-lg border border-border p-4">
+        {/* Content Form */}
+        <div className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="text-text-muted">Loading...</div>
           ) : filteredContent.length === 0 ? (
             <div className="text-text-muted text-center py-12">
               <p>No content blocks for this page yet.</p>
-              <p className="text-sm mt-2">Content will be created when you save.</p>
             </div>
           ) : activePage === 'home' ? (
-            // Homepage with flat list for selected section
-            <div className="space-y-3">
+            // Homepage with simple form for selected section
+            <div className={getGridClass(filteredContent)}>
               {filteredContent.map((item) => (
-                <ContentBlockEditor
+                <FormField
                   key={item.id}
                   item={item}
                   activeLocale={activeLocale}
-                  editingId={editingId}
-                  editValue={editValue}
-                  setEditValue={setEditValue}
-                  startEditing={startEditing}
-                  saveEditing={saveEditing}
-                  cancelEditing={cancelEditing}
                   formatKey={formatKey}
+                  updateContent={updateContent}
                 />
               ))}
             </div>
           ) : (
             // Other pages grouped by section
             Object.entries(groupContentBySection(filteredContent)).map(([section, items]) => (
-              <div key={section} className="mb-6">
-                <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-3 capitalize">
-                  {section === 'main' ? 'Page Content' : section}
+              <div key={section} className="mb-8">
+                <h3 className="text-sm font-medium text-text-muted uppercase tracking-wider mb-4">
+                  {formatSectionTitle(section)}
                 </h3>
-                <div className="space-y-3">
+                <div className={getGridClass(items)}>
                   {items.map((item) => (
-                    <ContentBlockEditor
+                    <FormField
                       key={item.id}
                       item={item}
                       activeLocale={activeLocale}
-                      editingId={editingId}
-                      editValue={editValue}
-                      setEditValue={setEditValue}
-                      startEditing={startEditing}
-                      saveEditing={saveEditing}
-                      cancelEditing={cancelEditing}
                       formatKey={formatKey}
+                      updateContent={updateContent}
                     />
                   ))}
                 </div>
               </div>
             ))
+          )}
+
+          {/* Last Updated */}
+          {lastUpdated && (
+            <div className="mt-8 pt-4 border-t border-border text-right text-text-muted text-sm">
+              Last updated: {new Date(lastUpdated.date).toLocaleString()} by {lastUpdated.by}
+            </div>
           )}
         </div>
       </div>
@@ -520,100 +472,40 @@ export default function ContentPage() {
   );
 }
 
-// Content Block Editor Component
-function ContentBlockEditor({
+// Form Field Component - Clean input style
+function FormField({
   item,
   activeLocale,
-  editingId,
-  editValue,
-  setEditValue,
-  startEditing,
-  saveEditing,
-  cancelEditing,
   formatKey,
+  updateContent,
 }: {
   item: ContentBlock;
   activeLocale: 'en' | 'fr';
-  editingId: string | null;
-  editValue: string;
-  setEditValue: (value: string) => void;
-  startEditing: (item: ContentBlock) => void;
-  saveEditing: (id: string) => void;
-  cancelEditing: () => void;
   formatKey: (key: string) => string;
+  updateContent: (id: string, value: string) => void;
 }) {
-  const isEditing = editingId === item.id;
-  const displayValue = item.locales[activeLocale]?.value || item.locales.en.value;
+  const displayValue = item.locales[activeLocale]?.value || item.locales.en.value || '';
 
   return (
-    <div className="group relative bg-surface-muted rounded-lg border border-border hover:border-accent/50 transition-colors">
-      <div className="px-4 py-2 border-b border-border/50 flex items-center justify-between">
-        <span className="text-text-muted text-xs">
-          {formatKey(item.key)}
-          <span className="ml-2 opacity-50">({item.type})</span>
-        </span>
-        {!isEditing && (
-          <button
-            onClick={() => startEditing(item)}
-            className="opacity-0 group-hover:opacity-100 p-1.5 rounded hover:bg-accent/20 text-text-muted hover:text-accent transition-all"
-            title="Edit"
-          >
-            <PencilIcon />
-          </button>
-        )}
-      </div>
-
-      <div className="p-4">
-        {isEditing ? (
-          <div className="space-y-3">
-            {item.type === 'richtext' ? (
-              <textarea
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:border-accent focus:outline-none min-h-[100px] resize-y"
-                autoFocus
-              />
-            ) : (
-              <input
-                type="text"
-                value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg px-4 py-2 text-foreground focus:border-accent focus:outline-none"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') saveEditing(item.id);
-                  if (e.key === 'Escape') cancelEditing();
-                }}
-              />
-            )}
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={cancelEditing}
-                className="p-2 rounded-lg bg-surface hover:bg-surface-hover text-text-muted transition-colors"
-                title="Cancel"
-              >
-                <XIcon />
-              </button>
-              <button
-                onClick={() => saveEditing(item.id)}
-                className="p-2 rounded-lg bg-accent hover:bg-accent/90 text-white transition-colors"
-                title="Save"
-              >
-                <CheckIcon />
-              </button>
-            </div>
-          </div>
-        ) : (
-          <p className="text-foreground whitespace-pre-wrap">
-            {displayValue || <span className="text-text-muted italic">Empty</span>}
-          </p>
-        )}
-      </div>
-
-      {item.updatedAt && (
-        <div className="px-4 pb-2 text-text-muted opacity-50 text-xs">
-          Last updated: {new Date(item.updatedAt).toLocaleString()}
-        </div>
+    <div>
+      <label className="block text-text-muted text-sm mb-2">
+        {formatKey(item.key)}
+      </label>
+      {item.type === 'richtext' ? (
+        <textarea
+          value={displayValue}
+          onChange={(e) => updateContent(item.id, e.target.value)}
+          className="w-full bg-surface-muted border border-border rounded-lg px-4 py-3 text-foreground focus:border-accent focus:outline-none min-h-[120px] resize-y"
+          placeholder={`Enter ${formatKey(item.key)}`}
+        />
+      ) : (
+        <input
+          type="text"
+          value={displayValue}
+          onChange={(e) => updateContent(item.id, e.target.value)}
+          className="w-full bg-surface-muted border border-border rounded-lg px-4 py-3 text-foreground focus:border-accent focus:outline-none"
+          placeholder={`Enter ${formatKey(item.key)}`}
+        />
       )}
     </div>
   );

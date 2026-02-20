@@ -1,11 +1,9 @@
+'use client';
+
 import { getDictionary } from '@/i18n/dictionaries';
 import { PageLayout } from '@/components/layout/page-layout';
 import Link from 'next/link';
-
-export const metadata = {
-  title: 'Services',
-  description: 'Web development, online marketing, custom development and support services',
-};
+import { useContent } from '@/hooks/use-content';
 
 const services = [
   {
@@ -85,13 +83,54 @@ const services = [
 
 export default function ServicesPage() {
   const dict = getDictionary('en');
+  const { get } = useContent({ page: 'services', locale: 'en' });
+
+  // Dynamic services data using content from CMS
+  const dynamicServices = [
+    {
+      id: 'web',
+      title: get('web.title', 'Web Development'),
+      description: get('web.description', 'Professional website creation with modern technologies, responsive design, and optimal performance.'),
+      features: services[0].features,
+      color: services[0].color,
+      icon: services[0].icon,
+    },
+    {
+      id: 'marketing',
+      title: get('marketing.title', 'Online Marketing'),
+      description: get('marketing.description', 'Comprehensive digital marketing strategies to increase your online visibility and attract customers.'),
+      features: services[1].features,
+      color: services[1].color,
+      icon: services[1].icon,
+    },
+    {
+      id: 'custom',
+      title: get('custom.title', 'Custom Development'),
+      description: get('custom.description', 'Tailored software solutions designed specifically for your business needs and workflows.'),
+      features: services[2].features,
+      color: services[2].color,
+      icon: services[2].icon,
+    },
+    {
+      id: 'support',
+      title: get('support.title', 'Support & Maintenance'),
+      description: get('support.description', 'Ongoing technical support and maintenance to keep your digital presence running smoothly.'),
+      features: services[3].features,
+      color: services[3].color,
+      icon: services[3].icon,
+    },
+  ];
 
   return (
-    <PageLayout locale="en" title="Our Services" subtitle="What we can do for you">
+    <PageLayout
+      locale="en"
+      title={get('header.title', 'Our Services')}
+      subtitle={get('header.subtitle', 'What we can do for you')}
+    >
       <div className="py-16">
         <div className="container-section">
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-8">
-            {services.map((service) => (
+            {dynamicServices.map((service) => (
               <div
                 key={service.id}
                 className="p-5 sm:p-8 rounded-lg"

@@ -67,8 +67,14 @@ export default function ContactPage() {
     }
   };
 
+  const { get: getPageContent } = useContent({ page: 'contact', locale: 'en' });
+
   return (
-    <PageLayout locale="en" title="Contact Us" subtitle="Get in touch">
+    <PageLayout
+      locale="en"
+      title={getPageContent('header.title', 'Contact Us')}
+      subtitle={getPageContent('header.subtitle', 'Get in touch')}
+    >
       <div className="py-16">
         <div className="container-section">
           <div className="max-w-5xl mx-auto">
