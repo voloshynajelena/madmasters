@@ -26,6 +26,14 @@ interface Project {
   instructions: any;
   operations: any;
   security?: any;
+  documentation?: {
+    envVarsTemplate?: string;
+    databaseSchema?: string;
+    apiEndpoints?: string;
+    seedData?: string;
+    changelog?: string;
+    cicdPipeline?: string;
+  };
   createdAt?: string;
   updatedAt?: string;
   updatedBy?: string;
@@ -77,17 +85,17 @@ export default function ProjectDetailPage() {
     }
   };
 
-  const handleExport = async () => {
+  const handleExport = async (format: 'xlsx' | 'json' = 'xlsx') => {
     setExporting(true);
     try {
-      const res = await fetch(`/api/admin/projects/export?id=${params.id}`);
+      const res = await fetch(`/api/admin/projects/export?id=${params.id}&format=${format}`);
       if (!res.ok) throw new Error('Export failed');
 
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `project-${project?.key || params.id}.xlsx`;
+      a.download = `project-${project?.key || params.id}.${format}`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -128,7 +136,7 @@ export default function ProjectDetailPage() {
     );
   }
 
-  const TABS = ['overview', 'stack', 'environments', 'links', 'instructions', 'operations', 'security', 'activity'] as const;
+  const TABS = ['overview', 'stack', 'environments', 'links', 'instructions', 'docs', 'operations', 'security', 'activity'] as const;
 
   return (
     <div>
@@ -157,11 +165,18 @@ export default function ProjectDetailPage() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={handleExport}
+            onClick={() => handleExport('json')}
             disabled={exporting}
             className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
           >
-            {exporting ? 'Exporting...' : 'Export'}
+            {exporting ? '...' : 'JSON'}
+          </button>
+          <button
+            onClick={() => handleExport('xlsx')}
+            disabled={exporting}
+            className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors disabled:opacity-50"
+          >
+            {exporting ? '...' : 'Excel'}
           </button>
           <button
             onClick={() => setMode('edit')}
@@ -353,6 +368,26 @@ export default function ProjectDetailPage() {
               <MarkdownSection title="Runbook" content={project.instructions.runbookMd} />
               <MarkdownSection title="Known Issues" content={project.instructions.knownIssuesMd} />
             </>
+          )}
+        </div>
+      )}
+
+      {/* Documentation Tab */}
+      {activeTab === 'docs' && (
+        <div className="space-y-6">
+          {project.documentation ? (
+            <>
+              <MarkdownSection title="Environment Variables Template" content={project.documentation.envVarsTemplate} />
+              <MarkdownSection title="Database Schema" content={project.documentation.databaseSchema} />
+              <MarkdownSection title="API Endpoints" content={project.documentation.apiEndpoints} />
+              <MarkdownSection title="Test Users / Seed Data" content={project.documentation.seedData} />
+              <MarkdownSection title="Changelog" content={project.documentation.changelog} />
+              <MarkdownSection title="CI/CD Pipeline" content={project.documentation.cicdPipeline} />
+            </>
+          ) : (
+            <div className="bg-surface rounded-lg p-6 border border-white/10">
+              <p className="text-white/40">No developer documentation added yet. Click Edit to add documentation.</p>
+            </div>
           )}
         </div>
       )}

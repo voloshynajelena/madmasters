@@ -55,6 +55,14 @@ interface ProjectFormData {
     dataEncryption: string;
     complianceNotes: string;
   };
+  documentation: {
+    envVarsTemplate: string;
+    databaseSchema: string;
+    apiEndpoints: string;
+    seedData: string;
+    changelog: string;
+    cicdPipeline: string;
+  };
 }
 
 const defaultFormData: ProjectFormData = {
@@ -103,12 +111,20 @@ const defaultFormData: ProjectFormData = {
     dataEncryption: '',
     complianceNotes: '',
   },
+  documentation: {
+    envVarsTemplate: '## Environment Variables\n\n```bash\n# apps/api/.env.example\nDATABASE_URL=\nAPI_KEY=\n\n# apps/web/.env.example\nNEXT_PUBLIC_API_URL=\n```',
+    databaseSchema: '## Database Schema\n\nDescribe the database structure, relationships, and any ERD links.',
+    apiEndpoints: '## API Endpoints\n\n| Method | Endpoint | Description |\n|--------|----------|-------------|\n| GET | /api/users | List users |',
+    seedData: '## Test Users & Seed Data\n\nDescribe test accounts and how to seed the database.',
+    changelog: '## Changelog\n\n### v1.0.0\n- Initial release',
+    cicdPipeline: '## CI/CD Pipeline\n\nDescribe the GitHub Actions or other CI/CD setup.',
+  },
 };
 
 const LINK_TYPES: LinkType[] = ['REPO', 'JIRA', 'FIGMA', 'SENTRY', 'VERCEL', 'AWS', 'GCP', 'FIREBASE', 'SUPABASE', 'AUTH', 'DATABASE', 'STORAGE', 'ANALYTICS', 'MONITORING', 'DOCS', 'WEBSITE', 'SLACK', 'NOTION', 'CONFLUENCE', 'OTHER'];
 const ENV_TYPES: EnvironmentType[] = ['DEV', 'STAGE', 'PROD', 'DEMO', 'QA'];
 const PII_LEVELS: PIILevel[] = ['none', 'low', 'medium', 'high', 'unknown'];
-const TABS = ['overview', 'stack', 'environments', 'links', 'instructions', 'operations', 'security'] as const;
+const TABS = ['overview', 'stack', 'environments', 'links', 'instructions', 'docs', 'operations', 'security'] as const;
 type Tab = typeof TABS[number];
 
 interface Props {
@@ -125,6 +141,7 @@ export function ProjectForm({ initialData, mode }: Props) {
     instructions: { ...defaultFormData.instructions, ...initialData?.instructions },
     operations: { ...defaultFormData.operations, ...initialData?.operations },
     security: { ...defaultFormData.security, ...initialData?.security },
+    documentation: { ...defaultFormData.documentation, ...initialData?.documentation },
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -710,6 +727,98 @@ export function ProjectForm({ initialData, mode }: Props) {
               />
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Documentation Tab */}
+      {activeTab === 'docs' && (
+        <div className={sectionClass}>
+          <h2 className="text-lg font-semibold text-white">Developer Documentation</h2>
+          <p className="text-white/40 text-sm">Critical documentation for developers. Markdown supported.</p>
+
+          <div>
+            <label className={labelClass}>Environment Variables Template</label>
+            <p className="text-white/40 text-xs mb-2">Document all required env vars for .env.example files</p>
+            <textarea
+              value={formData.documentation.envVarsTemplate}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                documentation: { ...prev.documentation, envVarsTemplate: e.target.value }
+              }))}
+              className={`${inputClass} h-48 font-mono text-sm`}
+              placeholder="## Environment Variables..."
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Database Schema</label>
+            <p className="text-white/40 text-xs mb-2">Document the Prisma schema or add ERD links</p>
+            <textarea
+              value={formData.documentation.databaseSchema}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                documentation: { ...prev.documentation, databaseSchema: e.target.value }
+              }))}
+              className={`${inputClass} h-40 font-mono text-sm`}
+              placeholder="## Database Schema..."
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>API Endpoints</label>
+            <p className="text-white/40 text-xs mb-2">Quick reference of all API routes</p>
+            <textarea
+              value={formData.documentation.apiEndpoints}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                documentation: { ...prev.documentation, apiEndpoints: e.target.value }
+              }))}
+              className={`${inputClass} h-40 font-mono text-sm`}
+              placeholder="## API Endpoints..."
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Test Users / Seed Data</label>
+            <p className="text-white/40 text-xs mb-2">Document test accounts and how to seed them</p>
+            <textarea
+              value={formData.documentation.seedData}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                documentation: { ...prev.documentation, seedData: e.target.value }
+              }))}
+              className={`${inputClass} h-40 font-mono text-sm`}
+              placeholder="## Test Users & Seed Data..."
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>Changelog</label>
+            <p className="text-white/40 text-xs mb-2">Track what changed between versions</p>
+            <textarea
+              value={formData.documentation.changelog}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                documentation: { ...prev.documentation, changelog: e.target.value }
+              }))}
+              className={`${inputClass} h-40 font-mono text-sm`}
+              placeholder="## Changelog..."
+            />
+          </div>
+
+          <div>
+            <label className={labelClass}>CI/CD Pipeline</label>
+            <p className="text-white/40 text-xs mb-2">GitHub Actions and deployment automation</p>
+            <textarea
+              value={formData.documentation.cicdPipeline}
+              onChange={e => setFormData(prev => ({
+                ...prev,
+                documentation: { ...prev.documentation, cicdPipeline: e.target.value }
+              }))}
+              className={`${inputClass} h-40 font-mono text-sm`}
+              placeholder="## CI/CD Pipeline..."
+            />
+          </div>
         </div>
       )}
 

@@ -74,6 +74,14 @@ interface ProjectData {
     dataEncryption?: string;
     complianceNotes?: string;
   };
+  documentation?: {
+    envVarsTemplate?: string;
+    databaseSchema?: string;
+    apiEndpoints?: string;
+    seedData?: string;
+    changelog?: string;
+    cicdPipeline?: string;
+  };
   createdAt?: string;
   updatedAt?: string;
   updatedBy?: string;
@@ -114,6 +122,7 @@ export async function GET(request: NextRequest) {
     const projectId = searchParams.get('id');
     const status = searchParams.get('status');
     const tag = searchParams.get('tag');
+    const format = searchParams.get('format') || 'xlsx'; // 'xlsx' or 'json'
 
     // Fetch projects
     let snapshot;
@@ -149,6 +158,7 @@ export async function GET(request: NextRequest) {
         instructions: data.instructions || {},
         operations: data.operations || {},
         security: data.security,
+        documentation: data.documentation || {},
         createdAt: data.createdAt?.toDate?.()?.toISOString() || null,
         updatedAt: data.updatedAt?.toDate?.()?.toISOString() || null,
         updatedBy: data.updatedBy,
@@ -161,6 +171,25 @@ export async function GET(request: NextRequest) {
     }
     if (tag) {
       projects = projects.filter(p => p.tags?.includes(tag));
+    }
+
+    // JSON Export
+    if (format === 'json') {
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const filename = projectId
+        ? `project-${projects[0]?.key || projectId}-${timestamp}.json`
+        : `projects-knowledge-base-${timestamp}.json`;
+
+      const jsonData = { projects };
+
+      return new NextResponse(JSON.stringify(jsonData, null, 2), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+          'Cache-Control': 'no-cache',
+        },
+      });
     }
 
     // Create workbook
@@ -316,6 +345,46 @@ export async function GET(request: NextRequest) {
     });
 
     styleHeader(instructionsSheet);
+
+    // Sheet 5: Documentation
+    const docsSheet = workbook.addWorksheet('Documentation');
+    docsSheet.columns = [
+      { header: 'Project Key', key: 'projectKey' },
+      { header: 'Project Name', key: 'projectName' },
+      { header: 'Env Variables Template', key: 'envVarsTemplate' },
+      { header: 'Database Schema', key: 'databaseSchema' },
+      { header: 'API Endpoints', key: 'apiEndpoints' },
+      { header: 'Seed Data', key: 'seedData' },
+      { header: 'Changelog', key: 'changelog' },
+      { header: 'CI/CD Pipeline', key: 'cicdPipeline' },
+    ];
+
+    projects.forEach(project => {
+      docsSheet.addRow({
+        projectKey: project.key,
+        projectName: project.name,
+        envVarsTemplate: project.documentation?.envVarsTemplate || '',
+        databaseSchema: project.documentation?.databaseSchema || '',
+        apiEndpoints: project.documentation?.apiEndpoints || '',
+        seedData: project.documentation?.seedData || '',
+        changelog: project.documentation?.changelog || '',
+        cicdPipeline: project.documentation?.cicdPipeline || '',
+      });
+    });
+
+    // Enable text wrapping for documentation columns
+    docsSheet.columns.forEach((col, index) => {
+      if (index >= 2) {
+        col.width = 50;
+      }
+    });
+    docsSheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        row.alignment = { wrapText: true, vertical: 'top' };
+      }
+    });
+
+    styleHeader(docsSheet);
 
     // Generate buffer
     const buffer = await workbook.xlsx.writeBuffer();

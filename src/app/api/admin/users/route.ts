@@ -22,13 +22,27 @@ async function verifyAdmin() {
 
     // Check if user is admin
     const db = getAdminDb();
-    const userDoc = await db.collection('users').doc(decodedClaims.uid).get();
-    const userData = userDoc.data();
+    const userRef = db.collection('users').doc(decodedClaims.uid);
+    const userDoc = await userRef.get();
 
+    if (!userDoc.exists) {
+      // First time user - create as admin
+      await userRef.set({
+        email: decodedClaims.email,
+        displayName: decodedClaims.name || null,
+        role: 'admin',
+        createdAt: new Date(),
+        lastLoginAt: new Date(),
+      });
+      return decodedClaims;
+    }
+
+    const userData = userDoc.data();
     if (userData?.role !== 'admin') return null;
 
     return decodedClaims;
-  } catch {
+  } catch (error) {
+    console.error('verifyAdmin error:', error);
     return null;
   }
 }
@@ -41,14 +55,27 @@ export async function GET() {
 
   try {
     const db = getAdminDb();
-    const usersSnapshot = await db.collection('users').orderBy('createdAt', 'desc').get();
+    // Get all users without orderBy to avoid index requirements
+    const usersSnapshot = await db.collection('users').get();
 
-    const users = usersSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || null,
-      lastLoginAt: doc.data().lastLoginAt?.toDate?.()?.toISOString() || null,
-    }));
+    const users = usersSnapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        email: data.email || '',
+        displayName: data.displayName || null,
+        role: data.role || 'editor',
+        createdAt: data.createdAt?.toDate?.()?.toISOString() || null,
+        lastLoginAt: data.lastLoginAt?.toDate?.()?.toISOString() || null,
+      };
+    });
+
+    // Sort by createdAt in memory (most recent first)
+    users.sort((a, b) => {
+      if (!a.createdAt) return 1;
+      if (!b.createdAt) return -1;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
     return NextResponse.json({ users });
   } catch (error) {

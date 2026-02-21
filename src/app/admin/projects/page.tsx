@@ -53,6 +53,8 @@ export default function ProjectsPage() {
   const [importMode, setImportMode] = useState<'skip' | 'update' | 'overwrite'>('skip');
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
+  const [importTab, setImportTab] = useState<'file' | 'paste'>('file');
+  const [pasteJson, setPasteJson] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchProjects = async () => {
@@ -99,7 +101,7 @@ export default function ProjectsPage() {
     }
   };
 
-  const handleExport = async (type: 'all' | 'filtered' | 'single', projectId?: string) => {
+  const handleExport = async (type: 'all' | 'filtered' | 'single', projectId?: string, format: 'xlsx' | 'json' = 'xlsx') => {
     setExporting(true);
     try {
       const params = new URLSearchParams();
@@ -108,8 +110,9 @@ export default function ProjectsPage() {
       } else if (type === 'filtered' && statusFilter !== 'all') {
         params.append('status', statusFilter);
       }
+      params.append('format', format);
 
-      const url = `/api/admin/projects/export${params.toString() ? `?${params}` : ''}`;
+      const url = `/api/admin/projects/export?${params}`;
       const res = await fetch(url);
 
       if (!res.ok) throw new Error('Export failed');
@@ -118,7 +121,7 @@ export default function ProjectsPage() {
       const downloadUrl = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = downloadUrl;
-      a.download = res.headers.get('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') || 'projects.xlsx';
+      a.download = res.headers.get('Content-Disposition')?.split('filename=')[1]?.replace(/"/g, '') || `projects.${format}`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(downloadUrl);
@@ -132,35 +135,79 @@ export default function ProjectsPage() {
 
   const handleImport = async (e: React.FormEvent) => {
     e.preventDefault();
-    const file = fileInputRef.current?.files?.[0];
-    if (!file) return;
 
-    setImporting(true);
-    setImportError(null);
-    setImportResult(null);
+    if (importTab === 'file') {
+      const file = fileInputRef.current?.files?.[0];
+      if (!file) return;
 
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('mode', importMode);
+      setImporting(true);
+      setImportError(null);
+      setImportResult(null);
 
-      const res = await fetch('/api/admin/projects/import', {
-        method: 'POST',
-        body: formData,
-      });
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('mode', importMode);
 
-      const data = await res.json();
+        const res = await fetch('/api/admin/projects/import', {
+          method: 'POST',
+          body: formData,
+        });
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Import failed');
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Import failed');
+        }
+
+        setImportResult(data);
+        fetchProjects();
+      } catch (err) {
+        setImportError(err instanceof Error ? err.message : 'Import failed');
+      } finally {
+        setImporting(false);
       }
+    } else {
+      // Paste JSON mode
+      if (!pasteJson.trim()) return;
 
-      setImportResult(data);
-      fetchProjects(); // Refresh the list
-    } catch (err) {
-      setImportError(err instanceof Error ? err.message : 'Import failed');
-    } finally {
-      setImporting(false);
+      setImporting(true);
+      setImportError(null);
+      setImportResult(null);
+
+      try {
+        // Validate JSON first
+        let jsonData;
+        try {
+          jsonData = JSON.parse(pasteJson);
+        } catch {
+          throw new Error('Invalid JSON format. Please check your input.');
+        }
+
+        // Create a JSON file blob and upload it
+        const blob = new Blob([pasteJson], { type: 'application/json' });
+        const formData = new FormData();
+        formData.append('file', blob, 'import.json');
+        formData.append('mode', importMode);
+
+        const res = await fetch('/api/admin/projects/import', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Import failed');
+        }
+
+        setImportResult(data);
+        fetchProjects();
+      } catch (err) {
+        setImportError(err instanceof Error ? err.message : 'Import failed');
+      } finally {
+        setImporting(false);
+      }
     }
   };
 
@@ -168,6 +215,8 @@ export default function ProjectsPage() {
     setShowImportModal(false);
     setImportResult(null);
     setImportError(null);
+    setImportTab('file');
+    setPasteJson('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -190,11 +239,18 @@ export default function ProjectsPage() {
             Import
           </button>
           <button
-            onClick={() => handleExport(statusFilter !== 'all' ? 'filtered' : 'all')}
+            onClick={() => handleExport(statusFilter !== 'all' ? 'filtered' : 'all', undefined, 'json')}
             disabled={exporting}
             className="px-4 py-2 bg-surface-hover text-foreground rounded-lg hover:bg-border transition-colors disabled:opacity-50"
           >
-            {exporting ? 'Exporting...' : 'Export Excel'}
+            {exporting ? '...' : 'Export JSON'}
+          </button>
+          <button
+            onClick={() => handleExport(statusFilter !== 'all' ? 'filtered' : 'all', undefined, 'xlsx')}
+            disabled={exporting}
+            className="px-4 py-2 bg-surface-hover text-foreground rounded-lg hover:bg-border transition-colors disabled:opacity-50"
+          >
+            {exporting ? '...' : 'Export Excel'}
           </button>
           <Link
             href="/admin/projects/new"
@@ -343,10 +399,18 @@ export default function ProjectsPage() {
                         View
                       </Link>
                       <button
-                        onClick={() => handleExport('single', project.id)}
-                        className="px-3 py-1 text-sm bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-500/30 transition-colors"
+                        onClick={() => handleExport('single', project.id, 'json')}
+                        className="px-2 py-1 text-sm bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-500/30 transition-colors"
+                        title="Export as JSON"
                       >
-                        Export
+                        JSON
+                      </button>
+                      <button
+                        onClick={() => handleExport('single', project.id, 'xlsx')}
+                        className="px-2 py-1 text-sm bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-500/30 transition-colors"
+                        title="Export as Excel"
+                      >
+                        XLSX
                       </button>
                       <button
                         onClick={() => handleDelete(project.id, project.name)}
@@ -454,19 +518,60 @@ export default function ProjectsPage() {
                   </div>
                 )}
 
-                <div>
-                  <label className="block text-text-muted text-sm mb-2">File (JSON or Excel)</label>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".json,.xlsx,.xls"
-                    required
-                    className="w-full bg-surface-muted border border-border rounded-lg px-4 py-2 text-foreground file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:bg-accent file:text-white file:cursor-pointer"
-                  />
-                  <p className="text-text-muted text-xs mt-1">
-                    Accepts .json or .xlsx files. See docs for format.
-                  </p>
+                {/* Tabs */}
+                <div className="flex border-b border-border">
+                  <button
+                    type="button"
+                    onClick={() => setImportTab('file')}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                      importTab === 'file'
+                        ? 'border-accent text-accent'
+                        : 'border-transparent text-text-muted hover:text-foreground'
+                    }`}
+                  >
+                    Upload File
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImportTab('paste')}
+                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                      importTab === 'paste'
+                        ? 'border-accent text-accent'
+                        : 'border-transparent text-text-muted hover:text-foreground'
+                    }`}
+                  >
+                    Paste JSON
+                  </button>
                 </div>
+
+                {importTab === 'file' ? (
+                  <div>
+                    <label className="block text-text-muted text-sm mb-2">File (JSON or Excel)</label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".json,.xlsx,.xls"
+                      className="w-full bg-surface-muted border border-border rounded-lg px-4 py-2 text-foreground file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:bg-accent file:text-white file:cursor-pointer"
+                    />
+                    <p className="text-text-muted text-xs mt-1">
+                      Accepts .json or .xlsx files. See docs for format.
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="block text-text-muted text-sm mb-2">Paste JSON</label>
+                    <textarea
+                      value={pasteJson}
+                      onChange={(e) => setPasteJson(e.target.value)}
+                      placeholder='{"projects": [...]}'
+                      rows={8}
+                      className="w-full bg-surface-muted border border-border rounded-lg px-4 py-2 text-foreground font-mono text-sm focus:border-accent focus:outline-none resize-y"
+                    />
+                    <p className="text-text-muted text-xs mt-1">
+                      Paste your JSON data directly. See example below.
+                    </p>
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-text-muted text-sm mb-2">If project already exists:</label>
@@ -568,6 +673,14 @@ export default function ProjectsPage() {
         "authMethod": "OAuth 2.0",
         "dataEncryption": "AES-256 at rest, TLS in transit",
         "complianceNotes": "GDPR compliant"
+      },
+      "documentation": {
+        "envVarsTemplate": "DATABASE_URL=\\nAPI_KEY=\\nNEXT_PUBLIC_API_URL=",
+        "databaseSchema": "## Database Schema\\n\\nUser, Product, Order tables...",
+        "apiEndpoints": "GET /api/users\\nPOST /api/orders",
+        "seedData": "## Test Users\\n\\nadmin@test.com / password123",
+        "changelog": "## v1.0.0\\n- Initial release",
+        "cicdPipeline": "## CI/CD\\n\\nGitHub Actions on push to main"
       }
     }
   ]

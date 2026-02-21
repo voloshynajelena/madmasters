@@ -32,16 +32,25 @@ export async function POST(request: NextRequest) {
       path: '/',
     });
 
-    // Optionally track login in Firestore
-    try {
-      const db = getAdminDb();
-      await db.collection('users').doc(decodedToken.uid).set({
+    // Create/update user in Firestore
+    const db = getAdminDb();
+    const userRef = db.collection('users').doc(decodedToken.uid);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      // First login - create user with all fields
+      await userRef.set({
         email: decodedToken.email,
-        lastLoginAt: new Date(),
+        displayName: decodedToken.name || null,
         role: 'admin',
-      }, { merge: true });
-    } catch {
-      // Firestore tracking is optional
+        createdAt: new Date(),
+        lastLoginAt: new Date(),
+      });
+    } else {
+      // Update last login
+      await userRef.update({
+        lastLoginAt: new Date(),
+      });
     }
 
     return NextResponse.json({ success: true });

@@ -65,6 +65,14 @@ interface ImportProject {
     dataEncryption?: string;
     complianceNotes?: string;
   };
+  documentation?: {
+    envVarsTemplate?: string;
+    databaseSchema?: string;
+    apiEndpoints?: string;
+    seedData?: string;
+    changelog?: string;
+    cicdPipeline?: string;
+  };
 }
 
 interface ImportResult {
@@ -103,6 +111,15 @@ const DEFAULT_OPERATIONS = {
   secretsLocation: '',
   onCallRotation: '',
   incidentProcess: '',
+};
+
+const DEFAULT_DOCUMENTATION = {
+  envVarsTemplate: '',
+  databaseSchema: '',
+  apiEndpoints: '',
+  seedData: '',
+  changelog: '',
+  cicdPipeline: '',
 };
 
 function validateProject(project: any, index: number): { valid: boolean; errors: string[] } {
@@ -152,6 +169,7 @@ function normalizeProject(raw: any): ImportProject {
     instructions: raw.instructions || DEFAULT_INSTRUCTIONS,
     operations: raw.operations || DEFAULT_OPERATIONS,
     security: raw.security || {},
+    documentation: raw.documentation || DEFAULT_DOCUMENTATION,
   };
 }
 
@@ -336,6 +354,35 @@ async function parseExcel(buffer: ArrayBuffer): Promise<ImportProject[]> {
     });
   }
 
+  // Try to parse Documentation sheet
+  const docsSheet = workbook.getWorksheet('Documentation');
+  if (docsSheet) {
+    const docsByProject: Record<string, any> = {};
+
+    docsSheet.eachRow((row, rowNumber) => {
+      if (rowNumber === 1) return;
+
+      const projectKey = String(row.getCell(1).value || '').toLowerCase();
+      if (projectKey) {
+        docsByProject[projectKey] = {
+          envVarsTemplate: String(row.getCell(3).value || ''),
+          databaseSchema: String(row.getCell(4).value || ''),
+          apiEndpoints: String(row.getCell(5).value || ''),
+          seedData: String(row.getCell(6).value || ''),
+          changelog: String(row.getCell(7).value || ''),
+          cicdPipeline: String(row.getCell(8).value || ''),
+        };
+      }
+    });
+
+    // Attach documentation to projects
+    projects.forEach(project => {
+      if (docsByProject[project.key]) {
+        project.documentation = docsByProject[project.key];
+      }
+    });
+  }
+
   return projects;
 }
 
@@ -450,6 +497,7 @@ export async function POST(request: NextRequest) {
           instructions: projectData.instructions || DEFAULT_INSTRUCTIONS,
           operations: projectData.operations || DEFAULT_OPERATIONS,
           security: projectData.security || {},
+          documentation: projectData.documentation || DEFAULT_DOCUMENTATION,
           createdAt: exists ? existingData?.createdAt : now,
           updatedAt: now,
           updatedBy: user.email || user.uid,
