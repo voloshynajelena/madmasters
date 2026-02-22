@@ -108,7 +108,7 @@ const projectUpdateSchema = z.object({
   endDate: z.string().optional().nullable(),
 });
 
-function serializeProject(doc: FirebaseFirestore.DocumentSnapshot) {
+function serializeProject(doc: FirebaseFirestore.DocumentSnapshot): Record<string, any> | null {
   const data = doc.data();
   if (!data) return null;
 
@@ -148,7 +148,31 @@ export async function GET(
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    return NextResponse.json({ project: serializeProject(doc) });
+    const projectData = doc.data()!;
+    let project = serializeProject(doc)!;
+
+    // Check if there's a matching legacy portfolio item
+    if (!projectData.portfolio?.published) {
+      const portfolioSnapshot = await db.collection('portfolio').get();
+      for (const portfolioDoc of portfolioSnapshot.docs) {
+        const portfolioData = portfolioDoc.data();
+        if (portfolioData.slug === projectData.key || portfolioData.slug === projectData.portfolio?.slug) {
+          // Found matching legacy item - mark portfolio as legacy
+          project = {
+            ...project,
+            portfolio: {
+              ...(project.portfolio || {}),
+              published: true,
+              showOnHomepage: portfolioData.showOnHomepage || false,
+              isLegacy: true,
+            }
+          };
+          break;
+        }
+      }
+    }
+
+    return NextResponse.json({ project });
   } catch (error) {
     console.error('Error fetching project:', error);
     return NextResponse.json({ error: 'Failed to fetch project' }, { status: 500 });
@@ -260,6 +284,80 @@ export async function PUT(
     });
   } catch (error) {
     console.error('Error updating project:', error);
+    return NextResponse.json({ error: 'Failed to update project' }, { status: 500 });
+  }
+}
+
+// PATCH - Quick update for specific fields (like portfolio toggle)
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const user = await verifyAdmin();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const db = getAdminDb();
+    const docRef = db.collection('projects').doc(params.id);
+
+    const doc = await docRef.get();
+    if (!doc.exists) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    const existingData = doc.data()!;
+    const now = Timestamp.now();
+
+    // Handle portfolio toggle
+    if ('portfolio' in body) {
+      const existingPortfolio = existingData.portfolio || {};
+      const newPortfolio = { ...existingPortfolio, ...body.portfolio };
+
+      // Set publishedAt when first publishing
+      if (body.portfolio.published === true && !existingPortfolio.publishedAt) {
+        newPortfolio.publishedAt = now;
+      }
+
+      // Create activity entry
+      const activityEntry = {
+        id: `activity_${Date.now()}`,
+        action: 'portfolio_updated',
+        field: body.portfolio.published !== undefined ? 'portfolio.published' :
+               body.portfolio.showOnHomepage !== undefined ? 'portfolio.showOnHomepage' : 'portfolio',
+        oldValue: body.portfolio.published !== undefined
+          ? String(existingPortfolio.published || false)
+          : body.portfolio.showOnHomepage !== undefined
+            ? String(existingPortfolio.showOnHomepage || false)
+            : undefined,
+        newValue: body.portfolio.published !== undefined
+          ? String(body.portfolio.published)
+          : body.portfolio.showOnHomepage !== undefined
+            ? String(body.portfolio.showOnHomepage)
+            : undefined,
+        timestamp: now,
+        userId: user.uid,
+        userEmail: user.email || 'unknown',
+      };
+
+      await docRef.update({
+        portfolio: newPortfolio,
+        updatedAt: now,
+        updatedBy: user.email || user.uid,
+        activityLog: [...(existingData.activityLog || []), activityEntry],
+      });
+    }
+
+    const updatedDoc = await docRef.get();
+
+    return NextResponse.json({
+      success: true,
+      project: serializeProject(updatedDoc),
+    });
+  } catch (error) {
+    console.error('Error patching project:', error);
     return NextResponse.json({ error: 'Failed to update project' }, { status: 500 });
   }
 }

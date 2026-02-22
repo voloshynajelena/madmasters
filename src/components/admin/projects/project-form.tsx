@@ -8,6 +8,7 @@ type ProjectType = 'internal' | 'client';
 type EnvironmentType = 'DEV' | 'STAGE' | 'PROD' | 'DEMO' | 'QA';
 type LinkType = 'REPO' | 'JIRA' | 'FIGMA' | 'SENTRY' | 'VERCEL' | 'AWS' | 'GCP' | 'FIREBASE' | 'SUPABASE' | 'AUTH' | 'DATABASE' | 'STORAGE' | 'ANALYTICS' | 'MONITORING' | 'DOCS' | 'WEBSITE' | 'SLACK' | 'NOTION' | 'CONFLUENCE' | 'OTHER';
 type PIILevel = 'none' | 'low' | 'medium' | 'high' | 'unknown';
+type PortfolioCategory = 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile';
 
 interface ProjectFormData {
   key: string;
@@ -62,6 +63,28 @@ interface ProjectFormData {
     seedData: string;
     changelog: string;
     cicdPipeline: string;
+  };
+  portfolio: {
+    published: boolean;
+    slug: string;
+    categories: PortfolioCategory[];
+    thumbnail: string;
+    images: string[];
+    industry: string;
+    year: number;
+    services: string[];
+    fullDescription: string;
+    challenge: string;
+    solution: string;
+    results: string[];
+    testimonial: {
+      quote: string;
+      author: string;
+      role: string;
+    } | null;
+    order: number;
+    hidden: boolean;
+    showOnHomepage: boolean;
   };
 }
 
@@ -119,12 +142,31 @@ const defaultFormData: ProjectFormData = {
     changelog: '## Changelog\n\n### v1.0.0\n- Initial release',
     cicdPipeline: '## CI/CD Pipeline\n\nDescribe the GitHub Actions or other CI/CD setup.',
   },
+  portfolio: {
+    published: false,
+    slug: '',
+    categories: [],
+    thumbnail: '',
+    images: [],
+    industry: '',
+    year: new Date().getFullYear(),
+    services: [],
+    fullDescription: '',
+    challenge: '',
+    solution: '',
+    results: [],
+    testimonial: null,
+    order: 0,
+    hidden: false,
+    showOnHomepage: false,
+  },
 };
 
 const LINK_TYPES: LinkType[] = ['REPO', 'JIRA', 'FIGMA', 'SENTRY', 'VERCEL', 'AWS', 'GCP', 'FIREBASE', 'SUPABASE', 'AUTH', 'DATABASE', 'STORAGE', 'ANALYTICS', 'MONITORING', 'DOCS', 'WEBSITE', 'SLACK', 'NOTION', 'CONFLUENCE', 'OTHER'];
 const ENV_TYPES: EnvironmentType[] = ['DEV', 'STAGE', 'PROD', 'DEMO', 'QA'];
 const PII_LEVELS: PIILevel[] = ['none', 'low', 'medium', 'high', 'unknown'];
-const TABS = ['overview', 'stack', 'environments', 'links', 'instructions', 'docs', 'operations', 'security'] as const;
+const TABS = ['overview', 'portfolio', 'stack', 'environments', 'links', 'instructions', 'docs', 'operations', 'security'] as const;
+const PORTFOLIO_CATEGORIES: PortfolioCategory[] = ['web', 'e-commerce', 'branding', 'marketing', 'mobile'];
 type Tab = typeof TABS[number];
 
 interface Props {
@@ -142,7 +184,11 @@ export function ProjectForm({ initialData, mode }: Props) {
     operations: { ...defaultFormData.operations, ...initialData?.operations },
     security: { ...defaultFormData.security, ...initialData?.security },
     documentation: { ...defaultFormData.documentation, ...initialData?.documentation },
+    portfolio: { ...defaultFormData.portfolio, ...initialData?.portfolio },
   });
+  const [serviceInput, setServiceInput] = useState('');
+  const [resultInput, setResultInput] = useState('');
+  const [imageInput, setImageInput] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>('overview');
@@ -471,6 +517,445 @@ export function ProjectForm({ initialData, mode }: Props) {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Portfolio Tab */}
+      {activeTab === 'portfolio' && (
+        <div className={sectionClass}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-white">Portfolio Settings</h2>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <span className={`text-sm ${formData.portfolio.published ? 'text-green-400' : 'text-white/60'}`}>
+                {formData.portfolio.published ? 'Published to Portfolio' : 'Not Published'}
+              </span>
+              <div
+                onClick={() => setFormData(prev => ({
+                  ...prev,
+                  portfolio: { ...prev.portfolio, published: !prev.portfolio.published }
+                }))}
+                className={`relative w-12 h-6 rounded-full transition-colors ${
+                  formData.portfolio.published ? 'bg-green-500' : 'bg-white/20'
+                }`}
+              >
+                <div
+                  className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                    formData.portfolio.published ? 'translate-x-7' : 'translate-x-1'
+                  }`}
+                />
+              </div>
+            </label>
+          </div>
+
+          {formData.portfolio.published && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className={labelClass}>Portfolio Slug</label>
+                  <input
+                    type="text"
+                    value={formData.portfolio.slug || formData.key}
+                    onChange={e => setFormData(prev => ({
+                      ...prev,
+                      portfolio: { ...prev.portfolio, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-') }
+                    }))}
+                    className={inputClass}
+                    placeholder="project-slug"
+                  />
+                  <p className="text-white/40 text-xs mt-1">URL: /portfolio/{formData.portfolio.slug || formData.key || 'slug'}</p>
+                </div>
+                <div>
+                  <label className={labelClass}>Industry</label>
+                  <input
+                    type="text"
+                    value={formData.portfolio.industry}
+                    onChange={e => setFormData(prev => ({
+                      ...prev,
+                      portfolio: { ...prev.portfolio, industry: e.target.value }
+                    }))}
+                    className={inputClass}
+                    placeholder="e.g., Technology, Healthcare, Finance"
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Year</label>
+                  <input
+                    type="number"
+                    value={formData.portfolio.year}
+                    onChange={e => setFormData(prev => ({
+                      ...prev,
+                      portfolio: { ...prev.portfolio, year: parseInt(e.target.value) || new Date().getFullYear() }
+                    }))}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Display Order</label>
+                  <input
+                    type="number"
+                    value={formData.portfolio.order}
+                    onChange={e => setFormData(prev => ({
+                      ...prev,
+                      portfolio: { ...prev.portfolio, order: parseInt(e.target.value) || 0 }
+                    }))}
+                    className={inputClass}
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+
+              {/* Categories */}
+              <div>
+                <label className={labelClass}>Portfolio Categories</label>
+                <div className="flex flex-wrap gap-2">
+                  {PORTFOLIO_CATEGORIES.map(cat => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => {
+                        const categories = formData.portfolio.categories || [];
+                        const newCategories = categories.includes(cat)
+                          ? categories.filter(c => c !== cat)
+                          : [...categories, cat];
+                        setFormData(prev => ({
+                          ...prev,
+                          portfolio: { ...prev.portfolio, categories: newCategories }
+                        }));
+                      }}
+                      className={`px-3 py-1.5 rounded-lg text-sm capitalize transition-colors ${
+                        (formData.portfolio.categories || []).includes(cat)
+                          ? 'bg-accent text-white'
+                          : 'bg-white/10 text-white/60 hover:bg-white/20'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Visibility Options */}
+              <div className="flex flex-wrap gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.portfolio.showOnHomepage}
+                    onChange={e => setFormData(prev => ({
+                      ...prev,
+                      portfolio: { ...prev.portfolio, showOnHomepage: e.target.checked }
+                    }))}
+                    className="w-4 h-4 rounded"
+                  />
+                  <span className="text-white/80 text-sm">Show on Homepage</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.portfolio.hidden}
+                    onChange={e => setFormData(prev => ({
+                      ...prev,
+                      portfolio: { ...prev.portfolio, hidden: e.target.checked }
+                    }))}
+                    className="w-4 h-4 rounded"
+                  />
+                  <span className="text-white/80 text-sm">Hidden from Portfolio</span>
+                </label>
+              </div>
+
+              {/* Thumbnail */}
+              <div>
+                <label className={labelClass}>Thumbnail URL</label>
+                <input
+                  type="url"
+                  value={formData.portfolio.thumbnail}
+                  onChange={e => setFormData(prev => ({
+                    ...prev,
+                    portfolio: { ...prev.portfolio, thumbnail: e.target.value }
+                  }))}
+                  className={inputClass}
+                  placeholder="https://..."
+                />
+              </div>
+
+              {/* Gallery Images */}
+              <div>
+                <label className={labelClass}>Gallery Images</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="url"
+                    value={imageInput}
+                    onChange={e => setImageInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (imageInput.trim()) {
+                          setFormData(prev => ({
+                            ...prev,
+                            portfolio: { ...prev.portfolio, images: [...(prev.portfolio.images || []), imageInput.trim()] }
+                          }));
+                          setImageInput('');
+                        }
+                      }
+                    }}
+                    className={`${inputClass} flex-1`}
+                    placeholder="https://..."
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (imageInput.trim()) {
+                        setFormData(prev => ({
+                          ...prev,
+                          portfolio: { ...prev.portfolio, images: [...(prev.portfolio.images || []), imageInput.trim()] }
+                        }));
+                        setImageInput('');
+                      }
+                    }}
+                    className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(formData.portfolio.images || []).map((img, i) => (
+                    <span key={i} className="inline-flex items-center gap-1 px-3 py-1 bg-accent/20 text-accent rounded-full text-sm max-w-xs truncate">
+                      {img}
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({
+                          ...prev,
+                          portfolio: { ...prev.portfolio, images: prev.portfolio.images.filter((_, idx) => idx !== i) }
+                        }))}
+                        className="hover:text-red-400"
+                      >
+                        x
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Services */}
+              <div>
+                <label className={labelClass}>Services Provided</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={serviceInput}
+                    onChange={e => setServiceInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (serviceInput.trim()) {
+                          setFormData(prev => ({
+                            ...prev,
+                            portfolio: { ...prev.portfolio, services: [...(prev.portfolio.services || []), serviceInput.trim()] }
+                          }));
+                          setServiceInput('');
+                        }
+                      }
+                    }}
+                    className={`${inputClass} flex-1`}
+                    placeholder="e.g., Web Development, UI/UX Design"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (serviceInput.trim()) {
+                        setFormData(prev => ({
+                          ...prev,
+                          portfolio: { ...prev.portfolio, services: [...(prev.portfolio.services || []), serviceInput.trim()] }
+                        }));
+                        setServiceInput('');
+                      }
+                    }}
+                    className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(formData.portfolio.services || []).map((svc, i) => (
+                    <span key={i} className="inline-flex items-center gap-1 px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm">
+                      {svc}
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({
+                          ...prev,
+                          portfolio: { ...prev.portfolio, services: prev.portfolio.services.filter((_, idx) => idx !== i) }
+                        }))}
+                        className="hover:text-red-400"
+                      >
+                        x
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Full Description */}
+              <div>
+                <label className={labelClass}>Full Description (Portfolio Page)</label>
+                <textarea
+                  value={formData.portfolio.fullDescription}
+                  onChange={e => setFormData(prev => ({
+                    ...prev,
+                    portfolio: { ...prev.portfolio, fullDescription: e.target.value }
+                  }))}
+                  className={`${inputClass} h-24`}
+                  placeholder="Detailed description for the portfolio page..."
+                />
+              </div>
+
+              {/* Challenge */}
+              <div>
+                <label className={labelClass}>Challenge</label>
+                <textarea
+                  value={formData.portfolio.challenge}
+                  onChange={e => setFormData(prev => ({
+                    ...prev,
+                    portfolio: { ...prev.portfolio, challenge: e.target.value }
+                  }))}
+                  className={`${inputClass} h-24`}
+                  placeholder="What challenge did the client face?"
+                />
+              </div>
+
+              {/* Solution */}
+              <div>
+                <label className={labelClass}>Solution</label>
+                <textarea
+                  value={formData.portfolio.solution}
+                  onChange={e => setFormData(prev => ({
+                    ...prev,
+                    portfolio: { ...prev.portfolio, solution: e.target.value }
+                  }))}
+                  className={`${inputClass} h-24`}
+                  placeholder="How did you solve it?"
+                />
+              </div>
+
+              {/* Results */}
+              <div>
+                <label className={labelClass}>Results / Key Metrics</label>
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={resultInput}
+                    onChange={e => setResultInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (resultInput.trim()) {
+                          setFormData(prev => ({
+                            ...prev,
+                            portfolio: { ...prev.portfolio, results: [...(prev.portfolio.results || []), resultInput.trim()] }
+                          }));
+                          setResultInput('');
+                        }
+                      }
+                    }}
+                    className={`${inputClass} flex-1`}
+                    placeholder="e.g., 50% increase in conversions"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (resultInput.trim()) {
+                        setFormData(prev => ({
+                          ...prev,
+                          portfolio: { ...prev.portfolio, results: [...(prev.portfolio.results || []), resultInput.trim()] }
+                        }));
+                        setResultInput('');
+                      }
+                    }}
+                    className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(formData.portfolio.results || []).map((res, i) => (
+                    <span key={i} className="inline-flex items-center gap-1 px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm">
+                      {res}
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({
+                          ...prev,
+                          portfolio: { ...prev.portfolio, results: prev.portfolio.results.filter((_, idx) => idx !== i) }
+                        }))}
+                        className="hover:text-red-400"
+                      >
+                        x
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Testimonial */}
+              <div className="border border-white/10 rounded-lg p-4">
+                <h3 className="text-white font-medium mb-3">Client Testimonial (Optional)</h3>
+                <div className="space-y-3">
+                  <div>
+                    <label className={labelClass}>Quote</label>
+                    <textarea
+                      value={formData.portfolio.testimonial?.quote || ''}
+                      onChange={e => setFormData(prev => ({
+                        ...prev,
+                        portfolio: {
+                          ...prev.portfolio,
+                          testimonial: { ...(prev.portfolio.testimonial || { quote: '', author: '', role: '' }), quote: e.target.value }
+                        }
+                      }))}
+                      className={`${inputClass} h-20`}
+                      placeholder="What the client said..."
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className={labelClass}>Author</label>
+                      <input
+                        type="text"
+                        value={formData.portfolio.testimonial?.author || ''}
+                        onChange={e => setFormData(prev => ({
+                          ...prev,
+                          portfolio: {
+                            ...prev.portfolio,
+                            testimonial: { ...(prev.portfolio.testimonial || { quote: '', author: '', role: '' }), author: e.target.value }
+                          }
+                        }))}
+                        className={inputClass}
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Role</label>
+                      <input
+                        type="text"
+                        value={formData.portfolio.testimonial?.role || ''}
+                        onChange={e => setFormData(prev => ({
+                          ...prev,
+                          portfolio: {
+                            ...prev.portfolio,
+                            testimonial: { ...(prev.portfolio.testimonial || { quote: '', author: '', role: '' }), role: e.target.value }
+                          }
+                        }))}
+                        className={inputClass}
+                        placeholder="CEO at Company"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {!formData.portfolio.published && (
+            <p className="text-white/40 text-sm">
+              Enable publishing to add this project to your public portfolio. Portfolio-specific fields will appear here.
+            </p>
+          )}
         </div>
       )}
 

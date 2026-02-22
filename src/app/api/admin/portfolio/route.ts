@@ -4,8 +4,42 @@ import { getAdminAuth, getAdminDb } from '@/lib/firebase/admin';
 
 export type CategoryType = 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile';
 
+// Normalize category values (handles legacy data with labels instead of values)
+function normalizeCategory(cat: string): CategoryType | null {
+  const normalized = cat.toLowerCase().trim();
+  const categoryMap: Record<string, CategoryType> = {
+    'web': 'web',
+    'web development': 'web',
+    'web-development': 'web',
+    'web app': 'web',
+    'web-app': 'web',
+    'webapp': 'web',
+    'website': 'web',
+    'e-commerce': 'e-commerce',
+    'ecommerce': 'e-commerce',
+    'e commerce': 'e-commerce',
+    'branding': 'branding',
+    'brand': 'branding',
+    'marketing': 'marketing',
+    'mobile': 'mobile',
+    'mobile apps': 'mobile',
+    'mobile app': 'mobile',
+  };
+  return categoryMap[normalized] || null;
+}
+
+function normalizeCategories(categories: string[]): CategoryType[] {
+  const normalized = new Set<CategoryType>();
+  for (const cat of categories) {
+    const norm = normalizeCategory(cat);
+    if (norm) normalized.add(norm);
+  }
+  return Array.from(normalized);
+}
+
 export interface PortfolioProject {
   id?: string;
+  projectId?: string; // Reference to source project in projects collection
   slug: string;
   name: string;
   description: string;
@@ -33,6 +67,7 @@ export interface PortfolioProject {
   status: 'draft' | 'published';
   hidden?: boolean; // Hide from public website
   showOnHomepage?: boolean; // Show on homepage
+  publishedAt?: string; // When it was first published
   createdAt?: string;
   updatedAt?: string;
 }
@@ -71,12 +106,72 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get('status');
     const category = searchParams.get('category');
 
-    // Fetch from portfolio collection only
-    const portfolioSnapshot = await db.collection(COLLECTION).get();
+    // Fetch from projects collection where portfolio.published is true
+    const projectsSnapshot = await db.collection('projects').get();
     let projects: PortfolioProject[] = [];
 
-    portfolioSnapshot.forEach((doc) => {
-      projects.push({ id: doc.id, ...doc.data() } as PortfolioProject);
+    projectsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      // Only include projects with portfolio.published = true
+      if (data.portfolio?.published) {
+        // Map project data to portfolio format
+        const portfolioItem: PortfolioProject = {
+          id: doc.id,
+          projectId: doc.id, // Reference to source project
+          slug: data.portfolio.slug || data.key,
+          name: data.name,
+          description: data.oneLiner || '',
+          fullDescription: data.portfolio.fullDescription || data.essence || '',
+          categories: normalizeCategories(data.portfolio.categories || []),
+          tags: data.portfolio.tags?.length ? data.portfolio.tags : (data.tags || []),
+          thumbnail: data.portfolio.thumbnail || '',
+          images: data.portfolio.images || [],
+          client: data.client || '',
+          industry: data.portfolio.industry || '',
+          year: data.portfolio.year || new Date().getFullYear(),
+          services: data.portfolio.services || [],
+          technologies: data.portfolio.technologies?.length
+            ? data.portfolio.technologies
+            : [
+                data.stack?.frontend?.name,
+                data.stack?.backend?.name,
+                data.stack?.database?.name,
+              ].filter(Boolean) as string[],
+          liveUrl: data.productUrls?.[0] || '',
+          challenge: data.portfolio.challenge || '',
+          solution: data.portfolio.solution || '',
+          results: data.portfolio.results || [],
+          testimonial: data.portfolio.testimonial || null,
+          order: data.portfolio.order || 0,
+          status: data.portfolio.hidden ? 'draft' : 'published',
+          hidden: data.portfolio.hidden || false,
+          showOnHomepage: data.portfolio.showOnHomepage || false,
+          publishedAt: data.portfolio.publishedAt?.toDate?.()?.toISOString() || data.createdAt?.toDate?.()?.toISOString() || null,
+          createdAt: data.createdAt?.toDate?.()?.toISOString() || null,
+          updatedAt: data.updatedAt?.toDate?.()?.toISOString() || null,
+        };
+        projects.push(portfolioItem);
+      }
+    });
+
+    // Also fetch legacy portfolio items (for backwards compatibility)
+    const legacySnapshot = await db.collection(COLLECTION).get();
+    legacySnapshot.forEach((doc) => {
+      const data = doc.data();
+      // Only include if not already linked to a project
+      if (!data.projectId) {
+        // Normalize legacy categories
+        const legacyCategories = data.categories
+          ? normalizeCategories(data.categories)
+          : data.category
+            ? normalizeCategories([data.category])
+            : [];
+        projects.push({
+          id: doc.id,
+          ...data,
+          categories: legacyCategories,
+        } as PortfolioProject);
+      }
     });
 
     // Filter by status
@@ -86,7 +181,11 @@ export async function GET(req: NextRequest) {
 
     // Filter by category
     if (category && category !== 'all') {
-      projects = projects.filter(p => p.category === category);
+      const normalizedFilter = normalizeCategory(category);
+      projects = projects.filter(p =>
+        (p.category && normalizeCategory(p.category) === normalizedFilter) ||
+        (p.categories && p.categories.includes(normalizedFilter as CategoryType))
+      );
     }
 
     // Sort by order

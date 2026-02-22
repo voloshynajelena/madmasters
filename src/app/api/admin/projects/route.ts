@@ -125,12 +125,41 @@ export async function GET(request: NextRequest) {
     const tag = searchParams.get('tag');
     const owner = searchParams.get('owner');
 
-    const snapshot = await db.collection('projects').get();
-    let projects: any[] = snapshot.docs.map(doc => {
+    // Fetch both projects and legacy portfolio items
+    const [projectsSnapshot, portfolioSnapshot] = await Promise.all([
+      db.collection('projects').get(),
+      db.collection('portfolio').get(),
+    ]);
+
+    // Build a map of legacy portfolio items by slug for quick lookup
+    const legacyPortfolioBySlug = new Map<string, { published: boolean; showOnHomepage: boolean }>();
+    portfolioSnapshot.docs.forEach(doc => {
       const data = doc.data();
+      if (data.slug) {
+        legacyPortfolioBySlug.set(data.slug, {
+          published: true, // If it exists in portfolio collection, it's "published"
+          showOnHomepage: data.showOnHomepage || false,
+        });
+      }
+    });
+
+    let projects: any[] = projectsSnapshot.docs.map(doc => {
+      const data = doc.data();
+
+      // Check if this project has a matching legacy portfolio item
+      const legacyPortfolio = legacyPortfolioBySlug.get(data.key) || legacyPortfolioBySlug.get(data.portfolio?.slug);
+
+      // Merge portfolio info: prefer project's own portfolio data, fallback to legacy
+      const portfolioInfo = data.portfolio?.published
+        ? data.portfolio
+        : legacyPortfolio
+          ? { published: true, showOnHomepage: legacyPortfolio.showOnHomepage, isLegacy: true }
+          : data.portfolio || null;
+
       return {
         id: doc.id,
         ...data,
+        portfolio: portfolioInfo,
         startDate: data.startDate?.toDate?.()?.toISOString() || null,
         endDate: data.endDate?.toDate?.()?.toISOString() || null,
         createdAt: data.createdAt?.toDate?.()?.toISOString() || null,

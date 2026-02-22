@@ -58,11 +58,15 @@ export function HomeFreshWorks({ locale, maxItems = 6 }: HomeFreshWorksProps) {
         const res = await fetch('/api/portfolio');
         const json = await res.json();
         if (json.projects && json.projects.length > 0) {
-          // Prefer items marked for homepage, then first items by order
+          // Only show items marked for homepage (Featured)
           const homepageItems = json.projects.filter((item: PortfolioItem) => item.showOnHomepage);
-          const otherItems = json.projects.filter((item: PortfolioItem) => !item.showOnHomepage);
 
-          const sortedItems = [...homepageItems, ...otherItems].slice(0, maxItems);
+          // If there are featured items, show only those
+          // Otherwise fall back to all items (for backwards compatibility with legacy data)
+          const sortedItems = homepageItems.length > 0
+            ? homepageItems.slice(0, maxItems)
+            : json.projects.slice(0, maxItems);
+
           if (sortedItems.length > 0) {
             setItems(sortedItems);
           }

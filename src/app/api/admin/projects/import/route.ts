@@ -73,6 +73,24 @@ interface ImportProject {
     changelog?: string;
     cicdPipeline?: string;
   };
+  portfolio?: {
+    published?: boolean;
+    slug?: string;
+    categories?: string[];
+    thumbnail?: string;
+    images?: string[];
+    industry?: string;
+    year?: number;
+    services?: string[];
+    fullDescription?: string;
+    challenge?: string;
+    solution?: string;
+    results?: string[];
+    testimonial?: { quote: string; author: string; role: string } | null;
+    order?: number;
+    hidden?: boolean;
+    showOnHomepage?: boolean;
+  };
 }
 
 interface ImportResult {
@@ -120,6 +138,25 @@ const DEFAULT_DOCUMENTATION = {
   seedData: '',
   changelog: '',
   cicdPipeline: '',
+};
+
+const DEFAULT_PORTFOLIO = {
+  published: false,
+  slug: '',
+  categories: [],
+  thumbnail: '',
+  images: [],
+  industry: '',
+  year: new Date().getFullYear(),
+  services: [],
+  fullDescription: '',
+  challenge: '',
+  solution: '',
+  results: [],
+  testimonial: null,
+  order: 0,
+  hidden: false,
+  showOnHomepage: false,
 };
 
 function validateProject(project: any, index: number): { valid: boolean; errors: string[] } {
@@ -170,6 +207,7 @@ function normalizeProject(raw: any): ImportProject {
     operations: raw.operations || DEFAULT_OPERATIONS,
     security: raw.security || {},
     documentation: raw.documentation || DEFAULT_DOCUMENTATION,
+    portfolio: raw.portfolio || DEFAULT_PORTFOLIO,
   };
 }
 
@@ -498,6 +536,7 @@ export async function POST(request: NextRequest) {
           operations: projectData.operations || DEFAULT_OPERATIONS,
           security: projectData.security || {},
           documentation: projectData.documentation || DEFAULT_DOCUMENTATION,
+          portfolio: projectData.portfolio || DEFAULT_PORTFOLIO,
           createdAt: exists ? existingData?.createdAt : now,
           updatedAt: now,
           updatedBy: user.email || user.uid,

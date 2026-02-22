@@ -19,6 +19,11 @@ interface Project {
     database: { name: string };
   };
   updatedAt: string;
+  portfolio?: {
+    published: boolean;
+    showOnHomepage?: boolean;
+    isLegacy?: boolean; // True if info comes from legacy portfolio collection (needs sync)
+  };
 }
 
 interface ImportResult {
@@ -46,6 +51,7 @@ export default function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [deleting, setDeleting] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [syncing, setSyncing] = useState<string | null>(null);
 
   // Import state
   const [showImportModal, setShowImportModal] = useState(false);
@@ -130,6 +136,25 @@ export default function ProjectsPage() {
       alert('Failed to export');
     } finally {
       setExporting(false);
+    }
+  };
+
+  const handleSyncPortfolio = async (projectId: string) => {
+    setSyncing(projectId);
+    try {
+      const res = await fetch(`/api/admin/projects/${projectId}/sync-portfolio`, {
+        method: 'POST',
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Sync failed');
+      }
+      // Refresh projects list
+      fetchProjects();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to sync portfolio');
+    } finally {
+      setSyncing(null);
     }
   };
 
@@ -337,6 +362,7 @@ export default function ProjectsPage() {
                 <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Client</th>
                 <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Stack</th>
                 <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Status</th>
+                <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Portfolio</th>
                 <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Owner</th>
                 <th className="text-left px-4 py-3 text-text-muted text-sm font-medium">Updated</th>
                 <th className="text-right px-4 py-3 text-text-muted text-sm font-medium">Actions</th>
@@ -385,6 +411,31 @@ export default function ProjectsPage() {
                         </span>
                       )}
                     </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    {project.portfolio?.published ? (
+                      <Link
+                        href={`/admin/projects/${project.id}?tab=portfolio`}
+                        className="inline-block px-2 py-1 rounded text-xs bg-green-500/20 text-green-600 dark:text-green-400 hover:bg-green-500/30 transition-colors"
+                      >
+                        Edit Portfolio
+                      </Link>
+                    ) : project.portfolio?.isLegacy ? (
+                      <button
+                        onClick={() => handleSyncPortfolio(project.id)}
+                        disabled={syncing === project.id}
+                        className="inline-block px-2 py-1 rounded text-xs bg-yellow-500/20 text-yellow-600 dark:text-yellow-400 hover:bg-yellow-500/30 transition-colors disabled:opacity-50"
+                      >
+                        {syncing === project.id ? 'Syncing...' : 'Import Legacy'}
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/admin/projects/${project.id}?tab=portfolio`}
+                        className="inline-block px-2 py-1 rounded text-xs bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30 transition-colors"
+                      >
+                        Add to Portfolio
+                      </Link>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-foreground text-sm">{project.owner || '-'}</td>
                   <td className="px-4 py-3 text-text-muted text-sm">
@@ -617,7 +668,98 @@ export default function ProjectsPage() {
                 </div>
 
                 <div className="pt-4 border-t border-border">
-                  <h4 className="text-text-muted text-sm mb-2">JSON Format Example:</h4>
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-text-muted text-sm">JSON Format Example:</h4>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const jsonExample = `{
+  "projects": [
+    {
+      "key": "my-project",
+      "name": "My Project",
+      "client": "Client Name",
+      "status": "active",
+      "type": "client",
+      "oneLiner": "Brief project description",
+      "essence": "Detailed description of what the project is about",
+      "productUrls": ["https://myproject.com"],
+      "owner": "John Doe",
+      "techLead": "Jane Smith",
+      "team": ["Alice", "Bob"],
+      "tags": ["web", "saas", "b2b"],
+      "stack": {
+        "frontend": { "name": "Next.js", "version": "14.0", "notes": "" },
+        "backend": { "name": "Node.js", "version": "20", "notes": "" },
+        "database": { "name": "PostgreSQL", "version": "15", "notes": "" },
+        "hosting": { "name": "Vercel", "notes": "" },
+        "auth": { "name": "Firebase Auth", "notes": "" },
+        "cicd": { "name": "GitHub Actions", "notes": "" },
+        "analytics": { "name": "Google Analytics", "notes": "" },
+        "monitoring": { "name": "Sentry", "notes": "" }
+      },
+      "environments": [
+        { "type": "PROD", "url": "https://myproject.com", "notes": "" },
+        { "type": "STAGE", "url": "https://stage.myproject.com", "notes": "" }
+      ],
+      "links": [
+        { "type": "REPO", "label": "GitHub", "url": "https://github.com/org/repo", "notes": "" },
+        { "type": "JIRA", "label": "Jira Board", "url": "https://jira.com/board", "notes": "" },
+        { "type": "FIGMA", "label": "Design", "url": "https://figma.com/file/xxx", "notes": "" }
+      ],
+      "instructions": {
+        "localSetupMd": "## Local Setup\\n\\n1. Clone repo\\n2. npm install\\n3. npm run dev",
+        "deployMd": "## Deployment\\n\\nPush to main branch to deploy to production.",
+        "testingMd": "## Testing\\n\\nnpm run test",
+        "runbookMd": "## Runbook\\n\\n### Common issues\\n- Check logs in Vercel",
+        "knownIssuesMd": "## Known Issues\\n\\nNone currently."
+      },
+      "operations": {
+        "sla": "99.9% uptime",
+        "backups": "Daily automated",
+        "pii": "low",
+        "dataRegion": "US-East",
+        "secretsLocation": "1Password vault: MyProject",
+        "onCallRotation": "",
+        "incidentProcess": ""
+      },
+      "security": {
+        "authMethod": "OAuth 2.0",
+        "dataEncryption": "AES-256 at rest, TLS in transit",
+        "complianceNotes": "GDPR compliant"
+      },
+      "documentation": {
+        "envVarsTemplate": "DATABASE_URL=\\nAPI_KEY=",
+        "databaseSchema": "## Database Schema\\n\\nUser, Product tables...",
+        "apiEndpoints": "GET /api/users\\nPOST /api/orders",
+        "seedData": "admin@test.com / password123",
+        "changelog": "## v1.0.0\\n- Initial release",
+        "cicdPipeline": "GitHub Actions on push to main"
+      },
+      "portfolio": {
+        "published": true,
+        "slug": "my-project",
+        "categories": ["web", "e-commerce"],
+        "industry": "Technology",
+        "year": 2024,
+        "services": ["Web Development", "UI/UX Design"],
+        "thumbnail": "https://example.com/thumb.jpg",
+        "showOnHomepage": true,
+        "challenge": "The client needed...",
+        "solution": "We built...",
+        "results": ["50% faster", "2x conversions"]
+      }
+    }
+  ]
+}`;
+                        navigator.clipboard.writeText(jsonExample);
+                        alert('JSON example copied to clipboard!');
+                      }}
+                      className="px-3 py-1 text-xs bg-accent/20 text-accent rounded hover:bg-accent/30 transition-colors"
+                    >
+                      Copy
+                    </button>
+                  </div>
                   <pre className="bg-surface-muted rounded-lg p-3 text-xs text-foreground overflow-x-auto max-h-64 overflow-y-auto">
 {`{
   "projects": [
@@ -675,12 +817,25 @@ export default function ProjectsPage() {
         "complianceNotes": "GDPR compliant"
       },
       "documentation": {
-        "envVarsTemplate": "DATABASE_URL=\\nAPI_KEY=\\nNEXT_PUBLIC_API_URL=",
-        "databaseSchema": "## Database Schema\\n\\nUser, Product, Order tables...",
+        "envVarsTemplate": "DATABASE_URL=\\nAPI_KEY=",
+        "databaseSchema": "## Database Schema\\n\\nUser, Product tables...",
         "apiEndpoints": "GET /api/users\\nPOST /api/orders",
-        "seedData": "## Test Users\\n\\nadmin@test.com / password123",
+        "seedData": "admin@test.com / password123",
         "changelog": "## v1.0.0\\n- Initial release",
-        "cicdPipeline": "## CI/CD\\n\\nGitHub Actions on push to main"
+        "cicdPipeline": "GitHub Actions on push to main"
+      },
+      "portfolio": {
+        "published": true,
+        "slug": "my-project",
+        "categories": ["web", "e-commerce"],
+        "industry": "Technology",
+        "year": 2024,
+        "services": ["Web Development", "UI/UX Design"],
+        "thumbnail": "https://example.com/thumb.jpg",
+        "showOnHomepage": true,
+        "challenge": "The client needed...",
+        "solution": "We built...",
+        "results": ["50% faster", "2x conversions"]
       }
     }
   ]

@@ -82,6 +82,24 @@ interface ProjectData {
     changelog?: string;
     cicdPipeline?: string;
   };
+  portfolio?: {
+    published?: boolean;
+    slug?: string;
+    categories?: string[];
+    thumbnail?: string;
+    images?: string[];
+    industry?: string;
+    year?: number;
+    services?: string[];
+    fullDescription?: string;
+    challenge?: string;
+    solution?: string;
+    results?: string[];
+    testimonial?: { quote: string; author: string; role: string } | null;
+    order?: number;
+    hidden?: boolean;
+    showOnHomepage?: boolean;
+  };
   createdAt?: string;
   updatedAt?: string;
   updatedBy?: string;
@@ -159,6 +177,7 @@ export async function GET(request: NextRequest) {
         operations: data.operations || {},
         security: data.security,
         documentation: data.documentation || {},
+        portfolio: data.portfolio || {},
         createdAt: data.createdAt?.toDate?.()?.toISOString() || null,
         updatedAt: data.updatedAt?.toDate?.()?.toISOString() || null,
         updatedBy: data.updatedBy,
@@ -385,6 +404,51 @@ export async function GET(request: NextRequest) {
     });
 
     styleHeader(docsSheet);
+
+    // Sheet 6: Portfolio
+    const portfolioSheet = workbook.addWorksheet('Portfolio');
+    portfolioSheet.columns = [
+      { header: 'Project Key', key: 'projectKey' },
+      { header: 'Project Name', key: 'projectName' },
+      { header: 'Published', key: 'published' },
+      { header: 'Portfolio Slug', key: 'slug' },
+      { header: 'Categories', key: 'categories' },
+      { header: 'Industry', key: 'industry' },
+      { header: 'Year', key: 'year' },
+      { header: 'Services', key: 'services' },
+      { header: 'Thumbnail', key: 'thumbnail' },
+      { header: 'Show on Homepage', key: 'showOnHomepage' },
+      { header: 'Hidden', key: 'hidden' },
+      { header: 'Order', key: 'order' },
+      { header: 'Challenge', key: 'challenge' },
+      { header: 'Solution', key: 'solution' },
+      { header: 'Results', key: 'results' },
+    ];
+
+    projects.forEach(project => {
+      if (project.portfolio) {
+        portfolioSheet.addRow({
+          projectKey: project.key,
+          projectName: project.name,
+          published: project.portfolio.published ? 'Yes' : 'No',
+          slug: project.portfolio.slug || project.key,
+          categories: (project.portfolio.categories || []).join(', '),
+          industry: project.portfolio.industry || '',
+          year: project.portfolio.year || '',
+          services: (project.portfolio.services || []).join(', '),
+          thumbnail: project.portfolio.thumbnail || '',
+          showOnHomepage: project.portfolio.showOnHomepage ? 'Yes' : 'No',
+          hidden: project.portfolio.hidden ? 'Yes' : 'No',
+          order: project.portfolio.order || 0,
+          challenge: project.portfolio.challenge || '',
+          solution: project.portfolio.solution || '',
+          results: (project.portfolio.results || []).join('; '),
+        });
+      }
+    });
+
+    styleHeader(portfolioSheet);
+    setColumnWidths(portfolioSheet);
 
     // Generate buffer
     const buffer = await workbook.xlsx.writeBuffer();

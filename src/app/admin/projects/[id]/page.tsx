@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ProjectForm } from '@/components/admin/projects/project-form';
+import { PortfolioForm, PortfolioFormData, defaultPortfolioData } from '@/components/admin/portfolio/portfolio-form';
 
 type ProjectStatus = 'active' | 'maintenance' | 'paused' | 'archived' | 'completed';
 
@@ -27,12 +28,33 @@ interface Project {
   operations: any;
   security?: any;
   documentation?: {
-    envVarsTemplate?: string;
-    databaseSchema?: string;
-    apiEndpoints?: string;
-    seedData?: string;
-    changelog?: string;
-    cicdPipeline?: string;
+    envVarsTemplate: string;
+    databaseSchema: string;
+    apiEndpoints: string;
+    seedData: string;
+    changelog: string;
+    cicdPipeline: string;
+  };
+  portfolio?: {
+    published?: boolean;
+    slug?: string;
+    categories?: string[];
+    tags?: string[];
+    thumbnail?: string;
+    images?: string[];
+    industry?: string;
+    year?: number;
+    services?: string[];
+    technologies?: string[];
+    fullDescription?: string;
+    challenge?: string;
+    solution?: string;
+    results?: string[];
+    testimonial?: { quote: string; author: string; role: string } | null;
+    order?: number;
+    hidden?: boolean;
+    showOnHomepage?: boolean;
+    isLegacy?: boolean; // True if data comes from legacy portfolio collection
   };
   createdAt?: string;
   updatedAt?: string;
@@ -56,19 +78,229 @@ const STATUS_COLORS: Record<string, string> = {
   completed: 'bg-purple-500/20 text-purple-400',
 };
 
+type TabType = 'overview' | 'portfolio' | 'stack' | 'environments' | 'links' | 'instructions' | 'docs' | 'operations' | 'security' | 'activity';
+
 export default function ProjectDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get('tab') as TabType | null;
+
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<'view' | 'edit'>('view');
-  const [activeTab, setActiveTab] = useState<'overview' | 'stack' | 'environments' | 'links' | 'instructions' | 'operations' | 'security' | 'activity'>('overview');
+  const [activeTab, setActiveTab] = useState<TabType>(tabParam || 'overview');
   const [exporting, setExporting] = useState(false);
+  const [togglingPortfolio, setTogglingPortfolio] = useState(false);
+  const [savingPortfolio, setSavingPortfolio] = useState(false);
+  const [portfolioError, setPortfolioError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProject();
   }, [params.id]);
+
+  // Update tab from URL parameter
+  useEffect(() => {
+    if (tabParam && ['overview', 'portfolio', 'stack', 'environments', 'links', 'instructions', 'docs', 'operations', 'security', 'activity'].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const togglePortfolioPublish = async (publish: boolean) => {
+    if (!project) return;
+    setTogglingPortfolio(true);
+    try {
+      const res = await fetch(`/api/admin/projects/${params.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          portfolio: {
+            published: publish,
+            slug: project.portfolio?.slug || project.key,
+          }
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to update');
+      const data = await res.json();
+      setProject(data.project);
+    } catch (err) {
+      alert('Failed to update portfolio status');
+    } finally {
+      setTogglingPortfolio(false);
+    }
+  };
+
+  const toggleFeatured = async (featured: boolean) => {
+    if (!project) return;
+    setTogglingPortfolio(true);
+    try {
+      const res = await fetch(`/api/admin/projects/${params.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          portfolio: { showOnHomepage: featured }
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to update');
+      const data = await res.json();
+      setProject(data.project);
+    } catch (err) {
+      alert('Failed to update featured status');
+    } finally {
+      setTogglingPortfolio(false);
+    }
+  };
+
+  const syncFromLegacy = async () => {
+    if (!project) return;
+    if (!confirm('This will copy portfolio data from the legacy portfolio collection to this project. Continue?')) return;
+
+    setTogglingPortfolio(true);
+    try {
+      const res = await fetch(`/api/admin/projects/${params.id}/sync-portfolio`, {
+        method: 'POST',
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to sync');
+      }
+      const data = await res.json();
+      setProject(data.project);
+      alert('Portfolio data synced successfully!');
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to sync portfolio');
+    } finally {
+      setTogglingPortfolio(false);
+    }
+  };
+
+  const savePortfolio = async (portfolioData: PortfolioFormData) => {
+    if (!project) return;
+    setSavingPortfolio(true);
+    setPortfolioError(null);
+    try {
+      const res = await fetch(`/api/admin/projects/${params.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          portfolio: {
+            published: portfolioData.status === 'published',
+            slug: portfolioData.slug,
+            categories: portfolioData.categories,
+            tags: portfolioData.tags,
+            thumbnail: portfolioData.thumbnail,
+            images: portfolioData.images,
+            industry: portfolioData.industry,
+            year: portfolioData.year,
+            services: portfolioData.services,
+            technologies: portfolioData.technologies,
+            fullDescription: portfolioData.fullDescription,
+            challenge: portfolioData.challenge,
+            solution: portfolioData.solution,
+            results: portfolioData.results,
+            testimonial: portfolioData.testimonial,
+            order: portfolioData.order,
+            hidden: portfolioData.hidden,
+            showOnHomepage: portfolioData.showOnHomepage,
+          }
+        }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to save');
+      }
+      const data = await res.json();
+      setProject(data.project);
+      alert('Portfolio saved!');
+    } catch (err) {
+      setPortfolioError(err instanceof Error ? err.message : 'Failed to save portfolio');
+    } finally {
+      setSavingPortfolio(false);
+    }
+  };
+
+  // Convert project to portfolio form data
+  const getPortfolioFormData = (): Partial<PortfolioFormData> => {
+    if (!project) return {};
+    const p = project.portfolio || {};
+    // When adding to portfolio (no existing portfolio data), default to published
+    // so the item actually appears in the portfolio list when saved
+    const isNewPortfolio = !project.portfolio?.published && !project.portfolio?.slug;
+
+    // Extract technologies from stack
+    const stackTechnologies: string[] = [];
+    if (project.stack) {
+      if (project.stack.frontend?.name) stackTechnologies.push(project.stack.frontend.name);
+      if (project.stack.backend?.name) stackTechnologies.push(project.stack.backend.name);
+      if (project.stack.database?.name) stackTechnologies.push(project.stack.database.name);
+      if (project.stack.hosting?.name) stackTechnologies.push(project.stack.hosting.name);
+      if (project.stack.auth?.name) stackTechnologies.push(project.stack.auth.name);
+      if (project.stack.cicd?.name) stackTechnologies.push(project.stack.cicd.name);
+      if (project.stack.analytics?.name) stackTechnologies.push(project.stack.analytics.name);
+      if (project.stack.monitoring?.name) stackTechnologies.push(project.stack.monitoring.name);
+    }
+    // Filter out TBD and empty values
+    const filteredTechnologies = stackTechnologies.filter(t => t && t !== 'TBD');
+
+    // Map tags that might indicate categories
+    const tagCategoryMap: Record<string, 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile'> = {
+      'web': 'web',
+      'web-app': 'web',
+      'webapp': 'web',
+      'web-development': 'web',
+      'website': 'web',
+      'ecommerce': 'e-commerce',
+      'e-commerce': 'e-commerce',
+      'shop': 'e-commerce',
+      'store': 'e-commerce',
+      'branding': 'branding',
+      'brand': 'branding',
+      'marketing': 'marketing',
+      'mobile': 'mobile',
+      'app': 'mobile',
+      'ios': 'mobile',
+      'android': 'mobile',
+    };
+
+    // Auto-detect categories from tags if no categories set
+    let categories = (p.categories || []) as ('web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile')[];
+    if (categories.length === 0 && project.tags) {
+      const detectedCategories = new Set<'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile'>();
+      for (const tag of project.tags) {
+        const normalizedTag = tag.toLowerCase().replace(/\s+/g, '-');
+        if (tagCategoryMap[normalizedTag]) {
+          detectedCategories.add(tagCategoryMap[normalizedTag]);
+        }
+      }
+      categories = Array.from(detectedCategories);
+    }
+
+    return {
+      slug: p.slug || project.key,
+      name: project.name,
+      description: project.oneLiner,
+      fullDescription: p.fullDescription || project.essence,
+      categories,
+      tags: p.tags?.length ? p.tags : (project.tags || []),
+      thumbnail: p.thumbnail || '',
+      images: p.images || [],
+      client: project.client || '',
+      industry: p.industry || '',
+      year: p.year || new Date().getFullYear(),
+      services: p.services || [],
+      technologies: p.technologies?.length ? p.technologies : filteredTechnologies,
+      liveUrl: project.productUrls?.[0] || '',
+      challenge: p.challenge || '',
+      solution: p.solution || '',
+      results: p.results || [],
+      testimonial: p.testimonial || null,
+      order: p.order || 0,
+      status: isNewPortfolio ? 'published' : (p.published ? 'published' : 'draft'),
+      hidden: p.hidden || false,
+      showOnHomepage: p.showOnHomepage || false,
+    };
+  };
 
   const fetchProject = async () => {
     try {
@@ -131,12 +363,12 @@ export default function ProjectDetailPage() {
           </button>
           <h1 className="text-2xl font-bold text-white">Edit: {project.name}</h1>
         </div>
-        <ProjectForm mode="edit" initialData={project} />
+        <ProjectForm mode="edit" initialData={project as any} />
       </div>
     );
   }
 
-  const TABS = ['overview', 'stack', 'environments', 'links', 'instructions', 'docs', 'operations', 'security', 'activity'] as const;
+  const TABS = ['overview', 'portfolio', 'stack', 'environments', 'links', 'instructions', 'docs', 'operations', 'security', 'activity'] as const;
 
   return (
     <div>
@@ -146,11 +378,21 @@ export default function ProjectDetailPage() {
           <Link href="/admin/projects" className="text-white/60 hover:text-white text-sm mb-2 inline-block">
             &larr; Back to Projects
           </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-bold text-white">{project.name}</h1>
             <span className={`px-2 py-1 rounded text-xs capitalize ${STATUS_COLORS[project.status] || 'bg-gray-500/20 text-gray-400'}`}>
               {project.status}
             </span>
+            {project.portfolio?.published && (
+              <span className="px-2 py-1 rounded text-xs bg-green-500/20 text-green-400">
+                Portfolio
+              </span>
+            )}
+            {project.portfolio?.showOnHomepage && (
+              <span className="px-2 py-1 rounded text-xs bg-accent/20 text-accent">
+                Featured
+              </span>
+            )}
           </div>
           <p className="text-white/60 mt-1">{project.oneLiner}</p>
           {project.tags?.length > 0 && (
@@ -247,6 +489,42 @@ export default function ProjectDetailPage() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Portfolio Tab */}
+      {activeTab === 'portfolio' && (
+        <div className="space-y-6">
+          {/* Legacy Sync Alert */}
+          {project.portfolio?.isLegacy && (
+            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-yellow-400 font-medium">Legacy Portfolio Data Detected</p>
+                  <p className="text-yellow-400/70 text-sm mt-1">
+                    This project has portfolio data in the legacy collection. Sync it to enable full editing.
+                  </p>
+                </div>
+                <button
+                  onClick={syncFromLegacy}
+                  disabled={togglingPortfolio}
+                  className="px-4 py-2 bg-yellow-500 text-black font-medium rounded-lg hover:bg-yellow-400 transition-colors disabled:opacity-50"
+                >
+                  {togglingPortfolio ? 'Syncing...' : 'Sync Now'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Portfolio Form - same as Portfolio edit page */}
+          <PortfolioForm
+            initialData={getPortfolioFormData()}
+            onSubmit={savePortfolio}
+            onCancel={() => setActiveTab('overview')}
+            submitLabel="Save Portfolio"
+            saving={savingPortfolio}
+            error={portfolioError}
+          />
         </div>
       )}
 
