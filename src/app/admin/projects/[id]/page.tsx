@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ProjectForm } from '@/components/admin/projects/project-form';
 import { PortfolioForm, PortfolioFormData, defaultPortfolioData } from '@/components/admin/portfolio/portfolio-form';
+import { TechIcon, getTechIcon } from '@/components/ui/tech-icon';
 
 type ProjectStatus = 'active' | 'maintenance' | 'paused' | 'archived' | 'completed';
 
@@ -95,6 +96,9 @@ export default function ProjectDetailPage() {
   const [togglingPortfolio, setTogglingPortfolio] = useState(false);
   const [savingPortfolio, setSavingPortfolio] = useState(false);
   const [portfolioError, setPortfolioError] = useState<string | null>(null);
+  const [editingTab, setEditingTab] = useState<TabType | null>(null);
+  const [savingTab, setSavingTab] = useState(false);
+  const [editData, setEditData] = useState<any>(null);
 
   useEffect(() => {
     fetchProject();
@@ -317,6 +321,93 @@ export default function ProjectDetailPage() {
     }
   };
 
+  const startEditTab = (tab: TabType) => {
+    if (!project) return;
+    // Initialize edit data based on tab
+    switch (tab) {
+      case 'stack':
+        setEditData({ ...project.stack });
+        break;
+      case 'environments':
+        setEditData([...(project.environments || [])]);
+        break;
+      case 'links':
+        setEditData([...(project.links || [])]);
+        break;
+      case 'instructions':
+        setEditData({ ...project.instructions });
+        break;
+      case 'docs':
+        setEditData({ ...project.documentation });
+        break;
+      case 'operations':
+        setEditData({ ...project.operations });
+        break;
+      case 'security':
+        setEditData({ ...project.security });
+        break;
+      default:
+        setEditData(null);
+    }
+    setEditingTab(tab);
+  };
+
+  const cancelEditTab = () => {
+    setEditingTab(null);
+    setEditData(null);
+  };
+
+  const saveTabData = async () => {
+    if (!editingTab || !editData) return;
+    setSavingTab(true);
+    try {
+      const updatePayload: Record<string, unknown> = {};
+      switch (editingTab) {
+        case 'stack':
+          updatePayload.stack = editData;
+          break;
+        case 'environments':
+          updatePayload.environments = editData;
+          break;
+        case 'links':
+          updatePayload.links = editData;
+          break;
+        case 'instructions':
+          updatePayload.instructions = editData;
+          break;
+        case 'docs':
+          updatePayload.documentation = editData;
+          break;
+        case 'operations':
+          updatePayload.operations = editData;
+          break;
+        case 'security':
+          updatePayload.security = editData;
+          break;
+      }
+
+      const res = await fetch(`/api/admin/projects/${params.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatePayload),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to save');
+      }
+
+      const data = await res.json();
+      setProject(data.project);
+      setEditingTab(null);
+      setEditData(null);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to save');
+    } finally {
+      setSavingTab(false);
+    }
+  };
+
   const handleExport = async (format: 'xlsx' | 'json' = 'xlsx') => {
     setExporting(true);
     try {
@@ -531,13 +622,93 @@ export default function ProjectDetailPage() {
       {/* Stack Tab */}
       {activeTab === 'stack' && (
         <div className="space-y-6">
-          {project.stack && (
+          {/* Edit/Save buttons */}
+          <div className="flex justify-end gap-2">
+            {editingTab === 'stack' ? (
+              <>
+                <button onClick={cancelEditTab} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20">
+                  Cancel
+                </button>
+                <button onClick={saveTabData} disabled={savingTab} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50">
+                  {savingTab ? 'Saving...' : 'Save'}
+                </button>
+              </>
+            ) : (
+              <button onClick={() => startEditTab('stack')} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90">
+                Edit Stack
+              </button>
+            )}
+          </div>
+
+          {editingTab === 'stack' && editData ? (
+            // Edit Mode
             <>
               {['frontend', 'backend', 'database'].map(layer => (
                 <div key={layer} className="bg-surface rounded-lg p-6 border border-white/10">
                   <h3 className="text-lg font-semibold text-white capitalize mb-4">{layer}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <InfoRow label="Name" value={project.stack[layer]?.name || 'TBD'} />
+                    <div>
+                      <label className="text-white/40 text-sm block mb-1">Name</label>
+                      <input
+                        type="text"
+                        value={editData[layer]?.name || ''}
+                        onChange={(e) => setEditData({ ...editData, [layer]: { ...editData[layer], name: e.target.value } })}
+                        className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-white/40 text-sm block mb-1">Version</label>
+                      <input
+                        type="text"
+                        value={editData[layer]?.version || ''}
+                        onChange={(e) => setEditData({ ...editData, [layer]: { ...editData[layer], version: e.target.value } })}
+                        className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-white/40 text-sm block mb-1">Notes</label>
+                      <input
+                        type="text"
+                        value={editData[layer]?.notes || ''}
+                        onChange={(e) => setEditData({ ...editData, [layer]: { ...editData[layer], notes: e.target.value } })}
+                        className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div className="bg-surface rounded-lg p-6 border border-white/10">
+                <h3 className="text-lg font-semibold text-white mb-4">Services</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {['hosting', 'auth', 'cicd', 'analytics', 'monitoring'].map(service => (
+                    <div key={service}>
+                      <label className="text-white/40 text-sm block mb-1">{service.toUpperCase()}</label>
+                      <input
+                        type="text"
+                        value={editData[service]?.name || ''}
+                        onChange={(e) => setEditData({ ...editData, [service]: { ...editData[service], name: e.target.value } })}
+                        className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : project.stack && (
+            // View Mode
+            <>
+              {['frontend', 'backend', 'database'].map(layer => (
+                <div key={layer} className="bg-surface rounded-lg p-6 border border-white/10">
+                  <h3 className="text-lg font-semibold text-white capitalize mb-4">{layer}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <span className="text-white/40 text-sm">Name</span>
+                      <p className="text-white flex items-center gap-2">
+                        <span className="text-lg">{getTechIcon(project.stack[layer]?.name || '')}</span>
+                        {project.stack[layer]?.name || 'TBD'}
+                      </p>
+                    </div>
                     <InfoRow label="Version" value={project.stack[layer]?.version || '-'} />
                     <InfoRow label="Notes" value={project.stack[layer]?.notes || '-'} />
                   </div>
@@ -548,11 +719,13 @@ export default function ProjectDetailPage() {
                 <h3 className="text-lg font-semibold text-white mb-4">Services</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {['hosting', 'auth', 'cicd', 'analytics', 'monitoring'].map(service => (
-                    <InfoRow
-                      key={service}
-                      label={service.toUpperCase()}
-                      value={project.stack[service]?.name || 'TBD'}
-                    />
+                    <div key={service}>
+                      <span className="text-white/40 text-sm">{service.toUpperCase()}</span>
+                      <p className="text-white flex items-center gap-2">
+                        <span className="text-lg">{getTechIcon(project.stack[service]?.name || '')}</span>
+                        {project.stack[service]?.name || 'TBD'}
+                      </p>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -563,74 +736,131 @@ export default function ProjectDetailPage() {
 
       {/* Environments Tab */}
       {activeTab === 'environments' && (
-        <div className="bg-surface rounded-lg border border-white/10 overflow-hidden">
-          {project.environments?.length > 0 ? (
-            <table className="w-full">
-              <thead className="bg-surface-muted">
-                <tr>
-                  <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Type</th>
-                  <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">URL</th>
-                  <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Notes</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/10">
-                {project.environments.map((env, i) => (
-                  <tr key={i}>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">
-                        {env.type}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <a href={env.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
-                        {env.url}
-                      </a>
-                    </td>
-                    <td className="px-4 py-3 text-white/60">{env.notes || '-'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="space-y-4">
+          <div className="flex justify-end gap-2">
+            {editingTab === 'environments' ? (
+              <>
+                <button onClick={cancelEditTab} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20">Cancel</button>
+                <button onClick={saveTabData} disabled={savingTab} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50">
+                  {savingTab ? 'Saving...' : 'Save'}
+                </button>
+              </>
+            ) : (
+              <button onClick={() => startEditTab('environments')} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90">Edit Environments</button>
+            )}
+          </div>
+
+          {editingTab === 'environments' && editData ? (
+            <div className="space-y-4">
+              {editData.map((env: any, i: number) => (
+                <div key={i} className="bg-surface rounded-lg p-4 border border-white/10">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-white font-medium">Environment {i + 1}</span>
+                    <button onClick={() => setEditData(editData.filter((_: any, idx: number) => idx !== i))} className="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <select value={env.type || ''} onChange={(e) => { const newData = [...editData]; newData[i] = { ...env, type: e.target.value }; setEditData(newData); }} className="bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none">
+                      <option value="">Select Type</option>
+                      {['DEV', 'STAGE', 'PROD', 'DEMO', 'QA'].map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                    <input type="text" placeholder="URL" value={env.url || ''} onChange={(e) => { const newData = [...editData]; newData[i] = { ...env, url: e.target.value }; setEditData(newData); }} className="bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" />
+                    <input type="text" placeholder="Notes" value={env.notes || ''} onChange={(e) => { const newData = [...editData]; newData[i] = { ...env, notes: e.target.value }; setEditData(newData); }} className="bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" />
+                  </div>
+                </div>
+              ))}
+              <button onClick={() => setEditData([...editData, { type: '', url: '', notes: '' }])} className="w-full py-2 border border-dashed border-white/20 rounded-lg text-white/60 hover:text-white hover:border-white/40">+ Add Environment</button>
+            </div>
           ) : (
-            <p className="text-white/40 p-6">No environments configured</p>
+            <div className="bg-surface rounded-lg border border-white/10 overflow-hidden">
+              {project.environments?.length > 0 ? (
+                <table className="w-full">
+                  <thead className="bg-surface-muted">
+                    <tr>
+                      <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Type</th>
+                      <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">URL</th>
+                      <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/10">
+                    {project.environments.map((env, i) => (
+                      <tr key={i}>
+                        <td className="px-4 py-3"><span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs">{env.type}</span></td>
+                        <td className="px-4 py-3"><a href={env.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">{env.url}</a></td>
+                        <td className="px-4 py-3 text-white/60">{env.notes || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="text-white/40 p-6">No environments configured</p>
+              )}
+            </div>
           )}
         </div>
       )}
 
       {/* Links Tab */}
       {activeTab === 'links' && (
-        <div className="bg-surface rounded-lg border border-white/10 overflow-hidden">
-          {project.links?.length > 0 ? (
-            <table className="w-full">
-              <thead className="bg-surface-muted">
-                <tr>
-                  <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Type</th>
-                  <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Label</th>
-                  <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">URL</th>
-                  <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Notes</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/10">
-                {project.links.map((link, i) => (
-                  <tr key={i}>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">
-                        {link.type}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-white">{link.label}</td>
-                    <td className="px-4 py-3">
-                      <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline truncate block max-w-xs">
-                        {link.url}
-                      </a>
-                    </td>
-                    <td className="px-4 py-3 text-white/60">{link.notes || '-'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="space-y-4">
+          <div className="flex justify-end gap-2">
+            {editingTab === 'links' ? (
+              <>
+                <button onClick={cancelEditTab} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20">Cancel</button>
+                <button onClick={saveTabData} disabled={savingTab} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50">{savingTab ? 'Saving...' : 'Save'}</button>
+              </>
+            ) : (
+              <button onClick={() => startEditTab('links')} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90">Edit Links</button>
+            )}
+          </div>
+
+          {editingTab === 'links' && editData ? (
+            <div className="space-y-4">
+              {editData.map((link: any, i: number) => (
+                <div key={i} className="bg-surface rounded-lg p-4 border border-white/10">
+                  <div className="flex justify-between items-start mb-3">
+                    <span className="text-white font-medium">Link {i + 1}</span>
+                    <button onClick={() => setEditData(editData.filter((_: any, idx: number) => idx !== i))} className="text-red-400 hover:text-red-300 text-sm">Remove</button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <select value={link.type || ''} onChange={(e) => { const newData = [...editData]; newData[i] = { ...link, type: e.target.value }; setEditData(newData); }} className="bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none">
+                      <option value="">Select Type</option>
+                      {['REPO', 'JIRA', 'FIGMA', 'SENTRY', 'VERCEL', 'AWS', 'GCP', 'FIREBASE', 'SUPABASE', 'AUTH', 'DATABASE', 'STORAGE', 'ANALYTICS', 'MONITORING', 'DOCS', 'WEBSITE', 'SLACK', 'NOTION', 'CONFLUENCE', 'OTHER'].map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                    <input type="text" placeholder="Label" value={link.label || ''} onChange={(e) => { const newData = [...editData]; newData[i] = { ...link, label: e.target.value }; setEditData(newData); }} className="bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" />
+                    <input type="text" placeholder="URL" value={link.url || ''} onChange={(e) => { const newData = [...editData]; newData[i] = { ...link, url: e.target.value }; setEditData(newData); }} className="bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" />
+                    <input type="text" placeholder="Notes" value={link.notes || ''} onChange={(e) => { const newData = [...editData]; newData[i] = { ...link, notes: e.target.value }; setEditData(newData); }} className="bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" />
+                  </div>
+                </div>
+              ))}
+              <button onClick={() => setEditData([...editData, { type: '', label: '', url: '', notes: '' }])} className="w-full py-2 border border-dashed border-white/20 rounded-lg text-white/60 hover:text-white hover:border-white/40">+ Add Link</button>
+            </div>
           ) : (
-            <p className="text-white/40 p-6">No links added</p>
+            <div className="bg-surface rounded-lg border border-white/10 overflow-hidden">
+              {project.links?.length > 0 ? (
+                <table className="w-full">
+                  <thead className="bg-surface-muted">
+                    <tr>
+                      <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Type</th>
+                      <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Label</th>
+                      <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">URL</th>
+                      <th className="text-left px-4 py-3 text-white/60 text-sm font-medium">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/10">
+                    {project.links.map((link, i) => (
+                      <tr key={i}>
+                        <td className="px-4 py-3"><span className="px-2 py-1 bg-purple-500/20 text-purple-400 rounded text-xs">{link.type}</span></td>
+                        <td className="px-4 py-3 text-white">{link.label}</td>
+                        <td className="px-4 py-3"><a href={link.url} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline truncate block max-w-xs">{link.url}</a></td>
+                        <td className="px-4 py-3 text-white/60">{link.notes || '-'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p className="text-white/40 p-6">No links added</p>
+              )}
+            </div>
           )}
         </div>
       )}
@@ -638,7 +868,38 @@ export default function ProjectDetailPage() {
       {/* Instructions Tab */}
       {activeTab === 'instructions' && (
         <div className="space-y-6">
-          {project.instructions && (
+          <div className="flex justify-end gap-2">
+            {editingTab === 'instructions' ? (
+              <>
+                <button onClick={cancelEditTab} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20">Cancel</button>
+                <button onClick={saveTabData} disabled={savingTab} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50">{savingTab ? 'Saving...' : 'Save'}</button>
+              </>
+            ) : (
+              <button onClick={() => startEditTab('instructions')} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90">Edit Instructions</button>
+            )}
+          </div>
+
+          {editingTab === 'instructions' && editData ? (
+            <>
+              {[
+                { key: 'localSetupMd', title: 'Local Setup' },
+                { key: 'deployMd', title: 'Deployment' },
+                { key: 'testingMd', title: 'Testing' },
+                { key: 'runbookMd', title: 'Runbook' },
+                { key: 'knownIssuesMd', title: 'Known Issues' },
+              ].map(({ key, title }) => (
+                <div key={key} className="bg-surface rounded-lg p-6 border border-white/10">
+                  <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+                  <textarea
+                    value={editData[key] || ''}
+                    onChange={(e) => setEditData({ ...editData, [key]: e.target.value })}
+                    className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-3 text-white focus:border-accent focus:outline-none min-h-[150px] font-mono text-sm resize-y"
+                    placeholder={`Enter ${title.toLowerCase()} instructions (Markdown supported)`}
+                  />
+                </div>
+              ))}
+            </>
+          ) : project.instructions && (
             <>
               <MarkdownSection title="Local Setup" content={project.instructions.localSetupMd} />
               <MarkdownSection title="Deployment" content={project.instructions.deployMd} />
@@ -653,7 +914,39 @@ export default function ProjectDetailPage() {
       {/* Documentation Tab */}
       {activeTab === 'docs' && (
         <div className="space-y-6">
-          {project.documentation ? (
+          <div className="flex justify-end gap-2">
+            {editingTab === 'docs' ? (
+              <>
+                <button onClick={cancelEditTab} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20">Cancel</button>
+                <button onClick={saveTabData} disabled={savingTab} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50">{savingTab ? 'Saving...' : 'Save'}</button>
+              </>
+            ) : (
+              <button onClick={() => startEditTab('docs')} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90">Edit Documentation</button>
+            )}
+          </div>
+
+          {editingTab === 'docs' && editData ? (
+            <>
+              {[
+                { key: 'envVarsTemplate', title: 'Environment Variables Template' },
+                { key: 'databaseSchema', title: 'Database Schema' },
+                { key: 'apiEndpoints', title: 'API Endpoints' },
+                { key: 'seedData', title: 'Test Users / Seed Data' },
+                { key: 'changelog', title: 'Changelog' },
+                { key: 'cicdPipeline', title: 'CI/CD Pipeline' },
+              ].map(({ key, title }) => (
+                <div key={key} className="bg-surface rounded-lg p-6 border border-white/10">
+                  <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+                  <textarea
+                    value={editData?.[key] || ''}
+                    onChange={(e) => setEditData({ ...editData, [key]: e.target.value })}
+                    className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-3 text-white focus:border-accent focus:outline-none min-h-[150px] font-mono text-sm resize-y"
+                    placeholder={`Enter ${title.toLowerCase()}`}
+                  />
+                </div>
+              ))}
+            </>
+          ) : project.documentation ? (
             <>
               <MarkdownSection title="Environment Variables Template" content={project.documentation.envVarsTemplate} />
               <MarkdownSection title="Database Schema" content={project.documentation.databaseSchema} />
@@ -672,22 +965,49 @@ export default function ProjectDetailPage() {
 
       {/* Operations Tab */}
       {activeTab === 'operations' && (
-        <div className="bg-surface rounded-lg p-6 border border-white/10">
-          <h3 className="text-lg font-semibold text-white mb-4">Operations</h3>
-          {project.operations && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InfoRow label="SLA" value={project.operations.sla || 'TBD'} />
-              <InfoRow label="Backups" value={project.operations.backups || 'TBD'} />
-              <InfoRow label="PII Level" value={project.operations.pii || 'unknown'} highlight />
-              <InfoRow label="Data Region" value={project.operations.dataRegion || 'TBD'} />
-              <InfoRow label="Secrets Location" value={project.operations.secretsLocation || 'Not specified'} />
-              <InfoRow label="On-Call Rotation" value={project.operations.onCallRotation || 'TBD'} />
+        <div className="space-y-6">
+          <div className="flex justify-end gap-2">
+            {editingTab === 'operations' ? (
+              <>
+                <button onClick={cancelEditTab} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20">Cancel</button>
+                <button onClick={saveTabData} disabled={savingTab} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50">{savingTab ? 'Saving...' : 'Save'}</button>
+              </>
+            ) : (
+              <button onClick={() => startEditTab('operations')} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90">Edit Operations</button>
+            )}
+          </div>
+
+          {editingTab === 'operations' && editData ? (
+            <div className="bg-surface rounded-lg p-6 border border-white/10 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label className="text-white/40 text-sm block mb-1">SLA</label><input type="text" value={editData?.sla || ''} onChange={(e) => setEditData({ ...editData, sla: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" /></div>
+                <div><label className="text-white/40 text-sm block mb-1">Backups</label><input type="text" value={editData?.backups || ''} onChange={(e) => setEditData({ ...editData, backups: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" /></div>
+                <div><label className="text-white/40 text-sm block mb-1">PII Level</label><select value={editData?.pii || 'unknown'} onChange={(e) => setEditData({ ...editData, pii: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none"><option value="none">None</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="unknown">Unknown</option></select></div>
+                <div><label className="text-white/40 text-sm block mb-1">Data Region</label><input type="text" value={editData?.dataRegion || ''} onChange={(e) => setEditData({ ...editData, dataRegion: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" /></div>
+                <div><label className="text-white/40 text-sm block mb-1">Secrets Location</label><input type="text" value={editData?.secretsLocation || ''} onChange={(e) => setEditData({ ...editData, secretsLocation: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" /></div>
+                <div><label className="text-white/40 text-sm block mb-1">On-Call Rotation</label><input type="text" value={editData?.onCallRotation || ''} onChange={(e) => setEditData({ ...editData, onCallRotation: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" /></div>
+              </div>
+              <div><label className="text-white/40 text-sm block mb-1">Incident Process</label><textarea value={editData?.incidentProcess || ''} onChange={(e) => setEditData({ ...editData, incidentProcess: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-3 text-white focus:border-accent focus:outline-none min-h-[100px] resize-y" /></div>
             </div>
-          )}
-          {project.operations?.incidentProcess && (
-            <div className="mt-4">
-              <h4 className="text-white/60 text-sm mb-2">Incident Process</h4>
-              <p className="text-white/70 whitespace-pre-wrap">{project.operations.incidentProcess}</p>
+          ) : (
+            <div className="bg-surface rounded-lg p-6 border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-4">Operations</h3>
+              {project.operations && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InfoRow label="SLA" value={project.operations.sla || 'TBD'} />
+                  <InfoRow label="Backups" value={project.operations.backups || 'TBD'} />
+                  <InfoRow label="PII Level" value={project.operations.pii || 'unknown'} highlight />
+                  <InfoRow label="Data Region" value={project.operations.dataRegion || 'TBD'} />
+                  <InfoRow label="Secrets Location" value={project.operations.secretsLocation || 'Not specified'} />
+                  <InfoRow label="On-Call Rotation" value={project.operations.onCallRotation || 'TBD'} />
+                </div>
+              )}
+              {project.operations?.incidentProcess && (
+                <div className="mt-4">
+                  <h4 className="text-white/60 text-sm mb-2">Incident Process</h4>
+                  <p className="text-white/70 whitespace-pre-wrap">{project.operations.incidentProcess}</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -695,23 +1015,46 @@ export default function ProjectDetailPage() {
 
       {/* Security Tab */}
       {activeTab === 'security' && (
-        <div className="bg-surface rounded-lg p-6 border border-white/10">
-          <h3 className="text-lg font-semibold text-white mb-4">Security</h3>
-          {project.security ? (
-            <>
+        <div className="space-y-6">
+          <div className="flex justify-end gap-2">
+            {editingTab === 'security' ? (
+              <>
+                <button onClick={cancelEditTab} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20">Cancel</button>
+                <button onClick={saveTabData} disabled={savingTab} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 disabled:opacity-50">{savingTab ? 'Saving...' : 'Save'}</button>
+              </>
+            ) : (
+              <button onClick={() => startEditTab('security')} className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90">Edit Security</button>
+            )}
+          </div>
+
+          {editingTab === 'security' && editData !== null ? (
+            <div className="bg-surface rounded-lg p-6 border border-white/10 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InfoRow label="Auth Method" value={project.security.authMethod || 'TBD'} />
-                <InfoRow label="Data Encryption" value={project.security.dataEncryption || 'TBD'} />
+                <div><label className="text-white/40 text-sm block mb-1">Auth Method</label><input type="text" value={editData?.authMethod || ''} onChange={(e) => setEditData({ ...editData, authMethod: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" /></div>
+                <div><label className="text-white/40 text-sm block mb-1">Data Encryption</label><input type="text" value={editData?.dataEncryption || ''} onChange={(e) => setEditData({ ...editData, dataEncryption: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-3 py-2 text-white focus:border-accent focus:outline-none" /></div>
               </div>
-              {project.security.complianceNotes && (
-                <div className="mt-4">
-                  <h4 className="text-white/60 text-sm mb-2">Compliance Notes</h4>
-                  <p className="text-white/70 whitespace-pre-wrap">{project.security.complianceNotes}</p>
-                </div>
-              )}
-            </>
+              <div><label className="text-white/40 text-sm block mb-1">Compliance Notes</label><textarea value={editData?.complianceNotes || ''} onChange={(e) => setEditData({ ...editData, complianceNotes: e.target.value })} className="w-full bg-surface-muted border border-white/10 rounded-lg px-4 py-3 text-white focus:border-accent focus:outline-none min-h-[100px] resize-y" /></div>
+            </div>
           ) : (
-            <p className="text-white/40">No security information documented</p>
+            <div className="bg-surface rounded-lg p-6 border border-white/10">
+              <h3 className="text-lg font-semibold text-white mb-4">Security</h3>
+              {project.security ? (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InfoRow label="Auth Method" value={project.security.authMethod || 'TBD'} />
+                    <InfoRow label="Data Encryption" value={project.security.dataEncryption || 'TBD'} />
+                  </div>
+                  {project.security.complianceNotes && (
+                    <div className="mt-4">
+                      <h4 className="text-white/60 text-sm mb-2">Compliance Notes</h4>
+                      <p className="text-white/70 whitespace-pre-wrap">{project.security.complianceNotes}</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <p className="text-white/40">No security information documented</p>
+              )}
+            </div>
           )}
         </div>
       )}

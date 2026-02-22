@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import { getTechIcon } from '@/components/ui/tech-icon';
 
 interface Project {
   id: string;
@@ -394,8 +395,14 @@ export default function ProjectsPage() {
                   <td className="px-4 py-3 text-foreground">{project.client || '-'}</td>
                   <td className="px-4 py-3">
                     <div className="text-xs text-text-muted space-y-0.5">
-                      <div>FE: {project.stack?.frontend?.name || 'TBD'}</div>
-                      <div>BE: {project.stack?.backend?.name || 'TBD'}</div>
+                      <div className="flex items-center gap-1">
+                        <span>{getTechIcon(project.stack?.frontend?.name || '')}</span>
+                        {project.stack?.frontend?.name || 'TBD'}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span>{getTechIcon(project.stack?.backend?.name || '')}</span>
+                        {project.stack?.backend?.name || 'TBD'}
+                      </div>
                     </div>
                   </td>
                   <td className="px-4 py-3">
