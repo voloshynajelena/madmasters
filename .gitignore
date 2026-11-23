@@ -48,3 +48,11 @@ Thumbs.db
 # Firebase
 .firebase
 firebase-debug.log
+
+# Scratch files that hold real values rather than placeholders. notenv.txt was
+# sitting untracked in the repository root with a live FIREBASE_PRIVATE_KEY in
+# it — one `git add -A` from being published. `.env.example` is fine and stays
+# tracked: the key in it is a placeholder, which is the point of the file.
+notenv.txt
+*serviceaccount*.json
+*firebase-adminsdk*.json
