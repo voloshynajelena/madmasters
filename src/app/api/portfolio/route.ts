@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminDb } from '@/lib/firebase/admin';
+import { publishedProjects } from '@/lib/public-projects';
 
 type CategoryType = 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile';
 
@@ -235,68 +236,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    // Fetch all published projects
+    // Fetch all published projects through the one layer that knows how a
+    // project becomes a public item. This used to be two inline mappings in
+    // this file — one here, one in the by-slug branch — and they had drifted.
     let projects: PublicPortfolioProject[] = [];
 
     try {
-      const db = getAdminDb();
-
-      // Fetch from projects collection (KB items with portfolio.published = true)
-      const projectsSnapshot = await db.collection('projects').get();
-      projectsSnapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.portfolio?.published && !data.portfolio?.hidden) {
-          const stackTechnologies = [
-            data.stack?.frontend?.name,
-            data.stack?.backend?.name,
-            data.stack?.database?.name,
-          ].filter(t => t && t !== 'TBD') as string[];
-
-          projects.push({
-            id: doc.id,
-            slug: data.portfolio.slug || data.key,
-            name: data.name,
-            description: data.oneLiner || '',
-            fullDescription: data.portfolio.fullDescription || data.essence || '',
-            categories: normalizeCategories(data.portfolio.categories || []),
-            tags: data.portfolio.tags?.length ? data.portfolio.tags : (data.tags || []),
-            thumbnail: data.portfolio.thumbnail || '',
-            images: data.portfolio.images || [],
-            client: data.client || '',
-            industry: data.portfolio.industry || '',
-            year: data.portfolio.year || new Date().getFullYear(),
-            services: data.portfolio.services || [],
-            technologies: data.portfolio.technologies?.length ? data.portfolio.technologies : stackTechnologies,
-            liveUrl: data.productUrls?.[0] || '',
-            challenge: data.portfolio.challenge || '',
-            solution: data.portfolio.solution || '',
-            results: data.portfolio.results || [],
-            testimonial: data.portfolio.testimonial || null,
-            showOnHomepage: data.portfolio.showOnHomepage || false,
-          } as PublicPortfolioProject);
-        }
-      });
-
-      // Also fetch from legacy portfolio collection
-      const snapshot = await db.collection(COLLECTION).get();
-      const existingSlugs = new Set(projects.map(p => p.slug));
-
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        // Only include published items that are not hidden and not duplicates
-        if (data.status === 'published' && !data.hidden && !existingSlugs.has(data.slug)) {
-          const normalizedCats = data.categories
-            ? normalizeCategories(data.categories)
-            : data.category
-              ? normalizeCategories([data.category])
-              : [];
-          projects.push({
-            id: doc.id,
-            ...data,
-            categories: normalizedCats,
-          } as PublicPortfolioProject);
-        }
-      });
+      projects = (await publishedProjects()) as unknown as PublicPortfolioProject[];
     } catch (dbError) {
       console.error('Database error, using static data:', dbError);
     }

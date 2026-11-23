@@ -1,44 +1,28 @@
 import { NextResponse } from 'next/server';
-import { getAdminDb } from '@/lib/firebase/admin';
-import type { FreshWorkItem } from '@/lib/fresh-works';
+import { freshProjects } from '@/lib/public-projects';
 
-export const revalidate = 3600; // Revalidate every hour
+/**
+ * The newest work: the three most recently started projects.
+ *
+ * This used to read a `freshWorks` collection — a third list of projects,
+ * maintained by hand alongside the knowledge base and the portfolio, with its
+ * own admin screen and its own idea of what a project is. Three sources meant
+ * three chances to disagree, and the one nobody updated was this one.
+ *
+ * Derived now. Nothing to maintain, so nothing to go stale: start a project,
+ * publish it, and it is the freshest thing on the site until the next one.
+ */
+export const revalidate = 3600;
 
 export async function GET() {
   try {
-    const db = getAdminDb();
-
-    // Fetch all fresh works from Firestore (filter in memory to avoid composite index requirement)
-    const snapshot = await db
-      .collection('freshWorks')
-      .get();
-
-    const items: FreshWorkItem[] = [];
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      // Filter out hidden items
-      if (!data.hidden) {
-        items.push({ ...data, id: doc.id } as FreshWorkItem);
-      }
-    });
-
-    // Sort: pinned items first, then by order
-    items.sort((a, b) => {
-      if (a.pinned && !b.pinned) return -1;
-      if (!a.pinned && b.pinned) return 1;
-      return (a.order || 0) - (b.order || 0);
-    });
-
-    return NextResponse.json({
-      items,
-      lastUpdated: new Date().toISOString(),
-    });
+    const items = await freshProjects(3);
+    return NextResponse.json({ items, lastUpdated: new Date().toISOString() });
   } catch (error) {
     console.error('Error in fresh works API:', error);
-
     return NextResponse.json(
       { items: [], lastUpdated: new Date().toISOString(), error: 'Failed to fetch' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

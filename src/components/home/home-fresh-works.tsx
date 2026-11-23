@@ -55,22 +55,25 @@ export function HomeFreshWorks({ locale, maxItems = 6 }: HomeFreshWorksProps) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('/api/portfolio');
+        // The newest work, which is what this block has always claimed to be.
+        // It used to read the whole portfolio and take whatever was flagged
+        // for the homepage — a flag somebody had to remember to move, so the
+        // "fresh" block showed the same two projects for months.
+        const res = await fetch('/api/fresh');
         const json = await res.json();
-        if (json.projects && json.projects.length > 0) {
-          // Only show items marked for homepage (Featured)
-          const homepageItems = json.projects.filter((item: PortfolioItem) => item.showOnHomepage);
+        const fresh: PortfolioItem[] = json.items ?? [];
 
-          // If there are featured items, show only those
-          // Otherwise fall back to all items (for backwards compatibility with legacy data)
-          const sortedItems = homepageItems.length > 0
-            ? homepageItems.slice(0, maxItems)
-            : json.projects.slice(0, maxItems);
-
-          if (sortedItems.length > 0) {
-            setItems(sortedItems);
-          }
+        if (fresh.length > 0) {
+          setItems(fresh.slice(0, maxItems));
+          return;
         }
+
+        // Nothing published yet: fall back to anything flagged for the
+        // homepage rather than showing the static placeholders.
+        const all = await (await fetch('/api/portfolio')).json();
+        const flagged = (all.projects ?? []).filter((i: PortfolioItem) => i.showOnHomepage);
+        const fallback = flagged.length > 0 ? flagged : (all.projects ?? []);
+        if (fallback.length > 0) setItems(fallback.slice(0, maxItems));
       } catch (err) {
         console.error('Failed to fetch portfolio:', err);
       } finally {

@@ -323,7 +323,31 @@
           "accountEmail": "voloshynajelena@gmail.com",
           "notes": "Renews yearly at 99 USD. Renewal date not recorded."
         }
-      ]
+      ],
+      "portfolio": {
+        "published": true,
+        "slug": "librora",
+        "categories": [
+          "web",
+          "mobile"
+        ],
+        "thumbnail": "",
+        "images": [],
+        "industry": "Internal Product",
+        "year": 2026,
+        "services": [
+          "Product design",
+          "Development"
+        ],
+        "fullDescription": "User-facing reading tracker / personal library product. Helps users build reading habits, organize their book collections, track progress, and discover new books based on their preferences.",
+        "challenge": "",
+        "solution": "",
+        "results": [],
+        "testimonial": null,
+        "order": 0,
+        "hidden": false,
+        "showOnHomepage": true
+      }
     },
     {
       "key": "litrlly",
@@ -782,7 +806,30 @@
           "registrar": "Vercel",
           "notes": "No custom domain. The host name is in the extension manifest, so changing it means shipping an extension update."
         }
-      ]
+      ],
+      "portfolio": {
+        "published": true,
+        "slug": "job-tracker",
+        "categories": [
+          "web"
+        ],
+        "thumbnail": "",
+        "images": [],
+        "industry": "Internal Product",
+        "year": 2026,
+        "services": [
+          "Product design",
+          "Development"
+        ],
+        "fullDescription": "Tracks one job search end to end — applications and their stages, interviews, take-home assignments, contacts and documents. Generates a resume and cover letter tailored to a posting from a master profile, and verifies every claim against that profile before saving. Parses alert emails into ranked opportunities.",
+        "challenge": "",
+        "solution": "",
+        "results": [],
+        "testimonial": null,
+        "order": 0,
+        "hidden": false,
+        "showOnHomepage": true
+      }
     },
     {
       "key": "femotion",
@@ -1013,7 +1060,31 @@
           "accountEmail": "voloshynajelena@gmail.com",
           "notes": "DNS on Vercel. Auto-renew not verified — check at Name.com."
         }
-      ]
+      ],
+      "portfolio": {
+        "published": true,
+        "slug": "femotion",
+        "categories": [
+          "web",
+          "mobile"
+        ],
+        "thumbnail": "",
+        "images": [],
+        "industry": "Internal Product",
+        "year": 2026,
+        "services": [
+          "Product design",
+          "Development"
+        ],
+        "fullDescription": "A privacy-first tracker for mood, menstrual cycle, thoughts, music and context, for iOS and web. Built around keeping the data on the device wherever possible.",
+        "challenge": "",
+        "solution": "",
+        "results": [],
+        "testimonial": null,
+        "order": 0,
+        "hidden": false,
+        "showOnHomepage": true
+      }
     },
     {
       "key": "chronos",
@@ -1219,7 +1290,30 @@
           "expiresOn": "2027-02-18",
           "notes": "Subdomain of librora.io. It has no registration of its own and dies with the parent."
         }
-      ]
+      ],
+      "portfolio": {
+        "published": true,
+        "slug": "chronos",
+        "categories": [
+          "web"
+        ],
+        "thumbnail": "",
+        "images": [],
+        "industry": "Internal Product",
+        "year": 2026,
+        "services": [
+          "Product design",
+          "Development"
+        ],
+        "fullDescription": "A knowledge graph of authors and their works with a timeline, an encyclopedia and a photo gallery. Lives inside the Librora monorepo but deploys separately and has its own mobile client.",
+        "challenge": "",
+        "solution": "",
+        "results": [],
+        "testimonial": null,
+        "order": 0,
+        "hidden": false,
+        "showOnHomepage": false
+      }
     },
     {
       "key": "vesper",
@@ -1345,7 +1439,30 @@
           "notes": "Same account."
         }
       ],
-      "registrations": []
+      "registrations": [],
+      "portfolio": {
+        "published": true,
+        "slug": "vesper",
+        "categories": [
+          "web"
+        ],
+        "thumbnail": "",
+        "images": [],
+        "industry": "Internal Product",
+        "year": 2026,
+        "services": [
+          "Product design",
+          "Development"
+        ],
+        "fullDescription": "A personal system for structuring life areas, goals and routines. Early — twelve commits in, the shape is still being decided.",
+        "challenge": "",
+        "solution": "",
+        "results": [],
+        "testimonial": null,
+        "order": 0,
+        "hidden": false,
+        "showOnHomepage": false
+      }
     }
   ]
 }
