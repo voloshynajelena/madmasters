@@ -61,6 +61,51 @@ const componentSchema = z.object({
   status: z.enum(['active', 'maintenance', 'paused', 'archived', 'completed']).optional(),
 });
 
+const decisionSchema = z.object({
+  title: z.string(),
+  choice: z.string(),
+  rationale: z.string(),
+  alternatives: z.string().optional(),
+  tradeoffs: z.string().optional(),
+  date: z.string().optional(),
+});
+
+const riskSchema = z.object({
+  title: z.string(),
+  area: z.enum(['security', 'privacy', 'reliability', 'cost', 'compliance',
+                'maintenance', 'performance', 'vendor']),
+  severity: z.enum(['low', 'medium', 'high', 'critical']),
+  detail: z.string(),
+  mitigation: z.string().optional(),
+  status: z.enum(['open', 'planned', 'mitigated', 'accepted']),
+});
+
+const costSchema = z.object({
+  item: z.string(),
+  provider: z.string().optional(),
+  plan: z.string().optional(),
+  // Nullable, not just optional: "we do not know what this costs" is a
+  // different fact from "this is free", and an estimate dropped into a budget
+  // is worse than a blank.
+  amount: z.number().nullable().optional(),
+  currency: z.string().optional(),
+  period: z.enum(['monthly', 'yearly', 'one-off', 'usage']),
+  renewsOn: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+const registrationSchema = z.object({
+  kind: z.enum(['domain', 'developer-account', 'app-store', 'service', 'trademark', 'other']),
+  name: z.string(),
+  registrar: z.string().optional(),
+  accountEmail: z.string().optional(),
+  registeredOn: z.string().optional(),
+  expiresOn: z.string().optional(),
+  autoRenew: z.boolean().optional(),
+  url: z.string().optional(),
+  notes: z.string().optional(),
+});
+
 const stackSchema = z.object({
   frontend: stackComponentSchema,
   backend: stackComponentSchema,
@@ -139,6 +184,10 @@ const projectSchema = z.object({
   // without an error — the worst kind of failure, because the form says it
   // worked.
   components: z.array(componentSchema).optional(),
+  decisions: z.array(decisionSchema).optional(),
+  risks: z.array(riskSchema).optional(),
+  costs: z.array(costSchema).optional(),
+  registrations: z.array(registrationSchema).optional(),
   environments: z.array(environmentSchema).default([]),
   links: z.array(linkSchema).default([]),
   instructions: instructionsSchema,

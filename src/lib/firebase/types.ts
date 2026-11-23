@@ -364,6 +364,91 @@ export interface ProjectComponent {
 /** Deliberately looser than `ProjectStack`: a widget has no database and an
  *  extension has no hosting, and forcing empty strings into those slots is how
  *  a knowledge base fills up with noise. */
+/**
+ * A technical decision, and why it was right *here*.
+ *
+ * The stack fields say what was chosen. They never say why, and the why is
+ * the only part that cannot be recovered by opening the repository: six
+ * months later "Firestore" is visible and "because the mobile app has to work
+ * on the subway and Firestore's offline persistence is free" is not. Without
+ * it every past choice looks arbitrary and gets relitigated.
+ *
+ * `alternatives` matters as much as the choice. A decision with no rejected
+ * option was not a decision, it was a default — and saying so plainly is
+ * useful too.
+ */
+export interface ProjectDecision {
+  title: string;
+  choice: string;
+  /// Why it suits this project specifically, not why it is good in general.
+  rationale: string;
+  alternatives?: string;
+  /// What it costs. Every real choice has a price and writing it down is what
+  /// stops the next person thinking it was free.
+  tradeoffs?: string;
+  date?: string;
+}
+
+export type RiskSeverity = 'low' | 'medium' | 'high' | 'critical';
+export type RiskArea =
+  | 'security' | 'privacy' | 'reliability' | 'cost' | 'compliance'
+  | 'maintenance' | 'performance' | 'vendor';
+export type RiskStatus = 'open' | 'planned' | 'mitigated' | 'accepted';
+
+/**
+ * Something that could go wrong, and what would fix it.
+ *
+ * Kept with the project rather than in a ticket tracker because the ones that
+ * matter are rarely tickets: an open sign-up, a single shared API key, a
+ * backup nobody has restored. They are known, unwritten, and remembered only
+ * by whoever found them.
+ *
+ * `accepted` is a real status. A risk that has been looked at and knowingly
+ * lived with is in a different state from one nobody has read.
+ */
+export interface ProjectRisk {
+  title: string;
+  area: RiskArea;
+  severity: RiskSeverity;
+  detail: string;
+  /// What to actually do about it.
+  mitigation?: string;
+  status: RiskStatus;
+}
+
+export type CostPeriod = 'monthly' | 'yearly' | 'one-off' | 'usage';
+
+/** What the project costs to keep alive. Unknown amounts are left null rather
+ *  than estimated: a made-up number in a budget is worse than a blank. */
+export interface ProjectCost {
+  item: string;
+  provider?: string;
+  plan?: string;
+  amount?: number | null;
+  currency?: string;
+  period: CostPeriod;
+  renewsOn?: string;
+  notes?: string;
+}
+
+export type RegistrationKind =
+  | 'domain' | 'developer-account' | 'app-store' | 'service' | 'trademark' | 'other';
+
+/** Where something is registered, by whom, and when it lapses. The field that
+ *  earns this section is `expiresOn`: a domain that quietly expires takes the
+ *  product down and nobody is watching for it. */
+export interface ProjectRegistration {
+  kind: RegistrationKind;
+  name: string;
+  registrar?: string;
+  accountEmail?: string;
+  registeredOn?: string;
+  expiresOn?: string;
+  autoRenew?: boolean;
+  url?: string;
+  notes?: string;
+}
+
 export interface ProjectComponentStack {
   language?: string;
   framework?: string;
@@ -515,6 +600,13 @@ export interface Project {
   /// existed stays valid — a project with one component and nothing to say
   /// about it is still described perfectly well by `stack` alone.
   components?: ProjectComponent[];
+  /// Why the stack is what it is, what could bite, and what it costs to run.
+  /// All optional: a project with none of them is simply undocumented, which
+  /// is where every project starts.
+  decisions?: ProjectDecision[];
+  risks?: ProjectRisk[];
+  costs?: ProjectCost[];
+  registrations?: ProjectRegistration[];
   environments: ProjectEnvironment[];
   links: ProjectLink[];
   instructions: ProjectInstructions;
@@ -552,6 +644,10 @@ export interface ProjectInput {
   tags: string[];
   stack: ProjectStack;
   components?: ProjectComponent[];
+  decisions?: ProjectDecision[];
+  risks?: ProjectRisk[];
+  costs?: ProjectCost[];
+  registrations?: ProjectRegistration[];
   environments: ProjectEnvironment[];
   links: ProjectLink[];
   instructions: ProjectInstructions;

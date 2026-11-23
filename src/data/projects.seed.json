@@ -165,6 +165,164 @@
           "status": "active",
           "notes": "Imported by both web and mobile as @librora/core."
         }
+      ],
+      "startDate": "2026-02-14",
+      "decisions": [
+        {
+          "title": "Database",
+          "choice": "Cloud Firestore",
+          "date": "2026-02",
+          "rationale": "The mobile app has to work with no signal — on a train, in a library basement. Firestore gives offline persistence and conflict resolution without writing a sync layer, which for a two-platform product built by one person is the whole argument.",
+          "alternatives": "Postgres with a hand-written sync layer. Cheaper per read and far better at the reporting the Insights page wants, but offline sync is months of work and the hardest kind to get right.",
+          "tradeoffs": "Queries are weak: anything resembling a join or an aggregate is assembled client-side. Reads are billed, so a careless listener is a bill. Pagination for getMyBooks is still deferred because the Firestore half is easy and the virtualised list is not."
+        },
+        {
+          "title": "Shared logic",
+          "choice": "packages/core, pure TypeScript",
+          "date": "2026-03",
+          "rationale": "Subscription limits, ISBN validation and category lists have to agree exactly between web and mobile, and the cost of them disagreeing is a user charged wrongly or a book filed twice. No React and no Firebase in it, so both platforms can import it and it can be tested on its own.",
+          "alternatives": "Duplicating the rules in each app, which is what happens by default and drifts within weeks.",
+          "tradeoffs": "A monorepo and its hoisting problems: the root must pin react and react-dom to 18 or the Next build breaks, because mobile is on 19."
+        },
+        {
+          "title": "Payments",
+          "choice": "Stripe on web, Apple IAP on iOS",
+          "date": "2026-05",
+          "rationale": "Not a preference — Apple requires in-app purchase for digital features and rejects anything that routes around it. Stripe stays on web where the fee is lower and the flow is ours.",
+          "alternatives": "None available. Stripe-only would fail review.",
+          "tradeoffs": "Two payment systems, two sets of webhooks, two definitions of entitlement that have to resolve to the same answer."
+        },
+        {
+          "title": "Widgets and Live Activities in Swift",
+          "choice": "SwiftUI, WidgetKit, ActivityKit",
+          "date": "2026-09",
+          "rationale": "WidgetKit and ActivityKit have no React Native equivalent. The timer on the lock screen and the Dynamic Island are platform features, and reaching them means native code — there is no decision to make beyond accepting it.",
+          "alternatives": "Third-party bridges, which lag each iOS release.",
+          "tradeoffs": "A second language in the repository, an App Group to pass data across, and native modules needing a dev client rebuild before anyone can test them."
+        }
+      ],
+      "risks": [
+        {
+          "title": "Firestore rules for loans are incomplete",
+          "area": "security",
+          "severity": "high",
+          "status": "open",
+          "detail": "Mobile lending writes through /api/loans instead of Firestore directly, specifically because the security rules for the loans collection do not cover it. The API is a workaround for a gap that is still open underneath.",
+          "mitigation": "Write the rules, then move the mobile client back onto Firestore directly and delete the endpoint."
+        },
+        {
+          "title": "Unauthenticated public endpoints have no rate limit",
+          "area": "cost",
+          "severity": "medium",
+          "status": "planned",
+          "detail": "/api/isbn-lookup and /api/google-books are public and unauthenticated. The Google Books key allows 1,000 requests a day and is shared by everyone.",
+          "mitigation": "Upstash Redis for shared state across Vercel instances. It must not block iOS, which calls these legitimately."
+        },
+        {
+          "title": "OCR runs on a public demo key",
+          "area": "reliability",
+          "severity": "medium",
+          "status": "open",
+          "detail": "OCR_SPACE_API_KEY is not set, so photo scan falls back to the key printed in OCR.space documentation and shared with everyone who copied it. Its quota is spent by strangers and can run out at any moment.",
+          "mitigation": "Register at ocr.space — free, email only — and set the key in Vercel and .env.local."
+        },
+        {
+          "title": "Old Chronos collections never deleted",
+          "area": "maintenance",
+          "severity": "low",
+          "status": "planned",
+          "detail": "The migration on 2026-08-20 left users/{uid}/philosophers and users/{uid}/chronos_authors in place as a backup. They have been read by nothing since.",
+          "mitigation": "Delete per user in the Firebase console once the unified authors have been confirmed correct in production."
+        },
+        {
+          "title": "Next.js 14 while 15 is out",
+          "area": "maintenance",
+          "severity": "low",
+          "status": "accepted",
+          "detail": "No known blockers, but a major upgrade needs a dedicated testing pass and nothing is broken today.",
+          "mitigation": "Schedule it as its own piece of work rather than attaching it to a feature."
+        }
+      ],
+      "costs": [
+        {
+          "item": "Apple Developer Program",
+          "provider": "Apple",
+          "plan": "Individual",
+          "amount": 99,
+          "currency": "USD",
+          "period": "yearly",
+          "notes": "Required to ship on the App Store at all."
+        },
+        {
+          "item": "librora.io",
+          "provider": "Name.com",
+          "period": "yearly",
+          "amount": null,
+          "currency": "USD",
+          "renewsOn": "2027-02-18",
+          "notes": "Price not recorded — check the Name.com invoice."
+        },
+        {
+          "item": "Vercel",
+          "provider": "Vercel",
+          "plan": "unknown",
+          "period": "monthly",
+          "amount": null,
+          "currency": "USD",
+          "notes": "Hobby is free; Pro is 20/month. Which one is in use is not recorded here."
+        },
+        {
+          "item": "Firebase",
+          "provider": "Google",
+          "plan": "unknown",
+          "period": "usage",
+          "amount": null,
+          "currency": "USD",
+          "notes": "Firestore reads and storage. Spark is free with quotas; Blaze is pay-as-you-go."
+        },
+        {
+          "item": "Google Books API",
+          "provider": "Google",
+          "plan": "Free tier",
+          "amount": 0,
+          "currency": "USD",
+          "period": "usage",
+          "notes": "1,000 requests a day."
+        },
+        {
+          "item": "OCR.space",
+          "provider": "OCR.space",
+          "plan": "Free tier",
+          "amount": 0,
+          "currency": "USD",
+          "period": "usage",
+          "notes": "25,000 a month, capped at 500 a day per IP — shared by the whole user base because calls leave from the server."
+        }
+      ],
+      "registrations": [
+        {
+          "kind": "domain",
+          "name": "librora.io",
+          "registrar": "Name.com",
+          "registeredOn": "2026-02-18",
+          "expiresOn": "2027-02-18",
+          "accountEmail": "voloshynajelena@gmail.com",
+          "notes": "DNS on Vercel. Auto-renew not verified — check at Name.com."
+        },
+        {
+          "kind": "app-store",
+          "name": "Librora — iOS App Store",
+          "registrar": "Apple",
+          "accountEmail": "voloshynajelena@gmail.com",
+          "notes": "Bundle io.librora.app; App Group group.io.librora.app."
+        },
+        {
+          "kind": "developer-account",
+          "name": "Apple Developer Program",
+          "registrar": "Apple",
+          "accountEmail": "voloshynajelena@gmail.com",
+          "notes": "Renews yearly at 99 USD. Renewal date not recorded."
+        }
       ]
     },
     {
@@ -488,7 +646,143 @@
         "authMethod": "Better Auth, Google OAuth only; email/password disabled",
         "dataEncryption": "OAuth tokens encrypted with the auth secret before they reach Postgres",
         "complianceNotes": "Holds a full job search including contacts and documents. The extension token is hashed; it is shown once and cannot be read back."
-      }
+      },
+      "startDate": "2026-11-15",
+      "decisions": [
+        {
+          "title": "Database",
+          "choice": "Postgres on Neon with Prisma",
+          "date": "2026-11",
+          "rationale": "The product is relational to its core — applications, stages, interviews, contacts, documents — and the analytics are the point. A funnel that must say \"rejected at assignment\" without claiming a conversion needs joins and real constraints.",
+          "alternatives": "Firestore, as used in Librora. Rejected because every report would be assembled in memory and the stage model could not be enforced.",
+          "tradeoffs": "No offline story, which is fine for a web app. Migrations are written by hand here because `migrate dev` wants a reset."
+        },
+        {
+          "title": "Status model",
+          "choice": "Four separate fields: stage, milestones, history, outcome",
+          "date": "2026-11",
+          "rationale": "A search goes interview, then assignment, then interview again. One status field cannot express \"back at interviewing, having already done the assignment\", and collapsing offer into hired would make the funnel claim conversions that never happened.",
+          "alternatives": "A single status enum, which is what every tracker starts with and why none of them can answer that question.",
+          "tradeoffs": "More to keep consistent, and a UI that had to be redesigned to show one control over two fields."
+        },
+        {
+          "title": "Generated documents are verified, not trusted",
+          "choice": "verifyResume against the master profile",
+          "date": "2026-11",
+          "rationale": "A tailored resume is read for fit, not fact-checked line by line, so an invented employer or a stretched date survives all the way to an interview. The prompt asks for good behaviour; the verifier enforces it and refuses to save a document that invents.",
+          "alternatives": "Trusting the model, which fails silently and exactly where it is most expensive.",
+          "tradeoffs": "A whole verification layer, and occasional refusals on documents that were fine."
+        },
+        {
+          "title": "No mailbox connection",
+          "choice": "Paste the email text",
+          "date": "2026-11",
+          "rationale": "Reading a mailbox needs restricted Gmail scopes and a CASA assessment, for a feature that pasting solves in one keystroke. The clipboard HTML even keeps the links, which is what the parser actually needs.",
+          "alternatives": "Gmail API — explicitly rejected.",
+          "tradeoffs": "Nothing happens automatically; the person has to paste."
+        },
+        {
+          "title": "Extension reaches pages through activeTab",
+          "choice": "activeTab plus scripting, not <all_urls>",
+          "date": "2026-11",
+          "rationale": "Employers host the application form on their own domain, so a host list cannot cover them. activeTab grants one tab for one press and expires by itself, which gets the capability without standing permission to read every page.",
+          "alternatives": "<all_urls>, which would work everywhere and ask for far more than it needs.",
+          "tradeoffs": "A press is required on sites outside the list."
+        }
+      ],
+      "risks": [
+        {
+          "title": "Sign-up is open to anyone with the URL",
+          "area": "privacy",
+          "severity": "high",
+          "status": "open",
+          "detail": "There is no allowlist on sign-in — only on the admin area. Any Google account can create a tracker, and that data lands in the same Neon database under a privacy policy that describes a tool for one person.",
+          "mitigation": "An allowlist on sign-in, in the shape already used for admin. Needed before the extension link is shared."
+        },
+        {
+          "title": "One Anthropic key shared with Chronos",
+          "area": "vendor",
+          "severity": "medium",
+          "status": "accepted",
+          "detail": "The same ANTHROPIC_API_KEY serves this project and Chronos. Rotating or revoking it breaks both, and the rate limits are shared, so a busy sweep here degrades Chronos.",
+          "mitigation": "Separate keys per project. Deliberate for now."
+        },
+        {
+          "title": "Preview deployments lack the AI key",
+          "area": "reliability",
+          "severity": "low",
+          "status": "open",
+          "detail": "ANTHROPIC_API_KEY is set for Production and Development but not Preview, so every AI path fails on a preview deployment with an inline message rather than an obvious error.",
+          "mitigation": "Set it through the Vercel REST API — the CLI cannot add Preview variables on this account."
+        },
+        {
+          "title": "Holds an entire job search",
+          "area": "privacy",
+          "severity": "high",
+          "status": "accepted",
+          "detail": "Applications, correspondence, contacts, uploaded documents and a full CV. A breach would expose a job search to a current employer.",
+          "mitigation": "Extension tokens are hashed and shown once; OAuth tokens are encrypted before storage. The open sign-up above is the weak point."
+        }
+      ],
+      "costs": [
+        {
+          "item": "Chrome Web Store developer account",
+          "provider": "Google",
+          "amount": 5,
+          "currency": "USD",
+          "period": "one-off",
+          "notes": "Paid 2026-11-23. One-off, covers the account rather than the item."
+        },
+        {
+          "item": "Neon",
+          "provider": "Neon",
+          "plan": "unknown",
+          "amount": null,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Free tier is likely; not verified."
+        },
+        {
+          "item": "Vercel",
+          "provider": "Vercel",
+          "plan": "unknown",
+          "amount": null,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Same account as Librora."
+        },
+        {
+          "item": "Anthropic API",
+          "provider": "Anthropic",
+          "period": "usage",
+          "amount": null,
+          "currency": "USD",
+          "notes": "Shared with Chronos, so the spend cannot be attributed to one project."
+        }
+      ],
+      "registrations": [
+        {
+          "kind": "developer-account",
+          "name": "Chrome Web Store",
+          "registrar": "Google",
+          "accountEmail": "voloshynajelena@gmail.com",
+          "registeredOn": "2026-11-23",
+          "notes": "Non-trader declaration. Extension listed as Unlisted."
+        },
+        {
+          "kind": "service",
+          "name": "Neon — job-tracker-db",
+          "registrar": "Neon",
+          "accountEmail": "voloshynajelena@gmail.com",
+          "notes": "Postgres."
+        },
+        {
+          "kind": "other",
+          "name": "job-tracker-three-neon-36.vercel.app",
+          "registrar": "Vercel",
+          "notes": "No custom domain. The host name is in the extension manifest, so changing it means shipping an extension update."
+        }
+      ]
     },
     {
       "key": "femotion",
@@ -498,7 +792,9 @@
       "type": "internal",
       "oneLiner": "Feel. Track. Understand. — privacy-first mood, cycle and context analytics.",
       "essence": "A privacy-first tracker for mood, menstrual cycle, thoughts, music and context, for iOS and web. Built around keeping the data on the device wherever possible.",
-      "productUrls": [],
+      "productUrls": [
+        "https://femotion.io"
+      ],
       "owner": "Olena Voloshyna",
       "techLead": "Olena Voloshyna",
       "team": [],
@@ -624,7 +920,100 @@
         "authMethod": "Firebase Auth",
         "dataEncryption": "On-device SQLite for the sensitive records; Firestore encrypts at rest",
         "complianceNotes": "Holds menstrual cycle and mood data — among the most sensitive categories there are. Privacy-first is the product claim, so anything that moves data off the device needs a deliberate decision."
-      }
+      },
+      "startDate": "2026-11-05",
+      "decisions": [
+        {
+          "title": "Framework",
+          "choice": "Angular 22 with Vite",
+          "date": "2026-11",
+          "rationale": "The only project here not on React, and deliberately: it is the stack worked in daily, so the product moves fastest and the habits are already right.",
+          "alternatives": "React, used by everything else in this portfolio.",
+          "tradeoffs": "Nothing is shared with the other projects — no common components, no common utilities."
+        },
+        {
+          "title": "iOS through Capacitor rather than React Native",
+          "choice": "Capacitor 8",
+          "date": "2026-11",
+          "rationale": "The client is already an Angular web app. Capacitor ships that same app as a native shell, so one codebase covers both without rewriting the UI.",
+          "alternatives": "A separate React Native app, which would mean maintaining the product twice.",
+          "tradeoffs": "Native feel is limited by what the web view gives. Platform features need plugins."
+        },
+        {
+          "title": "Sensitive data stored on the device",
+          "choice": "SQLite through @capacitor-community/sqlite",
+          "date": "2026-11",
+          "rationale": "Mood and menstrual cycle records are among the most sensitive categories there are. Privacy-first is the product claim, and the strongest form of it is data that never leaves the phone.",
+          "alternatives": "Firestore for everything, which is simpler and makes the claim untrue.",
+          "tradeoffs": "No sync between devices, no server-side analysis, and a backup story that has to be built rather than inherited."
+        }
+      ],
+      "risks": [
+        {
+          "title": "Holds reproductive health data",
+          "area": "compliance",
+          "severity": "critical",
+          "status": "open",
+          "detail": "Menstrual cycle data is special-category under GDPR and legally exposed in several jurisdictions. Any feature that moves it off the device changes the legal position of the whole product.",
+          "mitigation": "Keep the on-device boundary explicit in code and in the privacy policy, and treat moving any of it to the cloud as a decision requiring its own review."
+        },
+        {
+          "title": "On-device data has no backup path",
+          "area": "reliability",
+          "severity": "high",
+          "status": "open",
+          "detail": "SQLite on the phone means a lost or wiped phone is a total loss of history — the exact data users would be most upset to lose.",
+          "mitigation": "An encrypted export the user controls, so recovery does not require a server that can read it."
+        },
+        {
+          "title": "Not yet submitted to the App Store",
+          "area": "maintenance",
+          "severity": "low",
+          "status": "open",
+          "detail": "The iOS shell exists but has not been through review, which is where health-category apps meet the longest questionnaires.",
+          "mitigation": "Budget time for the health-data disclosures rather than treating submission as a formality."
+        }
+      ],
+      "costs": [
+        {
+          "item": "femotion.io",
+          "provider": "Name.com",
+          "period": "yearly",
+          "amount": null,
+          "currency": "USD",
+          "renewsOn": "2027-11-06",
+          "notes": "Price not recorded."
+        },
+        {
+          "item": "Apple Developer Program",
+          "provider": "Apple",
+          "plan": "Individual",
+          "amount": 99,
+          "currency": "USD",
+          "period": "yearly",
+          "notes": "Shared with Librora — one membership covers both."
+        },
+        {
+          "item": "Firebase",
+          "provider": "Google",
+          "plan": "unknown",
+          "amount": null,
+          "currency": "USD",
+          "period": "usage",
+          "notes": "Hosting and functions. Most data stays on the device."
+        }
+      ],
+      "registrations": [
+        {
+          "kind": "domain",
+          "name": "femotion.io",
+          "registrar": "Name.com",
+          "registeredOn": "2026-11-06",
+          "expiresOn": "2027-11-06",
+          "accountEmail": "voloshynajelena@gmail.com",
+          "notes": "DNS on Vercel. Auto-renew not verified — check at Name.com."
+        }
+      ]
     },
     {
       "key": "chronos",
@@ -748,7 +1137,89 @@
         "authMethod": "Firebase Auth",
         "dataEncryption": "Firestore at rest",
         "complianceNotes": "Holds reading history rather than identifying data."
-      }
+      },
+      "startDate": "2026-02-14",
+      "decisions": [
+        {
+          "title": "Lives in the Librora monorepo but deploys separately",
+          "choice": "apps/chronos, its own Vercel project",
+          "date": "2026-06",
+          "rationale": "It shares types and Firebase configuration with Librora, so a separate repository would mean copying both. A separate Vercel project keeps the deployments independent, so a Chronos build cannot break librora.io.",
+          "alternatives": "Its own repository, or a route inside the Librora web app.",
+          "tradeoffs": "The monorepo root has to satisfy both, which is where the React 18/19 pinning comes from."
+        },
+        {
+          "title": "Maps without a keyed provider",
+          "choice": "Nominatim and OpenStreetMap tiles",
+          "date": "2026-11",
+          "rationale": "The geography view needed to exist before anyone knew whether it would be used. Nominatim and OSM need no key, no billing account and no quota negotiation, so the feature could ship and be judged.",
+          "alternatives": "Google Maps or Mapbox — better data, but a key, a card and a per-view price for a feature that might be removed.",
+          "tradeoffs": "Nominatim asks for polite use and is not built for volume. Real traffic means moving to a keyed provider."
+        }
+      ],
+      "risks": [
+        {
+          "title": "Old collections still in Firestore",
+          "area": "maintenance",
+          "severity": "low",
+          "status": "planned",
+          "detail": "philosophers and chronos_authors were left after the 2026-08-20 migration as a backup and nothing reads them.",
+          "mitigation": "Delete per user once production is confirmed correct."
+        },
+        {
+          "title": "Deprecated photoUrl still read by the UI",
+          "area": "maintenance",
+          "severity": "low",
+          "status": "planned",
+          "detail": "The Author type keeps photoUrl for backward compatibility and three components still read it instead of photos[0].",
+          "mitigation": "Move them to photos[0] after the old collections are gone."
+        },
+        {
+          "title": "Nominatim has no quota guarantee",
+          "area": "vendor",
+          "severity": "medium",
+          "status": "accepted",
+          "detail": "A free public service with a usage policy rather than a contract. It can rate-limit or block at any time.",
+          "mitigation": "Acceptable while usage is one person. A keyed provider before that changes."
+        }
+      ],
+      "costs": [
+        {
+          "item": "chronos.librora.io",
+          "provider": "Name.com",
+          "period": "yearly",
+          "amount": 0,
+          "currency": "USD",
+          "notes": "A subdomain of librora.io — no separate cost, and it lapses when that domain does."
+        },
+        {
+          "item": "Vercel",
+          "provider": "Vercel",
+          "plan": "unknown",
+          "amount": null,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "A second project on the same account."
+        },
+        {
+          "item": "Anthropic API",
+          "provider": "Anthropic",
+          "period": "usage",
+          "amount": null,
+          "currency": "USD",
+          "notes": "Shared key with Job Tracker."
+        }
+      ],
+      "registrations": [
+        {
+          "kind": "domain",
+          "name": "chronos.librora.io",
+          "registrar": "Name.com",
+          "accountEmail": "voloshynajelena@gmail.com",
+          "expiresOn": "2027-02-18",
+          "notes": "Subdomain of librora.io. It has no registration of its own and dies with the parent."
+        }
+      ]
     },
     {
       "key": "vesper",
@@ -841,7 +1312,40 @@
         "authMethod": "Firebase Auth",
         "dataEncryption": "Firestore at rest",
         "complianceNotes": "Personal data, single user."
-      }
+      },
+      "startDate": "2026-11-23",
+      "decisions": [
+        {
+          "title": "Next 16 and React 19 from the start",
+          "choice": "Latest major versions",
+          "date": "2026-11",
+          "rationale": "Nothing to migrate and no users to break, which is the only moment when taking the newest major is cheap.",
+          "alternatives": "Next 14, matching Librora.",
+          "tradeoffs": "Nothing is shared with the Next 14 projects, and the ecosystem is thinner this early."
+        }
+      ],
+      "risks": [
+        {
+          "title": "Too early to have a shape",
+          "area": "maintenance",
+          "severity": "low",
+          "status": "accepted",
+          "detail": "Twelve commits in. Decisions recorded now are provisional and should be revisited rather than defended.",
+          "mitigation": "Revisit this tab once the product has a shape."
+        }
+      ],
+      "costs": [
+        {
+          "item": "Vercel",
+          "provider": "Vercel",
+          "plan": "unknown",
+          "amount": null,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Same account."
+        }
+      ],
+      "registrations": []
     }
   ]
 }

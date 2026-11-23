@@ -17,6 +17,18 @@ type ComponentKind =
   | 'ios-widget' | 'ios-live-activity' | 'watch' | 'browser-extension'
   | 'api' | 'functions' | 'cli' | 'desktop' | 'bot' | 'infra' | 'other';
 
+type RiskArea = 'security' | 'privacy' | 'reliability' | 'cost' | 'compliance' | 'maintenance' | 'performance' | 'vendor';
+type RiskSeverity = 'low' | 'medium' | 'high' | 'critical';
+type RiskStatus = 'open' | 'planned' | 'mitigated' | 'accepted';
+type CostPeriod = 'monthly' | 'yearly' | 'one-off' | 'usage';
+type RegistrationKind = 'domain' | 'developer-account' | 'app-store' | 'service' | 'trademark' | 'other';
+
+const RISK_AREAS: RiskArea[] = ['security', 'privacy', 'reliability', 'cost', 'compliance', 'maintenance', 'performance', 'vendor'];
+const RISK_SEVERITIES: RiskSeverity[] = ['low', 'medium', 'high', 'critical'];
+const RISK_STATUSES: RiskStatus[] = ['open', 'planned', 'mitigated', 'accepted'];
+const COST_PERIODS: CostPeriod[] = ['monthly', 'yearly', 'one-off', 'usage'];
+const REGISTRATION_KINDS: RegistrationKind[] = ['domain', 'developer-account', 'app-store', 'service', 'trademark', 'other'];
+
 const COMPONENT_KINDS: { value: ComponentKind; label: string }[] = [
   { value: 'web', label: 'Web app' },
   { value: 'mobile-ios', label: 'iOS app' },
@@ -67,6 +79,10 @@ interface ProjectFormData {
     notes?: string;
     stack?: { language?: string; framework?: string; runtime?: string; hosting?: string };
   }>;
+  decisions?: Array<{ title: string; choice: string; rationale: string; alternatives?: string; tradeoffs?: string; date?: string }>;
+  risks?: Array<{ title: string; area: RiskArea; severity: RiskSeverity; detail: string; mitigation?: string; status: RiskStatus }>;
+  costs?: Array<{ item: string; provider?: string; plan?: string; amount?: number | null; currency?: string; period: CostPeriod; renewsOn?: string; notes?: string }>;
+  registrations?: Array<{ kind: RegistrationKind; name: string; registrar?: string; accountEmail?: string; registeredOn?: string; expiresOn?: string; autoRenew?: boolean; url?: string; notes?: string }>;
   environments: Array<{ type: EnvironmentType; url: string; notes: string }>;
   links: Array<{ type: LinkType; label: string; url: string; notes: string }>;
   instructions: {
@@ -199,7 +215,7 @@ const defaultFormData: ProjectFormData = {
 const LINK_TYPES: LinkType[] = ['REPO', 'JIRA', 'FIGMA', 'SENTRY', 'VERCEL', 'AWS', 'GCP', 'FIREBASE', 'SUPABASE', 'AUTH', 'DATABASE', 'STORAGE', 'ANALYTICS', 'MONITORING', 'DOCS', 'WEBSITE', 'SLACK', 'NOTION', 'CONFLUENCE', 'OTHER'];
 const ENV_TYPES: EnvironmentType[] = ['DEV', 'STAGE', 'PROD', 'DEMO', 'QA'];
 const PII_LEVELS: PIILevel[] = ['none', 'low', 'medium', 'high', 'unknown'];
-const TABS = ['overview', 'portfolio', 'stack', 'components', 'environments', 'links', 'instructions', 'docs', 'operations', 'security'] as const;
+const TABS = ['overview', 'portfolio', 'stack', 'components', 'decisions', 'risks', 'resources', 'environments', 'links', 'instructions', 'docs', 'operations', 'security'] as const;
 const PORTFOLIO_CATEGORIES: PortfolioCategory[] = ['web', 'e-commerce', 'branding', 'marketing', 'mobile'];
 type Tab = typeof TABS[number];
 
@@ -330,6 +346,40 @@ export function ProjectForm({ initialData, mode }: Props) {
     setFormData(prev => ({
       ...prev,
       components: (prev.components ?? []).filter((_, i) => i !== index),
+    }));
+  };
+
+  /** One set of handlers for the four list sections — they differ only in the
+   *  shape of a blank row, and four near-identical triples is how a form file
+   *  reaches two thousand lines. */
+  type ListField = 'decisions' | 'risks' | 'costs' | 'registrations';
+
+  const BLANK: Record<ListField, Record<string, unknown>> = {
+    decisions: { title: '', choice: '', rationale: '' },
+    risks: { title: '', area: 'security', severity: 'medium', detail: '', status: 'open' },
+    costs: { item: '', period: 'monthly', currency: 'USD', amount: null },
+    registrations: { kind: 'domain', name: '' },
+  };
+
+  const addRow = (field: ListField) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: [...((prev[field] as unknown[]) ?? []), { ...BLANK[field] }],
+    }));
+  };
+
+  const updateRow = (field: ListField, index: number, key: string, value: unknown) => {
+    setFormData(prev => {
+      const rows = [...((prev[field] as Record<string, unknown>[]) ?? [])];
+      rows[index] = { ...rows[index], [key]: value };
+      return { ...prev, [field]: rows };
+    });
+  };
+
+  const removeRow = (field: ListField, index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: ((prev[field] as unknown[]) ?? []).filter((_, i) => i !== index),
     }));
   };
 
@@ -1254,6 +1304,211 @@ export function ProjectForm({ initialData, mode }: Props) {
                       className={inputClass}
                       placeholder="Ships inside the iOS app; needs a dev client rebuild"
                     />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Decisions Tab */}
+      {activeTab === 'decisions' && (
+        <div className={sectionClass}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Technical decisions</h2>
+              <p className="text-white/40 text-sm mt-1">
+                The stack says what was chosen. This says why it was right here — the only part
+                that cannot be recovered by opening the repository six months later.
+              </p>
+            </div>
+            <button type="button" onClick={() => addRow('decisions')} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 shrink-0">+ Add Decision</button>
+          </div>
+          {(formData.decisions ?? []).length === 0 ? (
+            <p className="text-white/40">Nothing recorded — every past choice will look arbitrary.</p>
+          ) : (
+            <div className="space-y-4">
+              {(formData.decisions ?? []).map((d, i) => (
+                <div key={i} className="border border-white/10 rounded-lg p-4 space-y-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div><label className={labelClass}>Decision</label>
+                      <input className={inputClass} value={d.title} placeholder="Database"
+                        onChange={e => updateRow('decisions', i, 'title', e.target.value)} /></div>
+                    <div><label className={labelClass}>What was chosen</label>
+                      <input className={inputClass} value={d.choice} placeholder="Firestore"
+                        onChange={e => updateRow('decisions', i, 'choice', e.target.value)} /></div>
+                    <div className="flex items-end gap-2">
+                      <div className="flex-1"><label className={labelClass}>Date</label>
+                        <input className={inputClass} value={d.date ?? ''} placeholder="2026-02"
+                          onChange={e => updateRow('decisions', i, 'date', e.target.value)} /></div>
+                      <button type="button" onClick={() => removeRow('decisions', i)} className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30">x</button>
+                    </div>
+                  </div>
+                  <div><label className={labelClass}>Why it suits this project</label>
+                    <textarea rows={2} className={inputClass} value={d.rationale}
+                      placeholder="Not why it is good in general — why it is right here."
+                      onChange={e => updateRow('decisions', i, 'rationale', e.target.value)} /></div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label className={labelClass}>Alternatives rejected</label>
+                      <textarea rows={2} className={inputClass} value={d.alternatives ?? ''}
+                        placeholder="A decision with no rejected option was a default."
+                        onChange={e => updateRow('decisions', i, 'alternatives', e.target.value)} /></div>
+                    <div><label className={labelClass}>What it costs</label>
+                      <textarea rows={2} className={inputClass} value={d.tradeoffs ?? ''}
+                        placeholder="Every real choice has a price."
+                        onChange={e => updateRow('decisions', i, 'tradeoffs', e.target.value)} /></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Risks Tab */}
+      {activeTab === 'risks' && (
+        <div className={sectionClass}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Risks and improvements</h2>
+              <p className="text-white/40 text-sm mt-1">
+                The ones that matter are rarely tickets: an open sign-up, one shared API key, a
+                backup nobody has restored. Known, unwritten, remembered by whoever found them.
+              </p>
+            </div>
+            <button type="button" onClick={() => addRow('risks')} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 shrink-0">+ Add Risk</button>
+          </div>
+          {(formData.risks ?? []).length === 0 ? (
+            <p className="text-white/40">None recorded. That is rarely the same as none existing.</p>
+          ) : (
+            <div className="space-y-4">
+              {(formData.risks ?? []).map((r, i) => (
+                <div key={i} className="border border-white/10 rounded-lg p-4 space-y-3">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div><label className={labelClass}>Risk</label>
+                      <input className={inputClass} value={r.title}
+                        onChange={e => updateRow('risks', i, 'title', e.target.value)} /></div>
+                    <div><label className={labelClass}>Area</label>
+                      <select className={inputClass} value={r.area}
+                        onChange={e => updateRow('risks', i, 'area', e.target.value)}>
+                        {RISK_AREAS.map(a => <option key={a} value={a}>{a}</option>)}
+                      </select></div>
+                    <div><label className={labelClass}>Severity</label>
+                      <select className={inputClass} value={r.severity}
+                        onChange={e => updateRow('risks', i, 'severity', e.target.value)}>
+                        {RISK_SEVERITIES.map(a => <option key={a} value={a}>{a}</option>)}
+                      </select></div>
+                    <div className="flex items-end gap-2">
+                      <div className="flex-1"><label className={labelClass}>Status</label>
+                        <select className={inputClass} value={r.status}
+                          onChange={e => updateRow('risks', i, 'status', e.target.value)}>
+                          {RISK_STATUSES.map(a => <option key={a} value={a}>{a}</option>)}
+                        </select></div>
+                      <button type="button" onClick={() => removeRow('risks', i)} className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30">x</button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label className={labelClass}>What it is</label>
+                      <textarea rows={2} className={inputClass} value={r.detail}
+                        onChange={e => updateRow('risks', i, 'detail', e.target.value)} /></div>
+                    <div><label className={labelClass}>What would fix it</label>
+                      <textarea rows={2} className={inputClass} value={r.mitigation ?? ''}
+                        onChange={e => updateRow('risks', i, 'mitigation', e.target.value)} /></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Resources Tab */}
+      {activeTab === 'resources' && (
+        <div className={sectionClass}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Costs</h2>
+              <p className="text-white/40 text-sm mt-1">
+                Leave an amount blank when it is not known. An estimate in a budget is worse than
+                a gap, because nobody goes back to check it.
+              </p>
+            </div>
+            <button type="button" onClick={() => addRow('costs')} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 shrink-0">+ Add Cost</button>
+          </div>
+          {(formData.costs ?? []).length === 0 ? (
+            <p className="text-white/40">Nothing recorded.</p>
+          ) : (
+            <div className="space-y-4">
+              {(formData.costs ?? []).map((c, i) => (
+                <div key={i} className="border border-white/10 rounded-lg p-4 grid grid-cols-1 md:grid-cols-6 gap-4">
+                  <div><label className={labelClass}>Item</label>
+                    <input className={inputClass} value={c.item} placeholder="Apple Developer"
+                      onChange={e => updateRow('costs', i, 'item', e.target.value)} /></div>
+                  <div><label className={labelClass}>Provider</label>
+                    <input className={inputClass} value={c.provider ?? ''}
+                      onChange={e => updateRow('costs', i, 'provider', e.target.value)} /></div>
+                  <div><label className={labelClass}>Plan</label>
+                    <input className={inputClass} value={c.plan ?? ''}
+                      onChange={e => updateRow('costs', i, 'plan', e.target.value)} /></div>
+                  <div><label className={labelClass}>Amount</label>
+                    <input type="number" step="0.01" className={inputClass}
+                      value={c.amount ?? ''} placeholder="unknown"
+                      onChange={e => updateRow('costs', i, 'amount', e.target.value === '' ? null : Number(e.target.value))} /></div>
+                  <div><label className={labelClass}>Period</label>
+                    <select className={inputClass} value={c.period}
+                      onChange={e => updateRow('costs', i, 'period', e.target.value)}>
+                      {COST_PERIODS.map(a => <option key={a} value={a}>{a}</option>)}
+                    </select></div>
+                  <div className="flex items-end gap-2">
+                    <div className="flex-1"><label className={labelClass}>Notes</label>
+                      <input className={inputClass} value={c.notes ?? ''}
+                        onChange={e => updateRow('costs', i, 'notes', e.target.value)} /></div>
+                    <button type="button" onClick={() => removeRow('costs', i)} className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30">x</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-6 border-t border-white/10">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Registrations</h2>
+              <p className="text-white/40 text-sm mt-1">
+                The field that earns this section is the expiry date: a domain that lapses takes
+                the product down and nobody is watching for it.
+              </p>
+            </div>
+            <button type="button" onClick={() => addRow('registrations')} className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 shrink-0">+ Add Registration</button>
+          </div>
+          {(formData.registrations ?? []).length === 0 ? (
+            <p className="text-white/40">Nothing recorded.</p>
+          ) : (
+            <div className="space-y-4">
+              {(formData.registrations ?? []).map((r, i) => (
+                <div key={i} className="border border-white/10 rounded-lg p-4 grid grid-cols-1 md:grid-cols-6 gap-4">
+                  <div><label className={labelClass}>Kind</label>
+                    <select className={inputClass} value={r.kind}
+                      onChange={e => updateRow('registrations', i, 'kind', e.target.value)}>
+                      {REGISTRATION_KINDS.map(a => <option key={a} value={a}>{a}</option>)}
+                    </select></div>
+                  <div><label className={labelClass}>Name</label>
+                    <input className={inputClass} value={r.name} placeholder="librora.io"
+                      onChange={e => updateRow('registrations', i, 'name', e.target.value)} /></div>
+                  <div><label className={labelClass}>Registrar</label>
+                    <input className={inputClass} value={r.registrar ?? ''} placeholder="Name.com"
+                      onChange={e => updateRow('registrations', i, 'registrar', e.target.value)} /></div>
+                  <div><label className={labelClass}>Registered</label>
+                    <input className={inputClass} value={r.registeredOn ?? ''} placeholder="2026-02-18"
+                      onChange={e => updateRow('registrations', i, 'registeredOn', e.target.value)} /></div>
+                  <div><label className={labelClass}>Expires</label>
+                    <input className={inputClass} value={r.expiresOn ?? ''} placeholder="2027-02-18"
+                      onChange={e => updateRow('registrations', i, 'expiresOn', e.target.value)} /></div>
+                  <div className="flex items-end gap-2">
+                    <div className="flex-1"><label className={labelClass}>Account</label>
+                      <input className={inputClass} value={r.accountEmail ?? ''}
+                        onChange={e => updateRow('registrations', i, 'accountEmail', e.target.value)} /></div>
+                    <button type="button" onClick={() => removeRow('registrations', i)} className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30">x</button>
                   </div>
                 </div>
               ))}
