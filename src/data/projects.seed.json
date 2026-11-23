@@ -8,45 +8,52 @@
       "type": "internal",
       "oneLiner": "Reading companion: track reading, manage book collection, discover insights.",
       "essence": "User-facing reading tracker / personal library product. Helps users build reading habits, organize their book collections, track progress, and discover new books based on their preferences.",
-      "productUrls": ["https://librora.io/"],
+      "productUrls": [
+        "https://librora.io/"
+      ],
       "owner": "TBD",
       "techLead": "TBD",
       "team": [],
-      "tags": ["reading", "productivity", "consumer", "mobile-friendly"],
+      "tags": [
+        "reading",
+        "productivity",
+        "consumer",
+        "mobile-friendly"
+      ],
       "stack": {
         "frontend": {
-          "name": "TBD",
-          "version": "TBD",
-          "notes": "To be determined during tech discovery"
+          "name": "Next.js",
+          "version": "14.2.21",
+          "notes": "App Router, TypeScript, Tailwind"
         },
         "backend": {
-          "name": "TBD",
-          "version": "TBD",
-          "notes": "To be determined during tech discovery"
+          "name": "Next.js route handlers",
+          "version": "14.2.21",
+          "notes": "Firebase Admin SDK"
         },
         "database": {
-          "name": "TBD",
-          "version": "TBD",
-          "notes": "To be determined during tech discovery"
+          "name": "Cloud Firestore",
+          "version": "",
+          "notes": "Offline persistence enabled on mobile"
         },
         "hosting": {
-          "name": "TBD",
-          "notes": "Domain registered and live"
+          "name": "Vercel",
+          "notes": "Root directory set to apps/web; Vercel builds the web app only"
         },
         "auth": {
-          "name": "TBD",
-          "notes": "To be determined"
+          "name": "Firebase Auth (Google, Apple, email)",
+          "notes": ""
         },
         "cicd": {
-          "name": "TBD",
+          "name": "GitHub + host integration",
           "notes": ""
         },
         "analytics": {
-          "name": "TBD",
+          "name": "None",
           "notes": ""
         },
         "monitoring": {
-          "name": "TBD",
+          "name": "None",
           "notes": ""
         }
       },
@@ -66,26 +73,99 @@
         }
       ],
       "instructions": {
-        "localSetupMd": "## Local Setup\n\nTBD - Documentation pending tech stack finalization.\n\n### Prerequisites\n- Node.js (version TBD)\n- npm/yarn\n\n### Steps\n1. Clone the repository\n2. Install dependencies\n3. Set up environment variables\n4. Run development server",
-        "deployMd": "## Deployment\n\nTBD - Deployment process to be documented.\n\n### Staging\n- TBD\n\n### Production\n- TBD",
-        "testingMd": "## Testing\n\nTBD - Testing strategy to be defined.\n\n### Unit Tests\n- TBD\n\n### E2E Tests\n- TBD",
-        "runbookMd": "## Runbook\n\nTBD - Operational runbook to be created.\n\n### Common Issues\n- TBD\n\n### Emergency Contacts\n- TBD",
-        "knownIssuesMd": "## Known Issues\n\nNo known issues documented yet."
+        "localSetupMd": "## Local Setup\n\n```bash\nnpm install\nnpm run dev          # web on :7777\nnpm run dev:mobile   # Expo\n```\n\nFirebase config files are committed: the OAuth client ids are public and security comes from domain restrictions.",
+        "deployMd": "## Deployment\n\n**Web** — Vercel, root directory `apps/web`.\n\n**Mobile** —\n```bash\neas build --platform ios --profile production\neas submit --platform ios\n```\n\nNative modules such as react-native-view-shot need a dev client rebuild before they work.",
+        "testingMd": "## Testing\n\nNot documented yet.",
+        "runbookMd": "## Runbook\n\nNot documented yet.",
+        "knownIssuesMd": "## Known Issues\n\n- Nested modals do not work on iOS; switch views inside one modal instead.\n- Lending goes through /api/loans rather than Firestore directly, because the security rules for `loans` are incomplete."
       },
       "operations": {
-        "sla": "TBD",
-        "backups": "TBD",
-        "pii": "unknown",
-        "dataRegion": "TBD",
-        "secretsLocation": "1Password vault: Librora",
-        "onCallRotation": "TBD",
-        "incidentProcess": "TBD"
+        "sla": "Best effort — personal project",
+        "backups": "Managed by the hosting provider",
+        "pii": "medium",
+        "dataRegion": "Firebase default",
+        "secretsLocation": "Vercel project settings and apps/web/.env.local",
+        "onCallRotation": "None",
+        "incidentProcess": "None"
       },
       "security": {
-        "authMethod": "TBD",
-        "dataEncryption": "TBD",
-        "complianceNotes": "TBD"
-      }
+        "authMethod": "Firebase Auth — Google and Apple sign-in, email/password on web",
+        "dataEncryption": "In transit by the provider; Firestore encrypts at rest",
+        "complianceNotes": "Apple requires Sign in with Apple wherever a social login is offered."
+      },
+      "components": [
+        {
+          "key": "web",
+          "name": "Web app",
+          "kind": "web",
+          "path": "apps/web",
+          "oneLiner": "The main reading tracker.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Next.js 14 App Router",
+            "hosting": "Vercel"
+          },
+          "distribution": "https://librora.io",
+          "status": "active",
+          "notes": "Stripe for subscriptions — web only, never iOS."
+        },
+        {
+          "key": "mobile",
+          "name": "iOS app",
+          "kind": "mobile-cross",
+          "path": "apps/mobile",
+          "oneLiner": "Barcode scanning, reading timer, offline library.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "React Native + Expo SDK 54",
+            "runtime": "Zustand, React Navigation v7"
+          },
+          "distribution": "iOS App Store",
+          "status": "active",
+          "notes": "Apple IAP for Pro; Sign in with Apple is required by App Store review."
+        },
+        {
+          "key": "ios-widget",
+          "name": "Home screen widgets",
+          "kind": "ios-widget",
+          "path": "apps/mobile/ios/LibroraWidget",
+          "oneLiner": "Small, medium and large widgets showing reading stats.",
+          "stack": {
+            "language": "Swift",
+            "framework": "SwiftUI + WidgetKit"
+          },
+          "distribution": "Ships inside the iOS app",
+          "status": "active",
+          "notes": "Reads stats through App Group group.io.librora.app."
+        },
+        {
+          "key": "ios-live-activity",
+          "name": "Reading timer Live Activity",
+          "kind": "ios-live-activity",
+          "path": "apps/mobile/ios/LibroraWidget/ReadingTimerActivity.swift",
+          "oneLiner": "Dynamic Island and lock screen timer.",
+          "stack": {
+            "language": "Swift",
+            "framework": "ActivityKit"
+          },
+          "distribution": "Ships inside the iOS app",
+          "status": "active",
+          "notes": "iOS 16.2+. Bridged from JS via LiveActivityModule.swift."
+        },
+        {
+          "key": "core",
+          "name": "Shared core",
+          "kind": "other",
+          "path": "packages/core",
+          "oneLiner": "Types, Zod schemas, subscription limits, ISBN utilities.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "None — no React, no Firebase"
+          },
+          "status": "active",
+          "notes": "Imported by both web and mobile as @librora/core."
+        }
+      ]
     },
     {
       "key": "litrlly",
@@ -95,11 +175,20 @@
       "type": "internal",
       "oneLiner": "AI-powered English pronunciation learning app with voice recording and feedback.",
       "essence": "B2C learning app focused on pronunciation practice and instant analysis. Uses AI to provide real-time feedback on English pronunciation, helping users improve their speaking skills through interactive exercises and personalized coaching.",
-      "productUrls": ["https://litrlly.app/"],
+      "productUrls": [
+        "https://litrlly.app/"
+      ],
       "owner": "TBD",
       "techLead": "TBD",
       "team": [],
-      "tags": ["edtech", "ai", "pronunciation", "learning", "voice", "consumer"],
+      "tags": [
+        "edtech",
+        "ai",
+        "pronunciation",
+        "learning",
+        "voice",
+        "consumer"
+      ],
       "stack": {
         "frontend": {
           "name": "TBD",
@@ -182,11 +271,20 @@
       "type": "internal",
       "oneLiner": "Fun interactive English learning for kids (grammar, reading, listening, speaking).",
       "essence": "Kids-focused learning experience with age-appropriate content, gamification, and child-safe UX constraints. Part of the Litrlly product family but with distinct branding, simplified interfaces, and content curated for younger learners.",
-      "productUrls": ["https://kids.litrlly.app/"],
+      "productUrls": [
+        "https://kids.litrlly.app/"
+      ],
       "owner": "TBD",
       "techLead": "TBD",
       "team": [],
-      "tags": ["edtech", "kids", "learning", "gamification", "parental-controls", "consumer"],
+      "tags": [
+        "edtech",
+        "kids",
+        "learning",
+        "gamification",
+        "parental-controls",
+        "consumer"
+      ],
       "stack": {
         "frontend": {
           "name": "TBD",
@@ -259,6 +357,490 @@
         "authMethod": "TBD - must include parental verification",
         "dataEncryption": "TBD - children's data requires strong encryption",
         "complianceNotes": "COPPA compliance required. GDPR-K considerations. Parental consent mechanisms needed."
+      }
+    },
+    {
+      "key": "job-tracker",
+      "name": "Job Tracker",
+      "client": "Internal Product",
+      "status": "active",
+      "type": "internal",
+      "oneLiner": "Job search platform: applications, pipeline, interviews, tailored documents.",
+      "essence": "Tracks one job search end to end — applications and their stages, interviews, take-home assignments, contacts and documents. Generates a resume and cover letter tailored to a posting from a master profile, and verifies every claim against that profile before saving. Parses alert emails into ranked opportunities.",
+      "productUrls": [
+        "https://job-tracker-three-neon-36.vercel.app"
+      ],
+      "owner": "Olena Voloshyna",
+      "techLead": "Olena Voloshyna",
+      "team": [],
+      "tags": [
+        "job-search",
+        "ai",
+        "next",
+        "prisma",
+        "internal"
+      ],
+      "stack": {
+        "frontend": {
+          "name": "Next.js",
+          "version": "16.4.6",
+          "notes": "App Router, Turbopack, React 19, Tailwind 4"
+        },
+        "backend": {
+          "name": "Next.js server actions and route handlers",
+          "version": "16.4.6",
+          "notes": "Anthropic SDK for parsing and tailoring"
+        },
+        "database": {
+          "name": "PostgreSQL (Neon)",
+          "version": "",
+          "notes": "Prisma 7 with @prisma/adapter-pg"
+        },
+        "hosting": {
+          "name": "Vercel",
+          "notes": ""
+        },
+        "auth": {
+          "name": "Better Auth with Google OAuth",
+          "notes": ""
+        },
+        "cicd": {
+          "name": "GitHub + host integration",
+          "notes": ""
+        },
+        "analytics": {
+          "name": "None",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "None",
+          "notes": ""
+        }
+      },
+      "components": [
+        {
+          "key": "web",
+          "name": "Web app",
+          "kind": "web",
+          "path": "src",
+          "oneLiner": "The tracker itself.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Next.js 16 App Router",
+            "hosting": "Vercel"
+          },
+          "distribution": "https://job-tracker-three-neon-36.vercel.app",
+          "status": "active"
+        },
+        {
+          "key": "extension",
+          "name": "Browser extension",
+          "kind": "browser-extension",
+          "path": "extension",
+          "oneLiner": "Fills application forms from the profile and saves postings.",
+          "stack": {
+            "language": "JavaScript",
+            "framework": "Chrome Manifest V3"
+          },
+          "distribution": "Chrome Web Store, unlisted",
+          "status": "active",
+          "notes": "It never submits a form. Automatic on eight job sites; anywhere else it needs activeTab, granted per press."
+        }
+      ],
+      "environments": [
+        {
+          "type": "PROD",
+          "url": "https://job-tracker-three-neon-36.vercel.app",
+          "notes": "Vercel"
+        }
+      ],
+      "links": [
+        {
+          "type": "REPO",
+          "label": "Repository",
+          "url": "https://github.com/voloshynajelena/job-tracker",
+          "notes": "Private"
+        },
+        {
+          "type": "DATABASE",
+          "label": "Neon",
+          "url": "https://console.neon.tech",
+          "notes": "job-tracker-db"
+        }
+      ],
+      "instructions": {
+        "localSetupMd": "## Local Setup\n\n```bash\nnpm install\nnpx prisma generate\nnpm run dev\n```\n\nThe dev server caches the Prisma client in memory: after `prisma generate` it must be restarted, and a second server on port 3000 will serve a stale one.",
+        "deployMd": "## Deployment\n\nVercel, on push to `main`. The build runs `prisma migrate deploy` before `next build`, so a successful deployment implies the migration applied.\n\nCommits must be authored as the Vercel account owner or the deployment sits in BLOCKED with no explanation in the CLI output.",
+        "testingMd": "## Testing\n\n```bash\nnpx vitest run\n```\n\n250+ tests. The field matcher for the extension is tested against the markup real ATS systems emit, including the negative cases — filling a referrer field with your own name is worse than filling nothing.",
+        "runbookMd": "## Runbook\n\nNot documented yet.",
+        "knownIssuesMd": "## Known Issues\n\n- `prisma migrate dev` wants a database reset because `rate_limits` is created lazily at runtime by design. Migrations are written by hand and applied with `$executeRawUnsafe`, then marked with `prisma migrate resolve --applied`.\n- Sign-up is not restricted: anyone with the URL can create an account."
+      },
+      "operations": {
+        "sla": "Best effort — personal project",
+        "backups": "Neon point-in-time recovery",
+        "pii": "high",
+        "dataRegion": "Neon — AWS",
+        "secretsLocation": "Vercel project settings and .env",
+        "onCallRotation": "None",
+        "incidentProcess": "None"
+      },
+      "security": {
+        "authMethod": "Better Auth, Google OAuth only; email/password disabled",
+        "dataEncryption": "OAuth tokens encrypted with the auth secret before they reach Postgres",
+        "complianceNotes": "Holds a full job search including contacts and documents. The extension token is hashed; it is shown once and cannot be read back."
+      }
+    },
+    {
+      "key": "femotion",
+      "name": "Femotion",
+      "client": "Internal Product",
+      "status": "active",
+      "type": "internal",
+      "oneLiner": "Feel. Track. Understand. — privacy-first mood, cycle and context analytics.",
+      "essence": "A privacy-first tracker for mood, menstrual cycle, thoughts, music and context, for iOS and web. Built around keeping the data on the device wherever possible.",
+      "productUrls": [],
+      "owner": "Olena Voloshyna",
+      "techLead": "Olena Voloshyna",
+      "team": [],
+      "tags": [
+        "health",
+        "privacy",
+        "angular",
+        "capacitor",
+        "ios"
+      ],
+      "stack": {
+        "frontend": {
+          "name": "Angular",
+          "version": "22.2",
+          "notes": "Vite, standalone components"
+        },
+        "backend": {
+          "name": "Firebase Functions",
+          "version": "",
+          "notes": "TypeScript"
+        },
+        "database": {
+          "name": "Firestore + SQLite on device",
+          "version": "",
+          "notes": "@capacitor-community/sqlite for local data"
+        },
+        "hosting": {
+          "name": "Firebase Hosting",
+          "notes": ""
+        },
+        "auth": {
+          "name": "Firebase Auth",
+          "notes": ""
+        },
+        "cicd": {
+          "name": "GitHub + host integration",
+          "notes": ""
+        },
+        "analytics": {
+          "name": "None",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "None",
+          "notes": ""
+        }
+      },
+      "components": [
+        {
+          "key": "client",
+          "name": "Web app",
+          "kind": "web",
+          "path": "apps/client",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Angular 22 + Vite",
+            "hosting": "Firebase Hosting"
+          },
+          "status": "active"
+        },
+        {
+          "key": "ios",
+          "name": "iOS app",
+          "kind": "mobile-ios",
+          "path": "apps/client/ios",
+          "oneLiner": "The same client wrapped with Capacitor.",
+          "stack": {
+            "language": "TypeScript + Swift shell",
+            "framework": "Capacitor 8"
+          },
+          "distribution": "Not yet submitted",
+          "status": "active",
+          "notes": "Local data through @capacitor-community/sqlite rather than the cloud."
+        },
+        {
+          "key": "functions",
+          "name": "Cloud functions",
+          "kind": "functions",
+          "path": "apps/functions",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Firebase Functions"
+          },
+          "status": "active"
+        },
+        {
+          "key": "e2e",
+          "name": "End-to-end tests",
+          "kind": "other",
+          "path": "apps/client-e2e",
+          "stack": {
+            "framework": "Playwright"
+          },
+          "status": "active"
+        }
+      ],
+      "environments": [],
+      "links": [
+        {
+          "type": "FIREBASE",
+          "label": "Firebase console",
+          "url": "https://console.firebase.google.com",
+          "notes": "femotion"
+        }
+      ],
+      "instructions": {
+        "localSetupMd": "## Local Setup\n\nNode 24 is pinned for this project through fnm and `.nvmrc`; the global Node is untouched.\n\n```bash\nfnm exec --using=24 pnpm install\n```",
+        "deployMd": "## Deployment\n\nFirebase Hosting for the client, Firebase Functions for the backend.\n\nThe iOS build goes through Capacitor and Xcode.",
+        "testingMd": "## Testing\n\nNot documented yet.",
+        "runbookMd": "## Runbook\n\nNot documented yet.",
+        "knownIssuesMd": "## Known Issues\n\nNone recorded."
+      },
+      "operations": {
+        "sla": "Best effort — personal project",
+        "backups": "Managed by the hosting provider",
+        "pii": "high",
+        "dataRegion": "Firebase default",
+        "secretsLocation": "Firebase project config; see notenv-style local files",
+        "onCallRotation": "None",
+        "incidentProcess": "None"
+      },
+      "security": {
+        "authMethod": "Firebase Auth",
+        "dataEncryption": "On-device SQLite for the sensitive records; Firestore encrypts at rest",
+        "complianceNotes": "Holds menstrual cycle and mood data — among the most sensitive categories there are. Privacy-first is the product claim, so anything that moves data off the device needs a deliberate decision."
+      }
+    },
+    {
+      "key": "chronos",
+      "name": "Chronos",
+      "client": "Internal Product",
+      "status": "active",
+      "type": "internal",
+      "oneLiner": "Authors, works and reading timelines — a companion to Librora.",
+      "essence": "A knowledge graph of authors and their works with a timeline, an encyclopedia and a photo gallery. Lives inside the Librora monorepo but deploys separately and has its own mobile client.",
+      "productUrls": [
+        "https://chronos.librora.io"
+      ],
+      "owner": "Olena Voloshyna",
+      "techLead": "Olena Voloshyna",
+      "team": [],
+      "tags": [
+        "books",
+        "graph",
+        "timeline",
+        "next",
+        "internal"
+      ],
+      "stack": {
+        "frontend": {
+          "name": "Next.js",
+          "version": "14.2.21",
+          "notes": "App Router, TypeScript"
+        },
+        "backend": {
+          "name": "Next.js route handlers",
+          "version": "14.2.21",
+          "notes": "Firebase Admin"
+        },
+        "database": {
+          "name": "Cloud Firestore",
+          "version": "",
+          "notes": "Per-user author collections"
+        },
+        "hosting": {
+          "name": "Vercel",
+          "notes": "Separate Vercel project from the Librora web app"
+        },
+        "auth": {
+          "name": "Firebase Auth",
+          "notes": ""
+        },
+        "cicd": {
+          "name": "GitHub + host integration",
+          "notes": ""
+        },
+        "analytics": {
+          "name": "None",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "None",
+          "notes": ""
+        }
+      },
+      "components": [
+        {
+          "key": "web",
+          "name": "Web app",
+          "kind": "web",
+          "path": "apps/chronos",
+          "oneLiner": "Timeline, graph, encyclopedia, geography.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Next.js 14",
+            "hosting": "Vercel"
+          },
+          "distribution": "https://chronos.librora.io",
+          "status": "active",
+          "notes": "Runs on port 7778 locally. Geography uses Nominatim and OSM tiles — no keyed providers."
+        },
+        {
+          "key": "mobile",
+          "name": "Mobile app",
+          "kind": "mobile-cross",
+          "path": "apps/chronos-mobile",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "React Native + Expo SDK 54"
+          },
+          "distribution": "Not yet submitted",
+          "status": "active"
+        }
+      ],
+      "environments": [
+        {
+          "type": "PROD",
+          "url": "https://chronos.librora.io",
+          "notes": "Vercel"
+        }
+      ],
+      "links": [
+        {
+          "type": "WEBSITE",
+          "label": "Chronos",
+          "url": "https://chronos.librora.io",
+          "notes": ""
+        }
+      ],
+      "instructions": {
+        "localSetupMd": "## Local Setup\n\nPart of the Librora monorepo.\n\n```bash\nnpm install\nnpm run dev --workspace @librora/chronos   # :7778\n```",
+        "deployMd": "## Deployment\n\nIts own Vercel project, root directory `apps/chronos`.",
+        "testingMd": "## Testing\n\nNot documented yet.",
+        "runbookMd": "## Runbook\n\nNot documented yet.",
+        "knownIssuesMd": "## Known Issues\n\nNone recorded."
+      },
+      "operations": {
+        "sla": "Best effort — personal project",
+        "backups": "Managed by the hosting provider",
+        "pii": "low",
+        "dataRegion": "Firebase default",
+        "secretsLocation": "Host project settings and local .env",
+        "onCallRotation": "None",
+        "incidentProcess": "None"
+      },
+      "security": {
+        "authMethod": "Firebase Auth",
+        "dataEncryption": "Firestore at rest",
+        "complianceNotes": "Holds reading history rather than identifying data."
+      }
+    },
+    {
+      "key": "vesper",
+      "name": "Vesper",
+      "client": "Internal Product",
+      "status": "active",
+      "type": "internal",
+      "oneLiner": "The architecture of my life.",
+      "essence": "A personal system for structuring life areas, goals and routines. Early — twelve commits in, the shape is still being decided.",
+      "productUrls": [],
+      "owner": "Olena Voloshyna",
+      "techLead": "Olena Voloshyna",
+      "team": [],
+      "tags": [
+        "personal",
+        "next",
+        "early",
+        "internal"
+      ],
+      "stack": {
+        "frontend": {
+          "name": "Next.js",
+          "version": "16.4.6",
+          "notes": "React 19"
+        },
+        "backend": {
+          "name": "Next.js server actions",
+          "version": "16.4.6",
+          "notes": ""
+        },
+        "database": {
+          "name": "Firestore",
+          "version": "",
+          "notes": ""
+        },
+        "hosting": {
+          "name": "Vercel",
+          "notes": ""
+        },
+        "auth": {
+          "name": "Firebase Auth",
+          "notes": ""
+        },
+        "cicd": {
+          "name": "GitHub + host integration",
+          "notes": ""
+        },
+        "analytics": {
+          "name": "None",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "None",
+          "notes": ""
+        }
+      },
+      "components": [
+        {
+          "key": "web",
+          "name": "Web app",
+          "kind": "web",
+          "path": "src",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Next.js 16",
+            "hosting": "Vercel"
+          },
+          "status": "active"
+        }
+      ],
+      "environments": [],
+      "links": [],
+      "instructions": {
+        "localSetupMd": "## Local Setup\n\n```bash\nnpm install\nnpm run dev\n```",
+        "deployMd": "## Deployment\n\nVercel.",
+        "testingMd": "## Testing\n\nNot documented yet.",
+        "runbookMd": "## Runbook\n\nNot documented yet.",
+        "knownIssuesMd": "## Known Issues\n\nNone recorded."
+      },
+      "operations": {
+        "sla": "Best effort — personal project",
+        "backups": "Managed by the hosting provider",
+        "pii": "medium",
+        "dataRegion": "TBD",
+        "secretsLocation": "Host project settings and local .env",
+        "onCallRotation": "None",
+        "incidentProcess": "None"
+      },
+      "security": {
+        "authMethod": "Firebase Auth",
+        "dataEncryption": "Firestore at rest",
+        "complianceNotes": "Personal data, single user."
       }
     }
   ]

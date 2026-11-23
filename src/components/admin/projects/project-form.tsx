@@ -10,6 +10,31 @@ type LinkType = 'REPO' | 'JIRA' | 'FIGMA' | 'SENTRY' | 'VERCEL' | 'AWS' | 'GCP' 
 type PIILevel = 'none' | 'low' | 'medium' | 'high' | 'unknown';
 type PortfolioCategory = 'web' | 'e-commerce' | 'branding' | 'marketing' | 'mobile';
 
+// Mirrors ComponentKind in src/lib/firebase/types.ts. Declared here because
+// this file keeps its own copies of every union rather than importing them.
+type ComponentKind =
+  | 'web' | 'mobile-ios' | 'mobile-android' | 'mobile-cross'
+  | 'ios-widget' | 'ios-live-activity' | 'watch' | 'browser-extension'
+  | 'api' | 'functions' | 'cli' | 'desktop' | 'bot' | 'infra' | 'other';
+
+const COMPONENT_KINDS: { value: ComponentKind; label: string }[] = [
+  { value: 'web', label: 'Web app' },
+  { value: 'mobile-ios', label: 'iOS app' },
+  { value: 'mobile-android', label: 'Android app' },
+  { value: 'mobile-cross', label: 'Cross-platform mobile' },
+  { value: 'ios-widget', label: 'iOS widget' },
+  { value: 'ios-live-activity', label: 'iOS Live Activity' },
+  { value: 'watch', label: 'Watch app' },
+  { value: 'browser-extension', label: 'Browser extension' },
+  { value: 'api', label: 'API' },
+  { value: 'functions', label: 'Serverless functions' },
+  { value: 'cli', label: 'CLI' },
+  { value: 'desktop', label: 'Desktop app' },
+  { value: 'bot', label: 'Bot' },
+  { value: 'infra', label: 'Infrastructure' },
+  { value: 'other', label: 'Other' },
+];
+
 interface ProjectFormData {
   key: string;
   name: string;
@@ -33,6 +58,15 @@ interface ProjectFormData {
     analytics: { name: string; notes: string };
     monitoring: { name: string; notes: string };
   };
+  components?: Array<{
+    key: string;
+    name: string;
+    kind: ComponentKind;
+    path?: string;
+    distribution?: string;
+    notes?: string;
+    stack?: { language?: string; framework?: string; runtime?: string; hosting?: string };
+  }>;
   environments: Array<{ type: EnvironmentType; url: string; notes: string }>;
   links: Array<{ type: LinkType; label: string; url: string; notes: string }>;
   instructions: {
@@ -165,7 +199,7 @@ const defaultFormData: ProjectFormData = {
 const LINK_TYPES: LinkType[] = ['REPO', 'JIRA', 'FIGMA', 'SENTRY', 'VERCEL', 'AWS', 'GCP', 'FIREBASE', 'SUPABASE', 'AUTH', 'DATABASE', 'STORAGE', 'ANALYTICS', 'MONITORING', 'DOCS', 'WEBSITE', 'SLACK', 'NOTION', 'CONFLUENCE', 'OTHER'];
 const ENV_TYPES: EnvironmentType[] = ['DEV', 'STAGE', 'PROD', 'DEMO', 'QA'];
 const PII_LEVELS: PIILevel[] = ['none', 'low', 'medium', 'high', 'unknown'];
-const TABS = ['overview', 'portfolio', 'stack', 'environments', 'links', 'instructions', 'docs', 'operations', 'security'] as const;
+const TABS = ['overview', 'portfolio', 'stack', 'components', 'environments', 'links', 'instructions', 'docs', 'operations', 'security'] as const;
 const PORTFOLIO_CATEGORIES: PortfolioCategory[] = ['web', 'e-commerce', 'branding', 'marketing', 'mobile'];
 type Tab = typeof TABS[number];
 
@@ -257,6 +291,46 @@ export function ProjectForm({ initialData, mode }: Props) {
 
   const removeProductUrl = (url: string) => {
     setFormData(prev => ({ ...prev, productUrls: prev.productUrls.filter(u => u !== url) }));
+  };
+
+  /**
+   * Components.
+   *
+   * Added blank and edited in place rather than through a dialog: the common
+   * case is recording four of them in one sitting — web, iOS, widget,
+   * extension — and a modal per component turns that into sixteen clicks.
+   */
+  const addComponent = () => {
+    setFormData(prev => ({
+      ...prev,
+      components: [
+        ...(prev.components ?? []),
+        { key: '', name: '', kind: 'web' as ComponentKind, path: '' },
+      ],
+    }));
+  };
+
+  const updateComponent = (index: number, field: string, value: string) => {
+    setFormData(prev => {
+      const components = [...(prev.components ?? [])];
+      if (field.startsWith('stack.')) {
+        const part = field.slice(6);
+        components[index] = {
+          ...components[index],
+          stack: { ...(components[index].stack ?? {}), [part]: value },
+        };
+      } else {
+        components[index] = { ...components[index], [field]: value };
+      }
+      return { ...prev, components };
+    });
+  };
+
+  const removeComponent = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      components: (prev.components ?? []).filter((_, i) => i !== index),
+    }));
   };
 
   const addEnvironment = () => {
@@ -1045,6 +1119,149 @@ export function ProjectForm({ initialData, mode }: Props) {
       )}
 
       {/* Environments Tab */}
+      {/* Components Tab */}
+      {activeTab === 'components' && (
+        <div className={sectionClass}>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Components</h2>
+              <p className="text-white/40 text-sm mt-1">
+                The shippable pieces. A project is rarely one thing: a web app and an iOS app and
+                its widgets and a browser extension are four, each with its own stack and its own
+                place in the repository.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={addComponent}
+              className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 shrink-0"
+            >
+              + Add Component
+            </button>
+          </div>
+
+          {(formData.components ?? []).length === 0 ? (
+            <p className="text-white/40">
+              No components yet — the Tech Stack tab describes the project as a single thing.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {(formData.components ?? []).map((component, index) => (
+                <div key={index} className="border border-white/10 rounded-lg p-4 space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                      <label className={labelClass}>Kind</label>
+                      <select
+                        value={component.kind}
+                        onChange={e => updateComponent(index, 'kind', e.target.value)}
+                        className={inputClass}
+                      >
+                        {COMPONENT_KINDS.map(k => (
+                          <option key={k.value} value={k.value}>{k.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className={labelClass}>Name</label>
+                      <input
+                        type="text"
+                        value={component.name}
+                        onChange={e => updateComponent(index, 'name', e.target.value)}
+                        className={inputClass}
+                        placeholder="Mobile app"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Key</label>
+                      <input
+                        type="text"
+                        value={component.key}
+                        onChange={e => updateComponent(index, 'key', e.target.value)}
+                        className={inputClass}
+                        placeholder="mobile"
+                      />
+                    </div>
+                    <div className="flex items-end gap-2">
+                      <div className="flex-1">
+                        <label className={labelClass}>Path in repo</label>
+                        <input
+                          type="text"
+                          value={component.path ?? ''}
+                          onChange={e => updateComponent(index, 'path', e.target.value)}
+                          className={inputClass}
+                          placeholder="apps/mobile"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeComponent(index)}
+                        className="px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30"
+                      >
+                        x
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                      <label className={labelClass}>Language</label>
+                      <input
+                        type="text"
+                        value={component.stack?.language ?? ''}
+                        onChange={e => updateComponent(index, 'stack.language', e.target.value)}
+                        className={inputClass}
+                        placeholder="Swift"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Framework</label>
+                      <input
+                        type="text"
+                        value={component.stack?.framework ?? ''}
+                        onChange={e => updateComponent(index, 'stack.framework', e.target.value)}
+                        className={inputClass}
+                        placeholder="SwiftUI / WidgetKit"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Hosting / runtime</label>
+                      <input
+                        type="text"
+                        value={component.stack?.hosting ?? ''}
+                        onChange={e => updateComponent(index, 'stack.hosting', e.target.value)}
+                        className={inputClass}
+                        placeholder="Vercel"
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Distribution</label>
+                      <input
+                        type="text"
+                        value={component.distribution ?? ''}
+                        onChange={e => updateComponent(index, 'distribution', e.target.value)}
+                        className={inputClass}
+                        placeholder="App Store / Chrome Web Store"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Notes</label>
+                    <input
+                      type="text"
+                      value={component.notes ?? ''}
+                      onChange={e => updateComponent(index, 'notes', e.target.value)}
+                      className={inputClass}
+                      placeholder="Ships inside the iOS app; needs a dev client rebuild"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {activeTab === 'environments' && (
         <div className={sectionClass}>
           <div className="flex items-center justify-between">

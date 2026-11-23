@@ -27,6 +27,40 @@ const stackComponentSchema = z.object({
   notes: z.string().optional(),
 });
 
+/**
+ * A shippable piece of the project.
+ *
+ * Everything but the identity is optional on purpose: a widget has no
+ * database and an extension has no hosting, and requiring those would mean
+ * recording empty strings to get past validation.
+ */
+const componentSchema = z.object({
+  key: z.string(),
+  name: z.string(),
+  kind: z.enum([
+    'web', 'mobile-ios', 'mobile-android', 'mobile-cross',
+    'ios-widget', 'ios-live-activity', 'watch', 'browser-extension',
+    'api', 'functions', 'cli', 'desktop', 'bot', 'infra', 'other',
+  ]),
+  oneLiner: z.string().optional(),
+  path: z.string().optional(),
+  distribution: z.string().optional(),
+  notes: z.string().optional(),
+  stack: z.object({
+    language: z.string().optional(),
+    framework: z.string().optional(),
+    runtime: z.string().optional(),
+    hosting: z.string().optional(),
+    notes: z.string().optional(),
+  }).optional(),
+  environments: z.array(z.object({
+    type: z.enum(['DEV', 'STAGE', 'PROD', 'DEMO', 'QA']),
+    url: z.string(),
+    notes: z.string().optional(),
+  })).optional(),
+  status: z.enum(['active', 'maintenance', 'paused', 'archived', 'completed']).optional(),
+});
+
 const stackSchema = z.object({
   frontend: stackComponentSchema,
   backend: stackComponentSchema,
@@ -101,6 +135,10 @@ const projectSchema = z.object({
   team: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
   stack: stackSchema,
+  // Without this line Zod strips the field and a saved component vanishes
+  // without an error — the worst kind of failure, because the form says it
+  // worked.
+  components: z.array(componentSchema).optional(),
   environments: z.array(environmentSchema).default([]),
   links: z.array(linkSchema).default([]),
   instructions: instructionsSchema,

@@ -26,6 +26,36 @@ const stackComponentSchema = z.object({
   notes: z.string().optional(),
 });
 
+/** Same shape as the create endpoint's. The two schemas are duplicated in
+ *  this codebase; adding a field to one and not the other means an edit
+ *  silently drops what a create accepted. */
+const componentSchema = z.object({
+  key: z.string(),
+  name: z.string(),
+  kind: z.enum([
+    'web', 'mobile-ios', 'mobile-android', 'mobile-cross',
+    'ios-widget', 'ios-live-activity', 'watch', 'browser-extension',
+    'api', 'functions', 'cli', 'desktop', 'bot', 'infra', 'other',
+  ]),
+  oneLiner: z.string().optional(),
+  path: z.string().optional(),
+  distribution: z.string().optional(),
+  notes: z.string().optional(),
+  stack: z.object({
+    language: z.string().optional(),
+    framework: z.string().optional(),
+    runtime: z.string().optional(),
+    hosting: z.string().optional(),
+    notes: z.string().optional(),
+  }).optional(),
+  environments: z.array(z.object({
+    type: z.enum(['DEV', 'STAGE', 'PROD', 'DEMO', 'QA']),
+    url: z.string(),
+    notes: z.string().optional(),
+  })).optional(),
+  status: z.enum(['active', 'maintenance', 'paused', 'archived', 'completed']).optional(),
+});
+
 const stackSchema = z.object({
   frontend: stackComponentSchema,
   backend: stackComponentSchema,
@@ -99,6 +129,7 @@ const projectUpdateSchema = z.object({
   team: z.array(z.string()).optional(),
   tags: z.array(z.string()).optional(),
   stack: stackSchema.optional(),
+  components: z.array(componentSchema).optional(),
   environments: z.array(environmentSchema).optional(),
   links: z.array(linkSchema).optional(),
   instructions: instructionsSchema.optional(),

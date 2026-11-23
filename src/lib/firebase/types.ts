@@ -289,6 +289,89 @@ export type ProjectType = 'internal' | 'client';
 
 export type EnvironmentType = 'DEV' | 'STAGE' | 'PROD' | 'DEMO' | 'QA';
 
+/**
+ * What a component actually is.
+ *
+ * A project is rarely one thing any more. Librora is a web app, an iOS app,
+ * iOS widgets and iOS Live Activities; Job Tracker is a web app and a Chrome
+ * extension. The flat `stack` on a project could describe only one of those,
+ * so everything after the first was either lost or crammed into notes — and a
+ * knowledge base that cannot say "the widget is SwiftUI and ships with the
+ * iOS app" is missing the part somebody actually needs at 2am.
+ */
+export type ComponentKind =
+  | 'web'
+  | 'mobile-ios'
+  | 'mobile-android'
+  | 'mobile-cross'
+  | 'ios-widget'
+  | 'ios-live-activity'
+  | 'watch'
+  | 'browser-extension'
+  | 'api'
+  | 'functions'
+  | 'cli'
+  | 'desktop'
+  | 'bot'
+  | 'infra'
+  | 'other';
+
+export const COMPONENT_KIND_LABELS: Record<ComponentKind, string> = {
+  web: 'Web app',
+  'mobile-ios': 'iOS app',
+  'mobile-android': 'Android app',
+  'mobile-cross': 'Cross-platform mobile',
+  'ios-widget': 'iOS widget',
+  'ios-live-activity': 'iOS Live Activity',
+  watch: 'Watch app',
+  'browser-extension': 'Browser extension',
+  api: 'API',
+  functions: 'Serverless functions',
+  cli: 'CLI',
+  desktop: 'Desktop app',
+  bot: 'Bot',
+  infra: 'Infrastructure',
+  other: 'Other',
+};
+
+/**
+ * One shippable piece of a project.
+ *
+ * Everything is optional except what identifies it, because the whole point is
+ * to be able to record a component the moment it exists rather than when
+ * somebody has time to fill in a form. A component with a name and a kind is
+ * already more than the old model could hold.
+ */
+export interface ProjectComponent {
+  key: string; // unique within the project
+  name: string;
+  kind: ComponentKind;
+  oneLiner?: string;
+  /// Where it lives in the repository — "apps/mobile", "extension",
+  /// "ios/LibroraWidget". The single most useful field here in practice.
+  path?: string;
+  /// Its own stack, when it differs from the project's. A widget written in
+  /// SwiftUI inside a React Native app is exactly this case.
+  stack?: ProjectComponentStack;
+  /// Where it is published: an App Store listing, a store item, a domain.
+  distribution?: string;
+  environments?: ProjectEnvironment[];
+  links?: ProjectLink[];
+  status?: ProjectStatus;
+  notes?: string;
+}
+
+/** Deliberately looser than `ProjectStack`: a widget has no database and an
+ *  extension has no hosting, and forcing empty strings into those slots is how
+ *  a knowledge base fills up with noise. */
+export interface ProjectComponentStack {
+  language?: string;
+  framework?: string;
+  runtime?: string;
+  hosting?: string;
+  notes?: string;
+}
+
 export type LinkType =
   | 'REPO'
   | 'JIRA'
@@ -428,6 +511,10 @@ export interface Project {
 
   // Technical
   stack: ProjectStack;
+  /// The shippable pieces. Optional so every record written before this
+  /// existed stays valid — a project with one component and nothing to say
+  /// about it is still described perfectly well by `stack` alone.
+  components?: ProjectComponent[];
   environments: ProjectEnvironment[];
   links: ProjectLink[];
   instructions: ProjectInstructions;
@@ -464,6 +551,7 @@ export interface ProjectInput {
   team: string[];
   tags: string[];
   stack: ProjectStack;
+  components?: ProjectComponent[];
   environments: ProjectEnvironment[];
   links: ProjectLink[];
   instructions: ProjectInstructions;
