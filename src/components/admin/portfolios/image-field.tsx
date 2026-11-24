@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Choosing pictures for a project.
@@ -107,6 +107,56 @@ function ImageLibrary({
   );
 }
 
+/**
+ * Uploading a file the repository does not already ship.
+ *
+ * Kept here beside the library picker because the two are the same decision
+ * from the user's side — "where does this picture come from" — and splitting
+ * them across components would mean two error surfaces for one question.
+ *
+ * The error is shown rather than swallowed: the most likely failure is that
+ * Firebase Storage has never been turned on for the project, and that is
+ * something only the owner can fix, in a place this screen cannot reach.
+ */
+function useUpload(onDone: (url: string) => void) {
+  const input = useRef<HTMLInputElement | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const send = async (file: File) => {
+    try {
+      setBusy(true);
+      setError(null);
+      const body = new FormData();
+      body.append('file', file);
+      const res = await fetch('/api/admin/portfolios/upload', { method: 'POST', body });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? 'Upload failed');
+      onDone(data.url);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Upload failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const element = (
+    <input
+      ref={input}
+      type="file"
+      accept="image/png,image/jpeg,image/webp,image/svg+xml,image/avif"
+      className="hidden"
+      onChange={e => {
+        const file = e.target.files?.[0];
+        if (file) send(file);
+        e.target.value = '';
+      }}
+    />
+  );
+
+  return { element, busy, error, open: () => input.current?.click(), clearError: () => setError(null) };
+}
+
 export function ImageField({
   label,
   hint,
@@ -122,6 +172,7 @@ export function ImageField({
 }) {
   const [open, setOpen] = useState(false);
   const [failed, setFailed] = useState(false);
+  const upload = useUpload(onChange);
 
   // A changed address deserves a fresh attempt at loading it; without this a
   // single broken URL would leave the preview showing "not found" forever.
@@ -173,6 +224,13 @@ export function ImageField({
             >
               {open ? 'Hide library' : 'Pick from library'}
             </button>
+            <button
+              onClick={upload.open}
+              disabled={upload.busy}
+              className="text-[11px] text-accent hover:text-accent-hover disabled:opacity-50 transition-colors"
+            >
+              {upload.busy ? 'Uploading…' : 'Upload'}
+            </button>
             {value && (
               <button
                 onClick={() => onChange('')}
@@ -182,8 +240,10 @@ export function ImageField({
               </button>
             )}
           </div>
+          {upload.error && <UploadError message={upload.error} onDismiss={upload.clearError} />}
         </div>
       </div>
+      {upload.element}
 
       {open && (
         <div className="mt-2 rounded-lg border border-border bg-surface p-2">
@@ -230,6 +290,8 @@ export function GalleryField({
     setUrl('');
   };
 
+  const upload = useUpload(add);
+
   const move = (from: number, to: number) => {
     if (to < 0 || to >= values.length) return;
     const next = [...values];
@@ -245,13 +307,25 @@ export function GalleryField({
           Gallery
           <span className="font-normal"> — more images in the details panel</span>
         </span>
-        <button
-          onClick={() => setOpen(o => !o)}
-          className="text-[11px] text-accent hover:text-accent-hover transition-colors"
-        >
-          {open ? 'Hide library' : 'Add from library'}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setOpen(o => !o)}
+            className="text-[11px] text-accent hover:text-accent-hover transition-colors"
+          >
+            {open ? 'Hide library' : 'Add from library'}
+          </button>
+          <button
+            onClick={upload.open}
+            disabled={upload.busy}
+            className="text-[11px] text-accent hover:text-accent-hover disabled:opacity-50 transition-colors"
+          >
+            {upload.busy ? 'Uploading…' : 'Upload'}
+          </button>
+        </div>
       </div>
+
+      {upload.error && <UploadError message={upload.error} onDismiss={upload.clearError} />}
+      {upload.element}
 
       <div className="grid grid-cols-4 gap-1.5">
         {mainImage && (
@@ -344,5 +418,29 @@ export function GalleryField({
         </div>
       )}
     </section>
+  );
+}
+
+/**
+ * Why an upload did not happen.
+ *
+ * Shown in full rather than as "upload failed", because the message that
+ * matters here names a thing the owner has to go and do — turn on Storage —
+ * and a shortened version of it would send them to the console to guess.
+ */
+function UploadError({ message, onDismiss }: { message: string; onDismiss: () => void }) {
+  return (
+    <div className="mt-2 flex items-start gap-2 rounded-lg bg-red-500/10 px-2.5 py-2">
+      <p className="min-w-0 flex-1 text-[11px] leading-relaxed text-red-600 dark:text-red-400">
+        {message}
+      </p>
+      <button
+        onClick={onDismiss}
+        aria-label="Dismiss"
+        className="shrink-0 text-[11px] text-red-600/70 dark:text-red-400/70 hover:text-red-600 dark:hover:text-red-400"
+      >
+        ×
+      </button>
+    </div>
   );
 }
