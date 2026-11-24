@@ -656,3 +656,111 @@ export interface ProjectInput {
   startDate?: string; // ISO string for form input
   endDate?: string;
 }
+
+/* ======================================================================== */
+/* Portfolio versions                                                        */
+/* ======================================================================== */
+
+/**
+ * A tailored copy of the portfolio, aimed at one application.
+ *
+ * The knowledge base holds what is true about a project. A portfolio version
+ * holds what is worth saying about it to one particular reader, and the two
+ * must not be the same record: tuning a project's wording for a backend role
+ * would otherwise rewrite the project itself, and the next application would
+ * start from the last one's spin rather than from the facts.
+ *
+ * So a version is a snapshot. Creating one copies the current knowledge base
+ * into it; after that the two drift apart on purpose, and `resync` is how a
+ * single item is deliberately pulled back to what the project now says.
+ */
+export interface PortfolioVersion {
+  id: string;
+  /** What this version is for — "Senior Frontend, Shopify". */
+  name: string;
+  targetRole?: string;
+  targetCompany?: string;
+  /** A reminder to self about what was emphasised and why. */
+  notes?: string;
+  status: 'draft' | 'ready';
+  profile: PortfolioProfile;
+  items: PortfolioItem[];
+  /** The CV this version was seeded from, kept so the source is traceable. */
+  cv?: PortfolioCvSource;
+  createdAt: FirebaseFirestore.Timestamp | Date | string;
+  updatedAt: FirebaseFirestore.Timestamp | Date | string;
+  updatedBy?: string;
+}
+
+/** The person, as this version presents them. */
+export interface PortfolioProfile {
+  fullName: string;
+  headline: string;
+  summary: string;
+  location?: string;
+  email?: string;
+  phone?: string;
+  links: { label: string; url: string }[];
+  /** The headline stack — what a reader should take away in five seconds. */
+  stack: string[];
+}
+
+/** Which blocks of a project this version shows. */
+export interface PortfolioItemBlocks {
+  description: boolean;
+  stack: boolean;
+  components: boolean;
+  decisions: boolean;
+  highlights: boolean;
+  links: boolean;
+}
+
+/**
+ * One project in one version.
+ *
+ * Everything below `projectKey` is a copy, free to be edited. `projectKey` is
+ * the only link back, and it is a label rather than a reference: a project
+ * deleted from the knowledge base leaves the version it was written into
+ * intact, because an application already sent should not change.
+ */
+export interface PortfolioItem {
+  projectKey: string;
+  enabled: boolean;
+  order: number;
+
+  name: string;
+  oneLiner: string;
+  /** What the person did on it — absent from the knowledge base, which
+   *  describes projects rather than contributions. */
+  role?: string;
+  period?: string;
+  description: string;
+  thumbnail?: string;
+  liveUrl?: string;
+  tags: string[];
+  stack: string[];
+  components: { kind: ComponentKind | string; name: string; oneLiner?: string }[];
+  decisions: { title: string; choice: string; rationale: string; tradeoffs?: string }[];
+  /** Free-form bullets written for this application only. */
+  highlights: string[];
+  blocks: PortfolioItemBlocks;
+}
+
+export interface PortfolioCvSource {
+  fileName: string;
+  importedAt: string;
+  /** The extracted text, kept so a later version can be seeded without the
+   *  original file being at hand. */
+  text: string;
+}
+
+export interface PortfolioVersionInput {
+  name: string;
+  targetRole?: string;
+  targetCompany?: string;
+  notes?: string;
+  status?: 'draft' | 'ready';
+  profile: PortfolioProfile;
+  items: PortfolioItem[];
+  cv?: PortfolioCvSource;
+}

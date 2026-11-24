@@ -1,5 +1,10 @@
 {
   "compilerOptions": {
+    // Without this tsc defaults to ES5 and rejects generators, Map iteration
+    // and the regex `u` flag — none of which Next's own SWC build cares
+    // about, since it targets browsers from browserslist and ignores this.
+    // So the only thing the default was doing was failing the typecheck.
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,

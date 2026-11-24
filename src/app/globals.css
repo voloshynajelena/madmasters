@@ -344,3 +344,22 @@
   0%, 100% { box-shadow: 0 0 20px var(--color-accent-glow); }
   50% { box-shadow: 0 0 40px var(--color-accent-glow); }
 }
+
+/* The portfolio builder's details drawer: it comes in from the right edge,
+   so the eye follows it instead of finding it already there. */
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [class*='animate-\[slideIn'],
+  [class*='animate-\[fadeIn'] {
+    animation: none !important;
+  }
+}

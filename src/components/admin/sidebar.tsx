@@ -13,6 +13,7 @@ interface AdminSidebarProps {
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: DashboardIcon },
   { href: '/admin/portfolio', label: 'Portfolio', icon: PortfolioIcon },
+  { href: '/admin/portfolios', label: 'My Portfolios', icon: MyPortfoliosIcon },
   { href: '/admin/case-studies', label: 'Case Studies', icon: CaseStudiesIcon },
   { href: '/admin/projects', label: 'Projects KB', icon: ProjectsKBIcon },
   { href: '/admin/messages', label: 'Messages', icon: MessagesIcon },
@@ -22,6 +23,19 @@ const navItems = [
   { href: '/admin/company', label: 'Company', icon: CompanyIcon },
   { href: '/admin/users', label: 'Users', icon: UsersIcon },
 ];
+
+/**
+ * Whether a nav item is the one being looked at.
+ *
+ * A plain `startsWith` lights up two items at once as soon as one route is a
+ * prefix of another, which `/admin/portfolio` and `/admin/portfolios` are. The
+ * boundary check is what keeps "Portfolio" dark while "My Portfolios" is open.
+ */
+function isActiveHref(pathname: string, href: string): boolean {
+  if (pathname === href) return true;
+  if (href === '/admin') return false;
+  return pathname.startsWith(`${href}/`);
+}
 
 export function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname();
@@ -47,9 +61,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1">
             {navItems.map((item) => {
-              const isActive =
-                pathname === item.href ||
-                (item.href !== '/admin' && pathname.startsWith(item.href));
+              const isActive = isActiveHref(pathname, item.href);
 
               return (
                 <Link
@@ -141,9 +153,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       >
         <nav className="px-4 py-4 space-y-1">
           {navItems.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== '/admin' && pathname.startsWith(item.href));
+            const isActive = isActiveHref(pathname, item.href);
 
             return (
               <Link
@@ -298,6 +308,14 @@ function CompanyIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+    </svg>
+  );
+}
+
+function MyPortfoliosIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 4H5a2 2 0 00-2 2v12a2 2 0 002 2h4m0-16h10a2 2 0 012 2v12a2 2 0 01-2 2H9m0-16v16m4-11h5m-5 4h5" />
     </svg>
   );
 }
