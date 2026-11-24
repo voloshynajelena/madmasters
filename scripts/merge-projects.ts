@@ -36,6 +36,24 @@ import { getFirestore, Timestamp } from 'firebase-admin/firestore';
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
 
+/**
+ * Also replace the technical sections where the seed now has more.
+ *
+ * Off by default, because the merge's whole promise is that it does not
+ * overwrite anything a human wrote. But these five sections were first
+ * filled by guessing from the outside, and have since been rewritten from
+ * each project's own documentation — its ADR log, its threat model, its cost
+ * table. A list of seven risks taken from `docs/DECISIONS.md` should win over
+ * three inferred ones, and merging them item by item is impossible because
+ * the items have no identity.
+ *
+ * Only a strictly longer list replaces a shorter one, and every replacement
+ * is printed.
+ */
+const replaceRicher = args.includes('--replace-richer');
+
+const RICH_SECTIONS = ['components', 'decisions', 'risks', 'costs', 'registrations'];
+
 function initFirebase() {
   if (getApps().length > 0) return;
 
@@ -129,6 +147,19 @@ function merge(
         filled,
         kept,
       );
+      continue;
+    }
+
+    if (
+      replaceRicher &&
+      prefix === '' &&
+      RICH_SECTIONS.includes(key) &&
+      Array.isArray(seedValue) &&
+      Array.isArray(liveValue) &&
+      seedValue.length > liveValue.length
+    ) {
+      out[key] = seedValue;
+      filled.push({ path: `${where} (было ${liveValue.length})`, value: seedValue });
       continue;
     }
 

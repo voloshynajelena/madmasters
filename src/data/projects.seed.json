@@ -997,68 +997,139 @@
       ],
       "risks": [
         {
-          "title": "Holds reproductive health data",
-          "area": "compliance",
+          "title": "A flaw in the crypto design or its implementation",
+          "area": "security",
           "severity": "critical",
-          "status": "open",
-          "detail": "Menstrual cycle data is special-category under GDPR and legally exposed in several jurisdictions. Any feature that moves it off the device changes the legal position of the whole product.",
-          "mitigation": "Keep the on-device boundary explicit in code and in the privacy policy, and treat moving any of it to the cloud as a decision requiring its own review."
+          "status": "mitigated",
+          "detail": "Risk R-01 in docs/DECISIONS.md. The product’s promise is that mood and cycle data stay private; a mistake here voids it silently.",
+          "mitigation": "Standard primitives only, test vectors, a written threat model, and an independent review gate at Phase 9."
         },
         {
-          "title": "On-device data has no backup path",
+          "title": "Losing the key loses the history",
           "area": "reliability",
           "severity": "high",
-          "status": "open",
-          "detail": "SQLite on the phone means a lost or wiped phone is a total loss of history — the exact data users would be most upset to lose.",
-          "mitigation": "An encrypted export the user controls, so recovery does not require a server that can read it."
+          "status": "mitigated",
+          "detail": "Risk R-02. Encrypted data with no key is gone.",
+          "mitigation": "Recovery-key confirmation, backups, device linking, an iCloud Keychain option."
         },
         {
-          "title": "Not yet submitted to the App Store",
+          "title": "Sync conflicts could drop entries without saying so",
+          "area": "reliability",
+          "severity": "high",
+          "status": "mitigated",
+          "detail": "Risk R-03 and R-25. Sync is hand-written on Firestore with a sequence counter and transactions, which is easier to get wrong than SQL.",
+          "mitigation": "Field-level HLC merge keeping conflicts, a never-delete-on-conflict rule, one transactional syncPush function, and multi-device property tests."
+        },
+        {
+          "title": "Google could suspend the project",
+          "area": "vendor",
+          "severity": "high",
+          "status": "mitigated",
+          "detail": "Risk R-22. Auth, sync and the proxies all sit on one Firebase project; losing it takes them down together.",
+          "mitigation": "The core app works offline, clients keep full local copies and an encrypted export, billing alerts are set, and SyncBackend / AuthProvider adapters give a documented migration path."
+        },
+        {
+          "title": "The weather proxy limit is per IP",
+          "area": "reliability",
+          "severity": "medium",
+          "status": "mitigated",
+          "detail": "Risk R-26: 120 requests an hour per IP. Users behind carrier-grade NAT share one, and bulk history imports hit it — seen in Phase 5 verification as 429s leaving jobs pending.",
+          "mitigation": "Client-side cache of fetched hours per cell, so only missing hours are requested. A per-account quota was rejected because it would link identity to coordinates."
+        },
+        {
+          "title": "Nine phases is more than gets finished",
           "area": "maintenance",
-          "severity": "low",
-          "status": "open",
-          "detail": "The iOS shell exists but has not been through review, which is where health-category apps meet the longest questionnaires.",
-          "mitigation": "Budget time for the health-data disclosures rather than treating submission as a formality."
+          "severity": "high",
+          "status": "mitigated",
+          "detail": "Risk R-15. A half-built feature with visible controls is worse than an absent one.",
+          "mitigation": "Feature flags hide unfinished work — no fake controls — with a checklist and definition-of-done gating each phase."
+        },
+        {
+          "title": "Statistically misleading insights",
+          "area": "compliance",
+          "severity": "high",
+          "status": "mitigated",
+          "detail": "Risk R-08. The app correlates mood with weather, cycle and context; naive correlation on this data produces confident nonsense about a person’s health.",
+          "mitigation": "Conservative thresholds, false-discovery-rate control, day-level units, explicit \"exploratory\" labels, and a stats review."
         }
       ],
       "costs": [
         {
-          "item": "femotion.io",
-          "provider": "Name.com",
-          "period": "yearly",
-          "amount": null,
-          "currency": "USD",
-          "renewsOn": "2027-11-06",
-          "notes": "Price not recorded."
-        },
-        {
           "item": "Apple Developer Program",
           "provider": "Apple",
           "plan": "Individual",
-          "amount": 99,
+          "amount": 0,
           "currency": "USD",
           "period": "yearly",
-          "notes": "Shared with Librora — one membership covers both."
+          "notes": "No extra cost — the existing Librora membership covers it ($99/yr)."
         },
         {
-          "item": "Firebase",
-          "provider": "Google",
-          "plan": "unknown",
-          "amount": null,
+          "item": "Domain femotion.io",
+          "provider": "Vercel",
+          "plan": "Registration",
+          "amount": 46,
           "currency": "USD",
-          "period": "usage",
-          "notes": "Hosting and functions. Most data stays on the device."
+          "period": "yearly",
+          "renewsOn": "2027-11-05",
+          "notes": "About $3.80 a month. DNS on Vercel nameservers."
+        },
+        {
+          "item": "WeatherKit and Apple Maps Server API",
+          "provider": "Apple",
+          "plan": "Included",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Included with the membership; WeatherKit allows 500k calls a month."
+        },
+        {
+          "item": "Firebase Auth and Hosting",
+          "provider": "Google",
+          "plan": "Spark",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Email, Google and Apple sign-in are free."
+        },
+        {
+          "item": "Cloud Functions",
+          "provider": "Google",
+          "plan": "Blaze",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "About 2M invocations a month free, then roughly $0.40 per million. Blaze needs a card on file."
+        },
+        {
+          "item": "Cloud Firestore",
+          "provider": "Google",
+          "plan": "Blaze",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Within the free daily quota (~50k reads, 20k writes, 1 GiB)."
         }
       ],
       "registrations": [
         {
           "kind": "domain",
           "name": "femotion.io",
-          "registrar": "Name.com",
-          "registeredOn": "2026-11-06",
-          "expiresOn": "2027-11-06",
-          "accountEmail": "voloshynajelena@gmail.com",
-          "notes": "DNS on Vercel. Auto-renew not verified — check at Name.com."
+          "registrar": "Vercel",
+          "expiresOn": "2027-11-05",
+          "url": "https://femotion.io",
+          "notes": "$46/yr. DNS on Vercel nameservers. ADR-0001."
+        },
+        {
+          "kind": "developer-account",
+          "name": "Apple Developer Program",
+          "registrar": "Apple",
+          "notes": "Shared with Librora — no separate membership (R-18)."
+        },
+        {
+          "kind": "service",
+          "name": "Firebase project",
+          "registrar": "Google",
+          "notes": "Separate project and billing budget from Librora, deliberately (R-21). $5 budget alert set at creation."
         }
       ],
       "portfolio": {
@@ -1321,9 +1392,11 @@
       "client": "Internal Product",
       "status": "active",
       "type": "internal",
-      "oneLiner": "The architecture of my life.",
-      "essence": "A personal system for structuring life areas, goals and routines. Early — twelve commits in, the shape is still being decided.",
-      "productUrls": [],
+      "oneLiner": "A private life OS. Everything encrypted in the browser before it leaves.",
+      "essence": "A single person’s map of goals, plans, timeline, boards and finances. The server never sees plaintext: records and images are sealed with AES-256-GCM in the browser, under a key wrapped by a passphrase (Argon2id) and by a recovery key. Firestore holds ciphertext only.",
+      "productUrls": [
+        "https://vesper-wine.vercel.app/map"
+      ],
       "owner": "Olena Voloshyna",
       "techLead": "Olena Voloshyna",
       "team": [],
@@ -1337,25 +1410,27 @@
         "frontend": {
           "name": "Next.js",
           "version": "16.4.6",
-          "notes": "React 19"
+          "notes": "App Router, React 19.3, MapLibre GL, React Flow, Radix UI"
         },
         "backend": {
-          "name": "Next.js server actions",
-          "version": "16.4.6",
-          "notes": ""
+          "name": "Next.js route handlers",
+          "version": "",
+          "notes": "Three narrow routes: image fetch, AI translate, health"
         },
         "database": {
-          "name": "Firestore",
+          "name": "Cloud Firestore",
           "version": "",
-          "notes": ""
+          "notes": "Ciphertext only; project vesper-life-os"
         },
         "hosting": {
           "name": "Vercel",
-          "notes": ""
+          "version": "",
+          "notes": "Hobby plan"
         },
         "auth": {
           "name": "Firebase Auth",
-          "notes": ""
+          "version": "",
+          "notes": "Google and email, then an allowlist, then the vault key"
         },
         "cicd": {
           "name": "GitHub + host integration",
@@ -1375,13 +1450,36 @@
           "key": "web",
           "name": "Web app",
           "kind": "web",
-          "path": "src",
+          "path": "app",
+          "oneLiner": "Map, overview, plan, goals, timeline, boards, finance, analytics, settings.",
           "stack": {
             "language": "TypeScript",
-            "framework": "Next.js 16",
+            "framework": "Next.js 16 App Router",
             "hosting": "Vercel"
           },
-          "status": "active"
+          "distribution": "https://vesper-wine.vercel.app"
+        },
+        {
+          "key": "crypto",
+          "name": "Crypto layer",
+          "kind": "other",
+          "path": "lib/crypto",
+          "oneLiner": "AES-GCM, the keyring (Argon2id / HKDF, wrap and unwrap), the device key.",
+          "stack": {
+            "language": "TypeScript",
+            "runtime": "Web Crypto + hash-wasm"
+          }
+        },
+        {
+          "key": "api",
+          "name": "Server routes",
+          "kind": "api",
+          "path": "app/api",
+          "oneLiner": "SSRF-safe image download and optional entry translation. Both verify the ID token.",
+          "stack": {
+            "language": "TypeScript",
+            "runtime": "Node on Vercel"
+          }
         }
       ],
       "environments": [],
@@ -1410,36 +1508,126 @@
       "startDate": "2026-11-23",
       "decisions": [
         {
-          "title": "Next 16 and React 19 from the start",
-          "choice": "Latest major versions",
-          "date": "2026-11",
-          "rationale": "Nothing to migrate and no users to break, which is the only moment when taking the newest major is cheap.",
-          "alternatives": "Next 14, matching Librora.",
-          "tradeoffs": "Nothing is shared with the Next 14 projects, and the ecosystem is thinner this early."
+          "title": "Where decryption happens",
+          "choice": "In the browser, never on the server",
+          "rationale": "The vault is the point. If the server could read a record, a subpoena, a misconfigured rule or a bad deploy could too. Keeping the key in the browser means the hosting provider and the database are untrusted by design.",
+          "tradeoffs": "No server-side search, no server-side rendering of content, and analytics have to run on the client over decrypted data."
+        },
+        {
+          "title": "How the key is protected",
+          "choice": "Argon2id at 64 MiB, t=3, with a random data key wrapped twice",
+          "rationale": "A passphrase alone is guessable; a random 256-bit data key is not. The passphrase and the recovery key each wrap the same data key, so changing the passphrase does not re-encrypt the vault.",
+          "alternatives": "PBKDF2 (weaker against GPUs); scrypt.",
+          "tradeoffs": "64 MiB of memory per unlock is noticeable on a phone. OWASP’s baseline is 19 MiB; Firestore rules reject keyrings below it."
+        },
+        {
+          "title": "Fetching images from a link",
+          "choice": "A server route that verifies the token and blocks internal addresses",
+          "rationale": "Images have to be downloaded once and stored encrypted, which the browser cannot do across origins. A naive proxy is an SSRF hole into Vercel’s network.",
+          "tradeoffs": "One route that must stay correct; it is the only place the server touches a URL the user supplied."
+        },
+        {
+          "title": "Translation is optional and off",
+          "choice": "Anthropic API, only when switched on",
+          "rationale": "Sending entry text to a model is the one thing that breaks the privacy promise, so it is a setting the owner turns on knowingly rather than a default.",
+          "tradeoffs": "Without the key the app costs nothing and translation is simply absent."
         }
       ],
       "risks": [
         {
-          "title": "Too early to have a shape",
-          "area": "maintenance",
-          "severity": "low",
+          "title": "Losing the key loses everything",
+          "area": "reliability",
+          "severity": "critical",
+          "status": "mitigated",
+          "detail": "Nobody can decrypt the vault without the passphrase or the recovery key — not the owner, not the host, not a support process, because none exists.",
+          "mitigation": "A 52-character recovery key, shown and confirmed at setup, with lenient parsing. Recovery and rotation documented in docs/RECOVERY.md."
+        },
+        {
+          "title": "A flaw in the crypto code",
+          "area": "security",
+          "severity": "critical",
+          "status": "mitigated",
+          "detail": "Hand-assembled key handling is where this class of product fails, and a mistake is silent.",
+          "mitigation": "Standard primitives only, from Web Crypto, with Argon2id from hash-wasm. Non-extractable CryptoKey; raw bytes zeroed after use. Threat model in docs/SECURITY.md."
+        },
+        {
+          "title": "The image route reaches the network on request",
+          "area": "security",
+          "severity": "high",
+          "status": "mitigated",
+          "detail": "A route that fetches a user-supplied URL can be pointed at internal services.",
+          "mitigation": "ID token verified with jose, allowlist checked in Firestore, SSRF-safe download."
+        },
+        {
+          "title": "Keyring strength is enforced in rules, not only in code",
+          "area": "security",
+          "severity": "medium",
+          "status": "mitigated",
+          "detail": "A client could write a keyring derived with weak parameters.",
+          "mitigation": "Firestore rules reject keyrings below OWASP’s baseline of 19 MiB and t=2."
+        },
+        {
+          "title": "Translation sends text to a third party",
+          "area": "privacy",
+          "severity": "medium",
           "status": "accepted",
-          "detail": "Twelve commits in. Decisions recorded now are provisional and should be revisited rather than defended.",
-          "mitigation": "Revisit this tab once the product has a shape."
+          "detail": "With translation on, the text of an entry leaves the device in plaintext to Anthropic.",
+          "mitigation": "Off by default, documented in docs/AI_PRIVACY.md, and only the entry text is sent."
         }
       ],
       "costs": [
         {
-          "item": "Vercel",
+          "item": "Hosting",
           "provider": "Vercel",
-          "plan": "unknown",
-          "amount": null,
+          "plan": "Hobby",
+          "amount": 0,
           "currency": "USD",
           "period": "monthly",
-          "notes": "Same account."
+          "notes": "Pages plus three small API routes."
+        },
+        {
+          "item": "Firebase Auth",
+          "provider": "Google",
+          "plan": "Spark",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "One user."
+        },
+        {
+          "item": "Cloud Firestore",
+          "provider": "Google",
+          "plan": "Spark",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Under 5 MB stored; a few hundred reads per unlock."
+        },
+        {
+          "item": "Anthropic API",
+          "provider": "Anthropic",
+          "plan": "Pay as you go",
+          "amount": null,
+          "currency": "USD",
+          "period": "usage",
+          "notes": "Only with translation on: about $0.50 a month at 100 edits; a one-off full-plan translation is $0.40–0.60. Zero without the key."
         }
       ],
-      "registrations": [],
+      "registrations": [
+        {
+          "kind": "service",
+          "name": "vesper-wine.vercel.app",
+          "registrar": "Vercel",
+          "url": "https://vesper-wine.vercel.app",
+          "notes": "No custom domain."
+        },
+        {
+          "kind": "service",
+          "name": "Firebase project vesper-life-os",
+          "registrar": "Google",
+          "notes": "Auth and Firestore."
+        }
+      ],
       "portfolio": {
         "published": true,
         "slug": "vesper",
@@ -1455,6 +1643,840 @@
           "Development"
         ],
         "fullDescription": "A personal system for structuring life areas, goals and routines. Early — twelve commits in, the shape is still being decided.",
+        "challenge": "",
+        "solution": "",
+        "results": [],
+        "testimonial": null,
+        "order": 0,
+        "hidden": false,
+        "showOnHomepage": false
+      }
+    },
+    {
+      "key": "dojodash",
+      "name": "DojoDash",
+      "type": "internal",
+      "status": "active",
+      "client": "Personal Project",
+      "owner": "TBD",
+      "techLead": "TBD",
+      "team": [],
+      "oneLiner": "Kids sports club management — attendance, medals, groups and families.",
+      "essence": "A club management platform with three roles: admin, coach and family. Coaches take attendance and award medals; families manage their children and see progress. XP, levels, streaks and group leaderboards sit on top of attendance.",
+      "productUrls": [
+        "https://dojodash.vercel.app/"
+      ],
+      "tags": [
+        "kids",
+        "sports",
+        "club",
+        "attendance",
+        "firebase"
+      ],
+      "startDate": "2026-03-05",
+      "stack": {
+        "frontend": {
+          "name": "Next.js",
+          "version": "14.2",
+          "notes": "App Router, TypeScript, Mantine v7, TanStack Query"
+        },
+        "backend": {
+          "name": "Firebase Cloud Functions",
+          "version": "",
+          "notes": "Callable functions per role, plus Firestore triggers"
+        },
+        "database": {
+          "name": "Cloud Firestore",
+          "version": "",
+          "notes": "Data access layer in @dojodash/firebase"
+        },
+        "hosting": {
+          "name": "Vercel",
+          "version": "",
+          "notes": "Web app; Firebase hosts rules, functions and storage"
+        },
+        "auth": {
+          "name": "Firebase Auth",
+          "version": "",
+          "notes": "Roles as custom claims: admin, coach, family"
+        },
+        "cicd": {
+          "name": "Turborepo + pnpm workspaces",
+          "version": "",
+          "notes": "Monorepo build graph"
+        },
+        "analytics": {
+          "name": "TBD",
+          "version": "",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "TBD",
+          "version": "",
+          "notes": ""
+        }
+      },
+      "components": [
+        {
+          "key": "web",
+          "name": "Web app",
+          "kind": "web",
+          "path": "apps/web",
+          "oneLiner": "The whole product — admin, coach and family areas.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Next.js 14 App Router",
+            "hosting": "Vercel"
+          },
+          "distribution": "https://dojodash.vercel.app/"
+        },
+        {
+          "key": "mobile",
+          "name": "Mobile app",
+          "kind": "mobile-cross",
+          "path": "apps/mobile",
+          "oneLiner": "Expo client. Scaffolded, not released.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Expo"
+          }
+        },
+        {
+          "key": "functions",
+          "name": "Cloud Functions",
+          "kind": "functions",
+          "path": "functions",
+          "oneLiner": "Callable functions for admin and coach actions, and Firestore triggers.",
+          "stack": {
+            "language": "TypeScript",
+            "runtime": "Node",
+            "hosting": "Firebase"
+          }
+        },
+        {
+          "key": "packages",
+          "name": "Shared packages",
+          "kind": "other",
+          "path": "packages",
+          "oneLiner": "core (domain logic, Zod schemas), firebase (DAL), ui (Mantine theme), club, config.",
+          "stack": {
+            "language": "TypeScript"
+          }
+        }
+      ],
+      "decisions": [
+        {
+          "title": "Domain logic in a platform-agnostic package",
+          "choice": "@dojodash/core",
+          "rationale": "XP, streaks and leaderboard maths are the part most likely to be wanted on a phone as well as on the web. Keeping them free of React and Firebase means the Expo app can use them unchanged.",
+          "tradeoffs": "One more package to version, and the temptation to put Firebase types in it has to be resisted."
+        },
+        {
+          "title": "A component library rather than hand-rolled UI",
+          "choice": "Mantine v7",
+          "rationale": "The product is forms and tables — attendance, groups, users. Mantine ships both, with dates and notifications, so the work goes into club rules instead of into a date picker.",
+          "tradeoffs": "The look is Mantine’s; escaping it later means rewriting the surface."
+        },
+        {
+          "title": "Bot protection on a product used by children",
+          "choice": "Firebase App Check with reCAPTCHA v3",
+          "rationale": "Registration is open to families, so the sign-up path is exposed. App Check rejects calls that did not come from the real app before they reach Firestore or a function.",
+          "tradeoffs": "A failing App Check locks out legitimate users, and the failure mode is opaque."
+        },
+        {
+          "title": "Privacy defaults chosen against the product’s interest",
+          "choice": "Full name and photo off by default",
+          "rationale": "The data belongs to minors. A leaderboard is more engaging with faces and full names, which is exactly why the parent has to turn them on rather than find them already on.",
+          "tradeoffs": "Leaderboards look emptier until parents opt in, and most never will."
+        }
+      ],
+      "risks": [
+        {
+          "title": "The product holds data about children",
+          "area": "privacy",
+          "severity": "high",
+          "status": "mitigated",
+          "detail": "Names, photos, dates of birth and attendance of minors. Coaches see full names for attendance; parent contact details and dates of birth are kept from them.",
+          "mitigation": "Per-child privacy settings controlled by the parent, defaulting to first name only and no photo. Documented in docs/privacy-notes.md."
+        },
+        {
+          "title": "Roles live in custom claims",
+          "area": "security",
+          "severity": "high",
+          "status": "open",
+          "detail": "Admin, coach and family are Firebase custom claims. A claim set wrongly, or a stale token after a role change, grants access the security rules will honour.",
+          "mitigation": "Claims are only written by admin callable functions; rules check them on every read. A forced token refresh after a role change is not yet verified."
+        },
+        {
+          "title": "No production Firebase project yet",
+          "area": "reliability",
+          "severity": "medium",
+          "status": "open",
+          "detail": "docs/deployment.md describes creating dojodash-prod; development runs against emulators and dojodash-dev.",
+          "mitigation": "Deployment guide is written; the project has to be created and App Check keys issued before real families use it."
+        },
+        {
+          "title": "Free Firebase quotas are shared by the whole club",
+          "area": "cost",
+          "severity": "low",
+          "status": "accepted",
+          "detail": "Attendance writes and leaderboard reads scale with children times sessions, against a daily free quota.",
+          "mitigation": "Small at club scale. Budget alerts before opening it to more than one club."
+        }
+      ],
+      "costs": [
+        {
+          "item": "Web hosting",
+          "provider": "Vercel",
+          "plan": "Hobby",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Within the free tier."
+        },
+        {
+          "item": "Firebase (Auth, Firestore, Storage, Functions)",
+          "provider": "Google",
+          "plan": "Spark",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Functions need Blaze before production."
+        },
+        {
+          "item": "reCAPTCHA v3 for App Check",
+          "provider": "Google",
+          "plan": "Free",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": ""
+        }
+      ],
+      "registrations": [
+        {
+          "kind": "service",
+          "name": "dojodash.vercel.app",
+          "registrar": "Vercel",
+          "url": "https://dojodash.vercel.app/",
+          "notes": "Project subdomain, no custom domain registered."
+        }
+      ],
+      "environments": [
+        {
+          "type": "PROD",
+          "url": "https://dojodash.vercel.app/",
+          "notes": "Sign-in required."
+        }
+      ],
+      "links": [],
+      "instructions": {
+        "localSetupMd": "",
+        "deployMd": "",
+        "testingMd": "",
+        "runbookMd": "",
+        "knownIssuesMd": ""
+      },
+      "operations": {
+        "sla": "",
+        "backups": "",
+        "pii": "",
+        "dataRegion": "",
+        "secretsLocation": "",
+        "onCallRotation": "",
+        "incidentProcess": ""
+      },
+      "security": {
+        "authMethod": "",
+        "dataEncryption": "",
+        "complianceNotes": ""
+      },
+      "portfolio": {
+        "published": false,
+        "slug": "dojodash",
+        "categories": [
+          "web"
+        ],
+        "thumbnail": "",
+        "images": [],
+        "industry": "",
+        "year": 2026,
+        "services": [],
+        "fullDescription": "",
+        "challenge": "",
+        "solution": "",
+        "results": [],
+        "testimonial": null,
+        "order": 0,
+        "hidden": false,
+        "showOnHomepage": false
+      }
+    },
+    {
+      "key": "jocasta",
+      "name": "J.O.C.A.S.T.A.",
+      "type": "internal",
+      "status": "active",
+      "client": "Internal / Personal",
+      "owner": "TBD",
+      "techLead": "TBD",
+      "team": [],
+      "oneLiner": "AI scheduling assistant that plans around travel time and weather.",
+      "essence": "Type \"pick up groceries at Costco tomorrow\" and get a scheduling proposal. Syncs both ways with Google Calendar without duplicating events, works out travel time between them with traffic and weather, and asks for confirmation through Telegram with inline buttons.",
+      "productUrls": [
+        "https://jocasta-io.vercel.app",
+        "https://jocasta-api.onrender.com"
+      ],
+      "tags": [
+        "ai",
+        "calendar",
+        "scheduling",
+        "telegram"
+      ],
+      "startDate": "2026-02-20",
+      "stack": {
+        "frontend": {
+          "name": "Expo / React Native",
+          "version": "~54.0",
+          "notes": "Expo Router + Tamagui; one codebase for iOS and web"
+        },
+        "backend": {
+          "name": "NestJS",
+          "version": "^10.3",
+          "notes": "Prisma, JWT, Swagger, scheduled jobs"
+        },
+        "database": {
+          "name": "PostgreSQL",
+          "version": "",
+          "notes": "Prisma schema and migrations"
+        },
+        "hosting": {
+          "name": "Vercel + Render",
+          "version": "",
+          "notes": "Web on Vercel, API on Render (free plan)"
+        },
+        "auth": {
+          "name": "Google OAuth + JWT",
+          "version": "",
+          "notes": "Calendar scopes; refresh tokens encrypted at rest"
+        },
+        "cicd": {
+          "name": "Turborepo + pnpm",
+          "version": "",
+          "notes": "render.yaml as infrastructure-as-code"
+        },
+        "analytics": {
+          "name": "TBD",
+          "version": "",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "TBD",
+          "version": "",
+          "notes": ""
+        }
+      },
+      "components": [
+        {
+          "key": "client",
+          "name": "Client (iOS + web)",
+          "kind": "mobile-cross",
+          "path": "apps/client",
+          "oneLiner": "Expo Router app that also builds for the web.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Expo + Tamagui",
+            "hosting": "Vercel"
+          },
+          "distribution": "https://jocasta-io.vercel.app"
+        },
+        {
+          "key": "server",
+          "name": "API server",
+          "kind": "api",
+          "path": "apps/server",
+          "oneLiner": "NestJS API: scheduling, calendar sync, travel and weather.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "NestJS",
+            "runtime": "Node 20",
+            "hosting": "Render"
+          },
+          "distribution": "https://jocasta-api.onrender.com"
+        },
+        {
+          "key": "bot",
+          "name": "Telegram bot",
+          "kind": "bot",
+          "oneLiner": "Notifications with Accept / Snooze / Reschedule buttons.",
+          "stack": {
+            "language": "TypeScript"
+          }
+        },
+        {
+          "key": "shared",
+          "name": "Shared package",
+          "kind": "other",
+          "path": "packages/shared",
+          "oneLiner": "Types, Zod schemas and utilities used by both apps.",
+          "stack": {
+            "language": "TypeScript"
+          }
+        }
+      ],
+      "decisions": [
+        {
+          "title": "The model never runs on the device",
+          "choice": "OpenAI GPT-4o-mini, server-side only",
+          "rationale": "Natural-language extraction needs a key, and a key in a React Native bundle is a published key. The server holds it and the client sends text.",
+          "tradeoffs": "Nothing works offline, and every parse is a round trip."
+        },
+        {
+          "title": "Calendar sync has to survive being run twice",
+          "choice": "Bi-directional sync keyed on event identity",
+          "rationale": "A scheduling assistant that duplicates events on every sync is worse than no assistant. Identity is matched rather than appended to.",
+          "tradeoffs": "Matching rules are the part most likely to be subtly wrong, and the failure is silent."
+        },
+        {
+          "title": "Travel time is part of the schedule, not a note on it",
+          "choice": "Google Directions + Open-Meteo, per transport mode",
+          "rationale": "The point of the product is that an event at 3pm across town is not free. Sedan, motorcycle, taxi and transit are weighted differently, and Calgary weather changes the motorcycle and transit numbers.",
+          "tradeoffs": "Two more external APIs in the critical path, each with its own quota."
+        },
+        {
+          "title": "The API runs on a free plan",
+          "choice": "Render free tier",
+          "rationale": "A personal assistant with one user does not justify paying for an always-on server.",
+          "tradeoffs": "The instance sleeps and can be reclaimed. As of 2026-11-24 the API does not answer at all, while the web app does."
+        }
+      ],
+      "risks": [
+        {
+          "title": "The API is not responding",
+          "area": "reliability",
+          "severity": "high",
+          "status": "open",
+          "detail": "https://jocasta-api.onrender.com returned nothing on 2026-11-24, while the web app at jocasta-io.vercel.app answered 200. Render reclaims free instances.",
+          "mitigation": "Redeploy from render.yaml, or move the API to a plan that stays awake."
+        },
+        {
+          "title": "Google OAuth is unverified",
+          "area": "compliance",
+          "severity": "medium",
+          "status": "planned",
+          "detail": "Users see \"Google hasn’t verified this app\". Calendar scopes are sensitive, so verification needs a privacy policy, terms and a logo.",
+          "mitigation": "Steps written up in GoogleVerification.md; the privacy and terms pages have to be deployed first."
+        },
+        {
+          "title": "Google refresh tokens are held by the server",
+          "area": "security",
+          "severity": "high",
+          "status": "mitigated",
+          "detail": "The API stores long-lived Google credentials that grant calendar access.",
+          "mitigation": "Encrypted with ENCRYPTION_KEY; JWT access and refresh secrets kept separate. Key rotation is not documented."
+        },
+        {
+          "title": "Every parse costs money",
+          "area": "cost",
+          "severity": "low",
+          "status": "accepted",
+          "detail": "Natural-language input calls OpenAI on each submission, and Directions is billed per request.",
+          "mitigation": "GPT-4o-mini is the cheap model; usage is one person."
+        }
+      ],
+      "costs": [
+        {
+          "item": "API hosting",
+          "provider": "Render",
+          "plan": "Free",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Sleeps when idle; currently not answering."
+        },
+        {
+          "item": "Web hosting",
+          "provider": "Vercel",
+          "plan": "Hobby",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": ""
+        },
+        {
+          "item": "OpenAI API",
+          "provider": "OpenAI",
+          "plan": "Pay as you go",
+          "amount": null,
+          "currency": "USD",
+          "period": "usage",
+          "notes": "GPT-4o-mini for natural-language extraction."
+        },
+        {
+          "item": "Google Maps / Directions API",
+          "provider": "Google",
+          "plan": "Pay as you go",
+          "amount": null,
+          "currency": "USD",
+          "period": "usage",
+          "notes": "Within the monthly free credit at this usage."
+        },
+        {
+          "item": "PostgreSQL",
+          "provider": "Render",
+          "plan": "Free",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": ""
+        }
+      ],
+      "registrations": [
+        {
+          "kind": "service",
+          "name": "jocasta-io.vercel.app",
+          "registrar": "Vercel",
+          "url": "https://jocasta-io.vercel.app",
+          "notes": "Web app."
+        },
+        {
+          "kind": "service",
+          "name": "jocasta-api.onrender.com",
+          "registrar": "Render",
+          "url": "https://jocasta-api.onrender.com",
+          "notes": "API, free plan."
+        },
+        {
+          "kind": "service",
+          "name": "Google Cloud OAuth client",
+          "registrar": "Google",
+          "notes": "Calendar API scopes; app not yet verified."
+        },
+        {
+          "kind": "service",
+          "name": "Telegram bot",
+          "registrar": "Telegram",
+          "notes": "Notifications with inline actions."
+        }
+      ],
+      "environments": [
+        {
+          "type": "PROD",
+          "url": "https://jocasta-io.vercel.app",
+          "notes": "Web app."
+        },
+        {
+          "type": "PROD",
+          "url": "https://jocasta-api.onrender.com",
+          "notes": "API — not responding as of 2026-11-24."
+        }
+      ],
+      "links": [],
+      "instructions": {
+        "localSetupMd": "",
+        "deployMd": "",
+        "testingMd": "",
+        "runbookMd": "",
+        "knownIssuesMd": ""
+      },
+      "operations": {
+        "sla": "",
+        "backups": "",
+        "pii": "",
+        "dataRegion": "",
+        "secretsLocation": "",
+        "onCallRotation": "",
+        "incidentProcess": ""
+      },
+      "security": {
+        "authMethod": "",
+        "dataEncryption": "",
+        "complianceNotes": ""
+      },
+      "portfolio": {
+        "published": true,
+        "slug": "jocasta",
+        "categories": [
+          "mobile"
+        ],
+        "thumbnail": "",
+        "images": [],
+        "industry": "",
+        "year": 2026,
+        "services": [],
+        "fullDescription": "",
+        "challenge": "",
+        "solution": "",
+        "results": [],
+        "testimonial": null,
+        "order": 0,
+        "hidden": false,
+        "showOnHomepage": false
+      }
+    },
+    {
+      "key": "company-portal",
+      "name": "Company Portal",
+      "type": "internal",
+      "status": "active",
+      "client": "Personal Project",
+      "owner": "TBD",
+      "techLead": "TBD",
+      "team": [],
+      "oneLiner": "Multi-tenant HR platform: timesheets, requests, documents.",
+      "essence": "A SaaS HR portal with five roles — employee, manager, HR admin, tenant admin, platform operator. Tenants share one database and are kept apart by row-level security, with a documented path to heavier isolation if the tenant count demands it.",
+      "productUrls": [
+        "https://company-portal-web.vercel.app"
+      ],
+      "tags": [
+        "hr",
+        "saas",
+        "multi-tenant",
+        "b2b"
+      ],
+      "startDate": "2026-02-21",
+      "stack": {
+        "frontend": {
+          "name": "Next.js",
+          "version": "",
+          "notes": "Web app and admin panel"
+        },
+        "backend": {
+          "name": "NestJS",
+          "version": "",
+          "notes": "API server behind a gateway"
+        },
+        "database": {
+          "name": "PostgreSQL",
+          "version": "",
+          "notes": "Shared database, row-level security per tenant"
+        },
+        "hosting": {
+          "name": "Vercel + Render",
+          "version": "",
+          "notes": ""
+        },
+        "auth": {
+          "name": "Auth0",
+          "version": "",
+          "notes": "Behind an abstraction layer; WorkOS is the intended successor"
+        },
+        "cicd": {
+          "name": "GitHub",
+          "version": "",
+          "notes": ""
+        },
+        "analytics": {
+          "name": "TBD",
+          "version": "",
+          "notes": ""
+        },
+        "monitoring": {
+          "name": "TBD",
+          "version": "",
+          "notes": ""
+        }
+      },
+      "components": [
+        {
+          "key": "web",
+          "name": "Web app",
+          "kind": "web",
+          "oneLiner": "Employee, manager and HR surfaces.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Next.js",
+            "hosting": "Vercel"
+          },
+          "distribution": "https://company-portal-web.vercel.app"
+        },
+        {
+          "key": "api",
+          "name": "API server",
+          "kind": "api",
+          "oneLiner": "NestJS, tenant middleware, row-level security.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "NestJS",
+            "runtime": "Node"
+          }
+        },
+        {
+          "key": "admin",
+          "name": "Admin panel",
+          "kind": "web",
+          "oneLiner": "Platform operator surface across tenants.",
+          "stack": {
+            "language": "TypeScript",
+            "framework": "Next.js"
+          }
+        },
+        {
+          "key": "ios",
+          "name": "iOS app",
+          "kind": "mobile-ios",
+          "oneLiner": "Planned, not started. Scoped in docs/MOBILE_FUTURE.md.",
+          "notes": "Future."
+        }
+      ],
+      "decisions": [
+        {
+          "title": "How tenants are kept apart",
+          "choice": "One database, row-level security",
+          "rationale": "Under a hundred tenants, a schema or database per tenant buys isolation at the price of migrations, connection pooling and backup complexity that a product with no customers yet cannot afford to carry.",
+          "alternatives": "Schema per tenant (10–1000 tenants); database per tenant (enterprise, compliance).",
+          "tradeoffs": "A noisy tenant affects the rest, and one database is one thing to lose. Every query depends on the tenant middleware being right."
+        },
+        {
+          "title": "The identity provider is behind a seam",
+          "choice": "Auth abstraction layer with an Auth0 adapter",
+          "rationale": "Auth0 is what it uses now and WorkOS is where it is meant to go. Writing the adapter first makes that a change of one module rather than of every route.",
+          "tradeoffs": "An abstraction over exactly one implementation is a guess about the second one."
+        },
+        {
+          "title": "Files are not in the database",
+          "choice": "S3-compatible storage",
+          "rationale": "HR documents are large, numerous and rarely read. Keeping them out of Postgres keeps backups and restores to a size that can actually be restored.",
+          "tradeoffs": "A second store to secure, with its own per-tenant access rules."
+        }
+      ],
+      "risks": [
+        {
+          "title": "Tenant isolation rests on row-level security",
+          "area": "security",
+          "severity": "critical",
+          "status": "open",
+          "detail": "Every tenant shares one database. A query that misses the tenant predicate, or middleware that fails to set the tenant context, exposes one customer’s HR data to another.",
+          "mitigation": "Tenant middleware plus RLS policies in the database, so the predicate is enforced below the application. Needs tests that attempt cross-tenant reads."
+        },
+        {
+          "title": "One database for every tenant",
+          "area": "reliability",
+          "severity": "high",
+          "status": "accepted",
+          "detail": "A single Postgres instance is both the noisy-neighbour surface and the single point of failure, as docs/MULTI_TENANCY.md states plainly.",
+          "mitigation": "Accepted for the MVP with a documented migration path to schema-per-tenant."
+        },
+        {
+          "title": "It holds employment data",
+          "area": "privacy",
+          "severity": "high",
+          "status": "open",
+          "detail": "Timesheets, requests and HR documents are personal data about identifiable employees, held on behalf of other companies.",
+          "mitigation": "Role separation is designed. Retention, export and deletion on a tenant’s behalf are not yet documented."
+        },
+        {
+          "title": "Identity is a vendor",
+          "area": "vendor",
+          "severity": "medium",
+          "status": "mitigated",
+          "detail": "Auth0 pricing steps up sharply with active users, and it holds the login path for every tenant.",
+          "mitigation": "The adapter layer exists precisely so the provider can be replaced."
+        }
+      ],
+      "costs": [
+        {
+          "item": "Auth0",
+          "provider": "Okta",
+          "plan": "Free tier for now",
+          "amount": null,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": "Priced per monthly active user once past the free tier."
+        },
+        {
+          "item": "PostgreSQL",
+          "provider": "TBD",
+          "plan": "",
+          "amount": null,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": ""
+        },
+        {
+          "item": "Object storage",
+          "provider": "S3-compatible",
+          "plan": "",
+          "amount": null,
+          "currency": "USD",
+          "period": "usage",
+          "notes": "HR documents."
+        },
+        {
+          "item": "Transactional email",
+          "provider": "SendGrid or SES",
+          "plan": "",
+          "amount": null,
+          "currency": "USD",
+          "period": "usage",
+          "notes": "Notifications."
+        },
+        {
+          "item": "Web hosting",
+          "provider": "Vercel",
+          "plan": "Hobby",
+          "amount": 0,
+          "currency": "USD",
+          "period": "monthly",
+          "notes": ""
+        }
+      ],
+      "registrations": [
+        {
+          "kind": "service",
+          "name": "company-portal-web.vercel.app",
+          "registrar": "Vercel",
+          "url": "https://company-portal-web.vercel.app",
+          "notes": "No custom domain."
+        },
+        {
+          "kind": "service",
+          "name": "Auth0 tenant",
+          "registrar": "Okta",
+          "notes": "Identity provider."
+        }
+      ],
+      "environments": [
+        {
+          "type": "PROD",
+          "url": "https://company-portal-web.vercel.app",
+          "notes": "Sign-in required."
+        }
+      ],
+      "links": [],
+      "instructions": {
+        "localSetupMd": "",
+        "deployMd": "",
+        "testingMd": "",
+        "runbookMd": "",
+        "knownIssuesMd": ""
+      },
+      "operations": {
+        "sla": "",
+        "backups": "",
+        "pii": "",
+        "dataRegion": "",
+        "secretsLocation": "",
+        "onCallRotation": "",
+        "incidentProcess": ""
+      },
+      "security": {
+        "authMethod": "",
+        "dataEncryption": "",
+        "complianceNotes": ""
+      },
+      "portfolio": {
+        "published": true,
+        "slug": "company-portal",
+        "categories": [
+          "web"
+        ],
+        "thumbnail": "",
+        "images": [],
+        "industry": "",
+        "year": 2026,
+        "services": [],
+        "fullDescription": "",
         "challenge": "",
         "solution": "",
         "results": [],
