@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { PortfolioItem, PortfolioItemBlocks } from '@/lib/firebase/types';
 import { COMPONENT_LABELS } from './portfolio-preview';
 import { ChipInput, Field, Input, Textarea } from './fields';
+import { ImageField } from './image-field';
 
 /**
  * A project's details, sliding in from the right.
@@ -104,6 +105,22 @@ export function ProjectDrawer({ item, onChange, onClose, onReset }: Props) {
           <Field label="Description">
             <Textarea value={item.description} onChange={v => set('description', v)} rows={5} />
           </Field>
+
+          <ImageField
+            label="Screenshot"
+            hint="the tile is mostly this"
+            value={item.screenshot ?? ''}
+            onChange={v => set('screenshot', v)}
+            prefer="shot"
+          />
+
+          <ImageField
+            label="Logo"
+            hint="the badge on the tile"
+            value={item.logo ?? item.thumbnail ?? ''}
+            onChange={v => set('logo', v)}
+            prefer="logo"
+          />
 
           <Field label="Live URL">
             <Input value={item.liveUrl ?? ''} onChange={v => set('liveUrl', v)} placeholder="https://" />

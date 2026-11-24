@@ -103,6 +103,12 @@ export function itemFromProject(data: Record<string, any>, order: number): Portf
     role: data.owner && data.techLead === data.owner ? 'Owner, tech lead' : undefined,
     period: started ? `${started}${ended && ended !== started ? `–${ended}` : ''}` : undefined,
     description: portfolio.fullDescription || data.essence || '',
+    // The knowledge base keeps one small image and a list of large ones, which
+    // is exactly the logo-and-screenshot split a tile needs — it just never
+    // said so. `thumbnail` is square and tiny on every record that has one;
+    // `images` are full-page captures.
+    logo: portfolio.thumbnail || undefined,
+    screenshot: portfolio.images?.[0] || undefined,
     thumbnail: portfolio.thumbnail || '',
     liveUrl: data.productUrls?.[0] || '',
     tags: portfolio.tags?.length ? portfolio.tags : data.tags ?? [],
@@ -187,8 +193,24 @@ export async function defaultProfile(): Promise<PortfolioProfile> {
     }
   }
 
-  const stack = Array.from(counts.values())
-    .sort((a, b) => b.n - a.n || a.name.localeCompare(b.name))
+  // The headline stack is read in a glance, so it has to be names: "React",
+  // "TypeScript". A project's own stack may legitimately say "GitHub + host
+  // integration" or "Better Auth with Google OAuth" — accurate on the project
+  // page, a paragraph in a chip at the top of a portfolio.
+  const isAName = (name: string) =>
+    name.length <= 24 && !/[+/]|\bwith\b|\band\b/i.test(name);
+
+  const ranked = Array.from(counts.values()).sort(
+    (a, b) => b.n - a.n || a.name.localeCompare(b.name),
+  );
+
+  const stack = [
+    ...ranked.filter(t => isAName(t.name)),
+    // Phrases are not dropped outright, only demoted: on a profile whose
+    // projects all describe their stack that way, an empty list would be
+    // worse than a wordy one.
+    ...ranked.filter(t => !isAName(t.name)),
+  ]
     .slice(0, 12)
     .map(t => t.name);
 

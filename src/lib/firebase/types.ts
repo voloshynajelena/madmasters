@@ -735,6 +735,12 @@ export interface PortfolioItem {
   role?: string;
   period?: string;
   description: string;
+  /// The product's own mark, shown as a badge on the tile.
+  logo?: string;
+  /// A wide capture of the running product. The tile is mostly this.
+  screenshot?: string;
+  /// Kept for versions written before tiles had a screenshot, and used as the
+  /// logo when no logo was set.
   thumbnail?: string;
   liveUrl?: string;
   tags: string[];

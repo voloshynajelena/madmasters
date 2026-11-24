@@ -35,6 +35,8 @@ export const itemSchema = z.object({
   role: z.string().optional(),
   period: z.string().optional(),
   description: z.string().default(''),
+  logo: z.string().optional(),
+  screenshot: z.string().optional(),
   thumbnail: z.string().optional(),
   liveUrl: z.string().optional(),
   tags: z.array(z.string()).default([]),
