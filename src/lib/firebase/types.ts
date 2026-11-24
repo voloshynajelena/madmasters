@@ -739,6 +739,9 @@ export interface PortfolioItem {
   logo?: string;
   /// A wide capture of the running product. The tile is mostly this.
   screenshot?: string;
+  /// Further images, shown in the details panel beneath the main one. The
+  /// screenshot leads the gallery, so this holds only the rest.
+  gallery?: string[];
   /// Kept for versions written before tiles had a screenshot, and used as the
   /// logo when no logo was set.
   thumbnail?: string;

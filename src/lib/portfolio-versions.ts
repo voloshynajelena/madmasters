@@ -109,6 +109,9 @@ export function itemFromProject(data: Record<string, any>, order: number): Portf
     // `images` are full-page captures.
     logo: portfolio.thumbnail || undefined,
     screenshot: portfolio.images?.[0] || undefined,
+    // The first image is the tile; the gallery is what comes after it, so the
+    // details panel does not open on the picture the reader just clicked.
+    gallery: (portfolio.images ?? []).slice(1),
     thumbnail: portfolio.thumbnail || '',
     liveUrl: data.productUrls?.[0] || '',
     tags: portfolio.tags?.length ? portfolio.tags : data.tags ?? [],

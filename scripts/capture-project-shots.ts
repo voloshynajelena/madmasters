@@ -4,8 +4,8 @@
  * Run with: npx tsx scripts/capture-project-shots.ts [--only key] [--force] [--dry-run]
  *
  * The portfolio builder shows each project as a tile — a screenshot with the
- * product's logo on it — and the knowledge base had images for none of the
- * recent projects. Entering them by hand means finding the site, framing a
+ * product's logo on it — and a gallery behind it, and the knowledge base had
+ * images for none of the recent projects. Entering them by hand means finding the site, framing a
  * capture, exporting at a sane size and remembering where the logo lives,
  * once per project and again whenever a site is redesigned. A browser can do
  * all of that, so it does.
@@ -45,6 +45,11 @@ const PUBLIC_PREFIX = '/content/img/projects';
 
 /** Wide enough to look like a desktop site, short enough to crop to a tile. */
 const VIEWPORT = { width: 1440, height: 900 };
+
+/** How many frames to take down each page: one for the tile, the rest for the
+ *  gallery. Three is where it stops being a product tour and starts being a
+ *  scroll recording. */
+const GALLERY_FRAMES = 3;
 
 function initFirebase() {
   if (getApps().length > 0) return;
@@ -164,11 +169,36 @@ async function capture() {
       await page.waitForTimeout(2500);
 
       if (!hasShot || force) {
-        const file = path.join(OUT_DIR, `${key}.jpg`);
-        if (!dryRun) await page.screenshot({ path: file, type: 'jpeg', quality: 82 });
-        patch['portfolio.images'] = [`${PUBLIC_PREFIX}/${key}.jpg`];
-        console.log(`   скриншот → ${PUBLIC_PREFIX}/${key}.jpg`);
-        shots++;
+        const captured: string[] = [];
+
+        // The first frame is the tile. The rest are the gallery, taken one
+        // screen apart down the page: a landing page says different things in
+        // its hero, its features and its pricing, and a portfolio that shows
+        // only the hero shows the part every landing page has in common.
+        for (let frame = 0; frame < GALLERY_FRAMES; frame++) {
+          if (frame > 0) {
+            const moved = await page.evaluate(`(() => {
+              const before = window.scrollY;
+              window.scrollBy(0, window.innerHeight * 0.9);
+              return window.scrollY > before + 40;
+            })()`);
+            // A short page stops scrolling, and further frames would all be
+            // the same footer.
+            if (!moved) break;
+            await page.waitForTimeout(1200);
+          }
+
+          const name = frame === 0 ? `${key}.jpg` : `${key}-${frame + 1}.jpg`;
+          if (!dryRun) {
+            await page.screenshot({ path: path.join(OUT_DIR, name), type: 'jpeg', quality: 82 });
+          }
+          captured.push(`${PUBLIC_PREFIX}/${name}`);
+        }
+
+        await page.evaluate('window.scrollTo(0, 0)');
+        patch['portfolio.images'] = captured;
+        console.log(`   скриншотов → ${captured.length}: ${captured.map(c => c.split('/').pop()).join(', ')}`);
+        shots += captured.length;
       }
 
       if (!hasLogo || force) {

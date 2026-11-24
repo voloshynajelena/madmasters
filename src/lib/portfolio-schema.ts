@@ -37,6 +37,7 @@ export const itemSchema = z.object({
   description: z.string().default(''),
   logo: z.string().optional(),
   screenshot: z.string().optional(),
+  gallery: z.array(z.string()).default([]),
   thumbnail: z.string().optional(),
   liveUrl: z.string().optional(),
   tags: z.array(z.string()).default([]),

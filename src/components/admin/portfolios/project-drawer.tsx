@@ -4,15 +4,16 @@ import { useEffect, useState } from 'react';
 import type { PortfolioItem, PortfolioItemBlocks } from '@/lib/firebase/types';
 import { COMPONENT_LABELS } from './portfolio-preview';
 import { ChipInput, Field, Input, Textarea } from './fields';
-import { ImageField } from './image-field';
+import { GalleryField, ImageField } from './image-field';
 
 /**
- * A project's details, sliding in from the right.
+ * The owner's form for one project, sliding in from the right.
  *
- * One drawer, opened from either side of the builder — the list on the left
- * and the "Details" link in the preview lead to the same place. Two drawers,
- * one to read and one to edit, would double the surface and make the preview
- * a lie about where the text comes from.
+ * Reached from the project list on the left. Its counterpart is
+ * `VisitorDetails`, which the preview opens when a tile is clicked: the two
+ * answer different questions — this one "what does this portfolio say", that
+ * one "what does a stranger take away" — and each has a button to the other,
+ * so checking a change does not mean hunting for it again.
  *
  * Everything here edits the version's copy. "Reset from Projects KB" is the
  * only path back to the real record, and it is a button rather than a
@@ -34,9 +35,11 @@ interface Props {
   onChange: (next: PortfolioItem) => void;
   onClose: () => void;
   onReset: () => Promise<void>;
+  /** Swap to the visitor's view of the same project. */
+  onPreview?: () => void;
 }
 
-export function ProjectDrawer({ item, onChange, onClose, onReset }: Props) {
+export function ProjectDrawer({ item, onChange, onClose, onReset, onPreview }: Props) {
   const [resetting, setResetting] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
 
@@ -69,6 +72,15 @@ export function ProjectDrawer({ item, onChange, onClose, onReset }: Props) {
               <span className="font-mono">{item.projectKey}</span>
             </p>
           </div>
+          {onPreview && (
+            <button
+              onClick={onPreview}
+              title="See it the way a visitor does"
+              className="shrink-0 px-2.5 py-1 rounded-lg text-xs text-text-muted hover:text-foreground hover:bg-surface-hover transition-colors"
+            >
+              Preview
+            </button>
+          )}
           <button
             onClick={onClose}
             aria-label="Close"
@@ -120,6 +132,12 @@ export function ProjectDrawer({ item, onChange, onClose, onReset }: Props) {
             value={item.logo ?? item.thumbnail ?? ''}
             onChange={v => set('logo', v)}
             prefer="logo"
+          />
+
+          <GalleryField
+            values={item.gallery ?? []}
+            onChange={v => set('gallery', v)}
+            mainImage={item.screenshot || undefined}
           />
 
           <Field label="Live URL">

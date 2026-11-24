@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { PortfolioItem, PortfolioProfile, PortfolioVersion } from '@/lib/firebase/types';
 import { PortfolioPreview } from './portfolio-preview';
 import { ProjectDrawer } from './project-drawer';
+import { VisitorDetails } from './visitor-details';
 import { CvImport } from './cv-import';
 import { ChipInput, Field, Input, Textarea } from './fields';
 
@@ -38,7 +39,16 @@ export function PortfolioBuilder({ initial }: Props) {
   const [cv, setCv] = useState(initial.cv);
 
   const [tab, setTab] = useState<'profile' | 'projects'>('profile');
-  const [openKey, setOpenKey] = useState<string | null>(null);
+  /**
+   * Which project is open, and in which of the two panels.
+   *
+   * `visitor` is what the portfolio itself does — click a tile, the details
+   * slide in from the right. `edit` is the owner's form. They are never open
+   * at once: both occupy the same edge of the screen, and stacking them would
+   * leave no way to tell which one a change belonged to.
+   */
+  const [open, setOpen] = useState<{ key: string; mode: 'visitor' | 'edit' } | null>(null);
+  const openKey = open?.key ?? null;
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -103,7 +113,7 @@ export function PortfolioBuilder({ initial }: Props) {
       .catch(() => {});
   }, [initial.id]);
 
-  const open = useMemo(() => items.find(i => i.projectKey === openKey) ?? null, [items, openKey]);
+  const openItem = useMemo(() => items.find(i => i.projectKey === openKey) ?? null, [items, openKey]);
 
   const updateItem = (next: PortfolioItem) =>
     setItems(list => list.map(i => (i.projectKey === next.projectKey ? next : i)));
@@ -411,7 +421,7 @@ export function PortfolioBuilder({ initial }: Props) {
                       />
 
                       <button
-                        onClick={() => setOpenKey(item.projectKey)}
+                        onClick={() => setOpen({ key: item.projectKey, mode: 'edit' })}
                         className="min-w-0 flex-1 text-left"
                       >
                         <span className="block text-sm text-foreground truncate">{item.name}</span>
@@ -454,17 +464,26 @@ export function PortfolioBuilder({ initial }: Props) {
                 profile={profile}
                 items={items}
                 activeKey={openKey}
-                onOpenDetails={setOpenKey}
+                onOpenDetails={key => setOpen({ key, mode: 'visitor' })}
               />
             </div>
           </div>
 
-          {open && (
+          {openItem && open?.mode === 'visitor' && (
+            <VisitorDetails
+              item={openItem}
+              onClose={() => setOpen(null)}
+              onEdit={() => setOpen({ key: openItem.projectKey, mode: 'edit' })}
+            />
+          )}
+
+          {openItem && open?.mode === 'edit' && (
             <ProjectDrawer
-              item={open}
+              item={openItem}
               onChange={updateItem}
-              onClose={() => setOpenKey(null)}
-              onReset={() => resetItem(open.projectKey)}
+              onClose={() => setOpen(null)}
+              onReset={() => resetItem(openItem.projectKey)}
+              onPreview={() => setOpen({ key: openItem.projectKey, mode: 'visitor' })}
             />
           )}
         </div>
