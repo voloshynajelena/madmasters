@@ -79,6 +79,25 @@ export function normalizeCategories(categories: string[] = []): CategoryType[] {
   return Array.from(out);
 }
 
+/**
+ * A date as an ISO string, whatever Firestore handed back.
+ *
+ * `startDate` is a Timestamp when it was written through the admin and a
+ * string when it came from the seed file. `Date.parse` of a Timestamp is NaN,
+ * which silently sorted every project equally and made "the three newest"
+ * return whichever three came back first.
+ */
+function isoDate(value: unknown): string | undefined {
+  if (!value) return undefined;
+  if (typeof value === 'string') return value;
+  if (value instanceof Date) return value.toISOString();
+  const ts = value as { toDate?: () => Date; _seconds?: number; seconds?: number };
+  if (typeof ts.toDate === 'function') return ts.toDate().toISOString();
+  const seconds = ts._seconds ?? ts.seconds;
+  if (typeof seconds === 'number') return new Date(seconds * 1000).toISOString();
+  return undefined;
+}
+
 /** A knowledge-base project as the public site sees it. */
 function fromProject(id: string, data: Record<string, any>): PublicProject {
   const portfolio = data.portfolio ?? {};
@@ -110,7 +129,7 @@ function fromProject(id: string, data: Record<string, any>): PublicProject {
     testimonial: portfolio.testimonial ?? null,
     showOnHomepage: Boolean(portfolio.showOnHomepage),
     components: (data.components ?? []).map((c: any) => ({ kind: c.kind, name: c.name })),
-    startedAt: data.startDate || data.createdAt || undefined,
+    startedAt: isoDate(data.startDate) ?? isoDate(data.createdAt),
   };
 }
 
@@ -137,7 +156,7 @@ function fromLegacy(id: string, data: Record<string, any>): PublicProject {
     results: data.results ?? [],
     testimonial: data.testimonial ?? null,
     showOnHomepage: Boolean(data.showOnHomepage),
-    startedAt: data.createdAt || undefined,
+    startedAt: isoDate(data.createdAt),
   };
 }
 
