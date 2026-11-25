@@ -748,7 +748,28 @@ export interface PortfolioItem {
   liveUrl?: string;
   tags: string[];
   stack: string[];
-  components: { kind: ComponentKind | string; name: string; oneLiner?: string }[];
+  /**
+   * The pieces of the project, each a tab in the details panel.
+   *
+   * A project with a web app and an iOS app has two of nearly everything —
+   * two stacks, two sets of screens, two things to say about it — and
+   * flattening them into one description is how "React Native, Swift,
+   * Next.js" ends up in a single list that describes nothing in particular.
+   */
+  components: {
+    kind: ComponentKind | string;
+    name: string;
+    oneLiner?: string;
+    /// Where it lives in the repository. Useful to the owner, shown to nobody.
+    path?: string;
+    /// Its own stack, which is the reason these are tabs and not bullet points.
+    stack?: ProjectComponentStack;
+    /// App Store listing, extension link, deployed URL.
+    distribution?: string;
+    notes?: string;
+    /// Screens of this piece specifically: a phone's, not the web app's.
+    screenshots?: string[];
+  }[];
   decisions: { title: string; choice: string; rationale: string; tradeoffs?: string }[];
   /** Free-form bullets written for this application only. */
   highlights: string[];

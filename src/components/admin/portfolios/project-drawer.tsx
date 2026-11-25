@@ -156,27 +156,58 @@ export function ProjectDrawer({ item, onChange, onClose, onReset, onPreview }: P
             <h3 className="text-xs font-semibold uppercase tracking-wider text-text-muted">
               Components
             </h3>
+            <p className="mt-1 text-[11px] text-text-muted">
+              Each one with screens or a stack of its own becomes a tab in the
+              visitor&rsquo;s panel.
+            </p>
+
             {item.components.length === 0 ? (
               <p className="mt-2 text-xs text-text-muted">
                 None recorded. Add them in Projects KB, then reset this item.
               </p>
             ) : (
-              <ul className="mt-2 space-y-1.5">
-                {item.components.map((c, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm">
-                    <span className="px-1.5 py-0.5 rounded bg-accent/10 text-accent text-[11px] font-medium shrink-0">
-                      {COMPONENT_LABELS[c.kind] ?? c.kind}
-                    </span>
-                    <span className="text-foreground truncate">{c.name}</span>
-                    <button
-                      onClick={() => set('components', item.components.filter((_, n) => n !== i))}
-                      className="ml-auto shrink-0 text-xs text-text-muted hover:text-red-500 transition-colors"
-                    >
-                      remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <div className="mt-2 space-y-3">
+                {item.components.map((c, i) => {
+                  const stack = Object.entries(c.stack ?? {}).filter(([, v]) => v);
+                  const update = (patch: Partial<typeof c>) => {
+                    const next = [...item.components];
+                    next[i] = { ...c, ...patch };
+                    set('components', next);
+                  };
+
+                  return (
+                    <div key={i} className="rounded-lg border border-border p-3">
+                      <div className="flex items-center gap-2">
+                        <span className="px-1.5 py-0.5 rounded bg-accent/10 text-accent text-[11px] font-medium shrink-0">
+                          {COMPONENT_LABELS[c.kind] ?? c.kind}
+                        </span>
+                        <span className="text-sm text-foreground truncate">{c.name}</span>
+                        <button
+                          onClick={() => set('components', item.components.filter((_, n) => n !== i))}
+                          className="ml-auto shrink-0 text-xs text-text-muted hover:text-red-500 transition-colors"
+                        >
+                          remove
+                        </button>
+                      </div>
+
+                      {stack.length > 0 && (
+                        <p className="mt-1.5 text-[11px] text-text-muted truncate">
+                          {stack.map(([slot, value]) => `${slot}: ${value}`).join(' · ')}
+                        </p>
+                      )}
+
+                      <div className="mt-2.5">
+                        <GalleryField
+                          label="Screens"
+                          hint="shown on this component's tab"
+                          values={c.screenshots ?? []}
+                          onChange={v => update({ screenshots: v })}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </section>
 

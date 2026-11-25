@@ -116,8 +116,20 @@ export function itemFromProject(data: Record<string, any>, order: number): Portf
     liveUrl: data.productUrls?.[0] || '',
     tags: portfolio.tags?.length ? portfolio.tags : data.tags ?? [],
     stack: stackOf(data),
+    // The component's own stack comes across too. It was being dropped, which
+    // is why a project with a SwiftUI widget inside a React Native app showed
+    // one undifferentiated pile of technologies.
     components: (data.components ?? []).map((c: any) =>
-      compact({ kind: c.kind, name: c.name, oneLiner: c.oneLiner || c.path || undefined }),
+      compact({
+        kind: c.kind,
+        name: c.name,
+        oneLiner: c.oneLiner || undefined,
+        path: c.path || undefined,
+        stack: c.stack && Object.values(c.stack).some(Boolean) ? compact(c.stack) : undefined,
+        distribution: c.distribution || undefined,
+        notes: c.notes || undefined,
+        screenshots: c.screenshots ?? [],
+      }),
     ),
     decisions: (data.decisions ?? []).map((d: any) =>
       compact({

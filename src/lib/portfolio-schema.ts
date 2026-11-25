@@ -48,6 +48,19 @@ export const itemSchema = z.object({
         kind: z.string(),
         name: z.string(),
         oneLiner: z.string().optional(),
+        path: z.string().optional(),
+        stack: z
+          .object({
+            language: z.string().optional(),
+            framework: z.string().optional(),
+            runtime: z.string().optional(),
+            hosting: z.string().optional(),
+            notes: z.string().optional(),
+          })
+          .optional(),
+        distribution: z.string().optional(),
+        notes: z.string().optional(),
+        screenshots: z.array(z.string()).default([]),
       }),
     )
     .default([]),

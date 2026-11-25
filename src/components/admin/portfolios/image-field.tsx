@@ -273,12 +273,16 @@ export function GalleryField({
   values,
   onChange,
   mainImage,
+  label = 'Gallery',
+  hint = 'more images in the details panel',
 }: {
   values: string[];
   onChange: (values: string[]) => void;
   /** Shown first and greyed, so it is clear the tile image leads the gallery
    *  and does not need adding again. */
   mainImage?: string;
+  label?: string;
+  hint?: string;
 }) {
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState('');
@@ -304,8 +308,8 @@ export function GalleryField({
     <section>
       <div className="flex items-center justify-between mb-1">
         <span className="text-xs font-medium text-text-muted">
-          Gallery
-          <span className="font-normal"> — more images in the details panel</span>
+          {label}
+          <span className="font-normal"> — {hint}</span>
         </span>
         <div className="flex items-center gap-3">
           <button
