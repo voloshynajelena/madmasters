@@ -47,7 +47,12 @@ export function VisitorDetails({ item, onClose, onEdit }: Props) {
       { key: '__overview', label: 'Overview' },
       ...own.map((c, i) => ({
         key: `${c.kind}-${i}`,
-        label: COMPONENT_LABELS[c.kind] ?? c.kind,
+        // The component's own name, not its kind. An iPhone app and an iPad
+        // app are both kind `mobile-ios`, so labelling by kind gave Librora
+        // two tabs reading "Mobile" and "iOS" for what are plainly "Mobile
+        // app" and "iPad app" — the one piece of information the reader
+        // needed was the one being thrown away.
+        label: c.name?.trim() || COMPONENT_LABELS[c.kind] || c.kind,
         component: c,
       })),
     ];
