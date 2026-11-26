@@ -37,9 +37,11 @@ interface Props {
   onReset: () => Promise<void>;
   /** Swap to the visitor's view of the same project. */
   onPreview?: () => void;
+  /** Everything already named across the portfolio, offered while typing. */
+  suggestions?: string[];
 }
 
-export function ProjectDrawer({ item, onChange, onClose, onReset, onPreview }: Props) {
+export function ProjectDrawer({ item, onChange, onClose, onReset, onPreview, suggestions }: Props) {
   const [resetting, setResetting] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
 
@@ -145,11 +147,21 @@ export function ProjectDrawer({ item, onChange, onClose, onReset, onPreview }: P
           </Field>
 
           <Field label="Stack" hint="Enter to add, click to remove">
-            <ChipInput values={item.stack} onChange={v => set('stack', v)} placeholder="Add a technology" />
+            <ChipInput
+              values={item.stack}
+              onChange={v => set('stack', v)}
+              placeholder="Add a technology"
+              suggestions={suggestions}
+            />
           </Field>
 
           <Field label="Tags">
-            <ChipInput values={item.tags} onChange={v => set('tags', v)} placeholder="Add a tag" />
+            <ChipInput
+              values={item.tags}
+              onChange={v => set('tags', v)}
+              placeholder="Add a tag"
+              suggestions={suggestions}
+            />
           </Field>
 
           <section>

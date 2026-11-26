@@ -86,31 +86,54 @@ export function Textarea({
  * behaves differently costs more than it saves. Duplicates are dropped
  * case-insensitively: "React" and "react" on one portfolio is a typo, never
  * an intention.
+ *
+ * Typing offers what is already in use elsewhere. The vocabulary is not a
+ * list somebody curated — it is every technology already named across these
+ * projects, which is the only list guaranteed to spell things the way this
+ * portfolio already spells them. Without it the same tool arrives as
+ * "Node.js" on one project and "NodeJS" on the next.
  */
 export function ChipInput({
   values,
   onChange,
   placeholder,
+  suggestions = [],
 }: {
   values: string[];
   onChange: (values: string[]) => void;
   placeholder?: string;
+  suggestions?: string[];
 }) {
   const [draft, setDraft] = useState('');
+  const [highlight, setHighlight] = useState(0);
+
+  const taken = new Set(values.map(v => v.toLowerCase()));
+  const query = draft.trim().toLowerCase();
+
+  /** Prefix matches first: typing "n" means "Next.js" far more often than it
+   *  means "Expo SDK 54 on Node". */
+  const matches = query
+    ? suggestions
+        .filter(s => !taken.has(s.toLowerCase()) && s.toLowerCase().includes(query))
+        .sort((a, b) => {
+          const byPrefix =
+            Number(b.toLowerCase().startsWith(query)) - Number(a.toLowerCase().startsWith(query));
+          return byPrefix || a.length - b.length || a.localeCompare(b);
+        })
+        .slice(0, 6)
+    : [];
 
   const commit = (raw: string) => {
     const clean = raw.trim().replace(/,$/, '').trim();
-    if (!clean) return;
-    if (values.some(v => v.toLowerCase() === clean.toLowerCase())) {
-      setDraft('');
-      return;
-    }
-    onChange([...values, clean]);
     setDraft('');
+    setHighlight(0);
+    if (!clean) return;
+    if (taken.has(clean.toLowerCase())) return;
+    onChange([...values, clean]);
   };
 
   return (
-    <div className="rounded-lg bg-surface border border-border px-2 py-2 focus-within:border-accent transition-colors">
+    <div className="relative rounded-lg bg-surface border border-border px-2 py-2 focus-within:border-accent transition-colors">
       {values.length > 0 && (
         <div className="flex flex-wrap gap-1.5 mb-2">
           {values.map((value, i) => (
@@ -126,6 +149,7 @@ export function ChipInput({
           ))}
         </div>
       )}
+
       <input
         value={draft}
         placeholder={placeholder}
@@ -139,18 +163,73 @@ export function ChipInput({
             return;
           }
           setDraft(e.target.value);
+          setHighlight(0);
         }}
         onKeyDown={e => {
+          // Tab takes the suggestion, the way a shell completes a path. It
+          // only steals the key when there is something to complete, so
+          // tabbing out of a field that is offering nothing still moves on.
+          if ((e.key === 'Tab' || e.key === 'ArrowRight') && matches[highlight] && !e.shiftKey) {
+            if (e.key === 'ArrowRight' && e.currentTarget.selectionStart !== draft.length) return;
+            e.preventDefault();
+            commit(matches[highlight]);
+            return;
+          }
           if (e.key === 'Enter') {
             e.preventDefault();
-            commit(draft);
-          } else if (e.key === 'Backspace' && !draft && values.length) {
+            commit(matches[highlight] ?? draft);
+            return;
+          }
+          if (e.key === 'ArrowDown' && matches.length) {
+            e.preventDefault();
+            setHighlight(h => (h + 1) % matches.length);
+            return;
+          }
+          if (e.key === 'ArrowUp' && matches.length) {
+            e.preventDefault();
+            setHighlight(h => (h - 1 + matches.length) % matches.length);
+            return;
+          }
+          if (e.key === 'Escape' && matches.length) {
+            e.preventDefault();
+            setDraft('');
+            return;
+          }
+          if (e.key === 'Backspace' && !draft && values.length) {
             onChange(values.slice(0, -1));
           }
         }}
-        onBlur={() => commit(draft)}
+        // Not on blur: committing a half-typed word when the mouse goes to the
+        // suggestion list would add "Nex" and then "Next.js".
         className="w-full bg-transparent px-1 text-sm text-foreground placeholder:text-text-muted/60 outline-none"
       />
+
+      {matches.length > 0 && (
+        <ul className="absolute left-0 right-0 top-full z-20 mt-1 rounded-lg border border-border bg-background shadow-lg overflow-hidden">
+          {matches.map((match, i) => (
+            <li key={match}>
+              <button
+                // `onMouseDown` rather than `onClick`: the input blurs first
+                // on a click, and a blurred input closes this list before the
+                // click lands.
+                onMouseDown={e => {
+                  e.preventDefault();
+                  commit(match);
+                }}
+                onMouseEnter={() => setHighlight(i)}
+                className={`w-full text-left px-3 py-1.5 text-sm transition-colors ${
+                  i === highlight ? 'bg-accent/10 text-accent' : 'text-foreground hover:bg-surface-hover'
+                }`}
+              >
+                {match}
+              </button>
+            </li>
+          ))}
+          <li className="px-3 py-1 border-t border-border text-[10px] text-text-muted">
+            Tab to take it · Enter for what you typed
+          </li>
+        </ul>
+      )}
     </div>
   );
 }

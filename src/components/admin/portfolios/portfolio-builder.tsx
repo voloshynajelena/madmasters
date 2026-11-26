@@ -27,6 +27,17 @@ interface Props {
 }
 
 
+/** Mirrors the server's: the suggestion shown must be the one it accepts. */
+function slugify(value: string): string {
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48);
+}
+
 /**
  * The link that goes on a résumé.
  *
@@ -42,18 +53,24 @@ interface Props {
  */
 function SharePanel({
   share,
+  suggestedSlug,
   onChange,
   copied,
   onCopied,
   dirty,
 }: {
   share: { enabled: boolean; slug: string };
+  suggestedSlug: string;
   onChange: (next: { enabled: boolean; slug: string }) => void;
   copied: boolean;
   onCopied: () => void;
   dirty: boolean;
 }) {
   const url = share.slug ? `https://madmasters.pro/p/${share.slug}` : '';
+  // The suggestion sits in the box as grey text until Tab takes it, rather
+  // than being filled in for you: an address nobody chose is an address that
+  // goes out wrong, and the placeholder alone gave no way to accept it.
+  const suggesting = !share.slug && Boolean(suggestedSlug);
 
   return (
     <section className="rounded-xl border border-border bg-surface p-4">
@@ -82,10 +99,24 @@ function SharePanel({
             <span className="shrink-0 text-xs text-text-muted">madmasters.pro/p/</span>
             <input
               value={share.slug}
-              placeholder="olena-voloshyna"
+              placeholder={suggestedSlug || 'your-name'}
               onChange={e => onChange({ ...share, slug: e.target.value })}
+              onKeyDown={e => {
+                if ((e.key === 'Tab' || e.key === 'Enter') && suggesting && !e.shiftKey) {
+                  e.preventDefault();
+                  onChange({ ...share, slug: suggestedSlug });
+                }
+              }}
               className="min-w-0 flex-1 px-2 py-1.5 rounded-md bg-background border border-border text-sm text-foreground placeholder:text-text-muted/60 focus:border-accent outline-none"
             />
+            {suggesting && (
+              <button
+                onClick={() => onChange({ ...share, slug: suggestedSlug })}
+                className="shrink-0 px-1.5 py-0.5 rounded border border-border text-[10px] text-text-muted hover:text-foreground hover:border-accent/50 transition-colors"
+              >
+                Tab
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -210,6 +241,28 @@ export function PortfolioBuilder({ initial }: Props) {
       .then(d => d?.missing && setMissing(d.missing))
       .catch(() => {});
   }, [initial.id]);
+
+  /**
+   * Everything already named across these projects.
+   *
+   * Built from the work rather than from a curated list, because the point of
+   * suggesting is to keep one spelling: without it the same tool arrives as
+   * "Node.js" on one project and "NodeJS" on the next, and the portfolio
+   * looks like two people wrote it.
+   */
+  const vocabulary = useMemo(() => {
+    const all = new Map<string, string>();
+    const add = (value?: string) => {
+      const clean = value?.trim();
+      if (clean) all.set(clean.toLowerCase(), clean);
+    };
+    for (const item of items) {
+      item.stack.forEach(add);
+      item.tags.forEach(add);
+      item.components.forEach(c => Object.values(c.stack ?? {}).forEach(add));
+    }
+    return Array.from(all.values()).sort((a, b) => a.localeCompare(b));
+  }, [items]);
 
   const openItem = useMemo(() => items.find(i => i.projectKey === openKey) ?? null, [items, openKey]);
 
@@ -402,6 +455,7 @@ export function PortfolioBuilder({ initial }: Props) {
                     values={profile.stack}
                     onChange={v => setProfile(p => ({ ...p, stack: v }))}
                     placeholder="Add a technology"
+                    suggestions={vocabulary}
                   />
                 </Field>
 
@@ -463,6 +517,7 @@ export function PortfolioBuilder({ initial }: Props) {
 
                 <SharePanel
                   share={share}
+                  suggestedSlug={slugify(profile.fullName || name)}
                   onChange={setShare}
                   copied={copied}
                   onCopied={() => {
@@ -600,6 +655,7 @@ export function PortfolioBuilder({ initial }: Props) {
               onChange={updateItem}
               onClose={() => setOpen(null)}
               onReset={() => resetItem(openItem.projectKey)}
+              suggestions={vocabulary}
               onPreview={() => setOpen({ key: openItem.projectKey, mode: 'visitor' })}
             />
           )}
