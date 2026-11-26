@@ -687,6 +687,8 @@ export interface PortfolioVersion {
   items: PortfolioItem[];
   /** The CV this version was seeded from, kept so the source is traceable. */
   cv?: PortfolioCvSource;
+  /** How, and whether, this version can be opened without signing in. */
+  share?: PortfolioShare;
   createdAt: FirebaseFirestore.Timestamp | Date | string;
   updatedAt: FirebaseFirestore.Timestamp | Date | string;
   updatedBy?: string;
@@ -773,7 +775,43 @@ export interface PortfolioItem {
   decisions: { title: string; choice: string; rationale: string; tradeoffs?: string }[];
   /** Free-form bullets written for this application only. */
   highlights: string[];
+  /**
+   * What the repository says about how this was built.
+   *
+   * Taken from git rather than written: dates and subjects nobody composed
+   * for a portfolio, which is the only reason they are worth reading. The
+   * list is a sample spread across the project's life, not its last forty
+   * commits.
+   */
+  history?: ProjectHistory;
   blocks: PortfolioItemBlocks;
+}
+
+/**
+ * A link that opens this portfolio without a login.
+ *
+ * Off until it is switched on, and the address is a random token rather than
+ * the portfolio's name: the page carries a phone number and an email, so a
+ * guessable address would hand those to anyone who tried `/p/shopify`. The
+ * page also asks search engines not to index it — a link meant for one
+ * employer should not become a search result.
+ *
+ * Switching it off does not change the token, so turning sharing back on
+ * revives the same address rather than breaking a link already sent.
+ */
+export interface PortfolioShare {
+  enabled: boolean;
+  slug: string;
+  updatedAt?: string;
+}
+
+export interface ProjectHistory {
+  commits: { hash: string; date: string; subject: string; kind: string }[];
+  totalCommits: number;
+  firstCommit: string;
+  lastCommit: string;
+  activeMonths: number;
+  source?: string;
 }
 
 export interface PortfolioCvSource {
@@ -793,4 +831,5 @@ export interface PortfolioVersionInput {
   profile: PortfolioProfile;
   items: PortfolioItem[];
   cv?: PortfolioCvSource;
+  share?: PortfolioShare;
 }

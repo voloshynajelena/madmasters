@@ -140,6 +140,7 @@ export function itemFromProject(data: Record<string, any>, order: number): Portf
       }),
     ),
     highlights: [],
+    history: data.history ?? undefined,
     blocks: {
       description: true,
       stack: true,

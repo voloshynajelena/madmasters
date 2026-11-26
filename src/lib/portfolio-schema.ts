@@ -75,6 +75,25 @@ export const itemSchema = z.object({
     )
     .default([]),
   highlights: z.array(z.string()).default([]),
+  history: z
+    .object({
+      commits: z
+        .array(
+          z.object({
+            hash: z.string(),
+            date: z.string(),
+            subject: z.string(),
+            kind: z.string(),
+          }),
+        )
+        .default([]),
+      totalCommits: z.number(),
+      firstCommit: z.string(),
+      lastCommit: z.string(),
+      activeMonths: z.number(),
+      source: z.string().optional(),
+    })
+    .optional(),
   blocks: z.object({
     description: z.boolean(),
     stack: z.boolean(),
@@ -83,6 +102,27 @@ export const itemSchema = z.object({
     highlights: z.boolean(),
     links: z.boolean(),
   }),
+});
+
+export const shareSchema = z.object({
+  enabled: z.boolean(),
+  /**
+   * The readable part of the address, because this link goes on a résumé.
+   *
+   * A random token would be safer against guessing and unusable in print:
+   * nobody types `madmasters.pro/p/k3Jx9Qm2Zp1A` off a page. It is checked
+   * for uniqueness on the server, and the page asks not to be indexed, so
+   * "unlisted" is what protects it rather than "unguessable".
+   */
+  slug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(3)
+    .max(48)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Letters, digits and single hyphens only')
+    .optional(),
+  updatedAt: z.string().optional(),
 });
 
 export const cvSchema = z.object({
@@ -113,4 +153,5 @@ export const patchVersionSchema = z.object({
   profile: profileSchema.optional(),
   items: z.array(itemSchema).optional(),
   cv: cvSchema.optional(),
+  share: shareSchema.optional(),
 });

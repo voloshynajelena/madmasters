@@ -29,7 +29,12 @@ interface Props {
   onEdit?: () => void;
 }
 
-type Tab = { key: string; label: string; component?: PortfolioItem['components'][number] };
+type Tab = {
+  key: string;
+  label: string;
+  component?: PortfolioItem['components'][number];
+  history?: boolean;
+};
 
 export function VisitorDetails({ item, onClose, onEdit }: Props) {
   const components = item.blocks.components ? item.components : [];
@@ -43,8 +48,13 @@ export function VisitorDetails({ item, onClose, onEdit }: Props) {
     const own = components.filter(
       c => (c.screenshots?.length ?? 0) > 0 || (c.stack && Object.values(c.stack).some(Boolean)),
     );
+    const history: Tab[] = item.history?.commits.length
+      ? [{ key: '__history', label: 'History', history: true }]
+      : [];
+
     return [
       { key: '__overview', label: 'Overview' },
+      ...history,
       ...own.map((c, i) => ({
         key: `${c.kind}-${i}`,
         // The component's own name, not its kind. An iPhone app and an iPad
@@ -56,7 +66,7 @@ export function VisitorDetails({ item, onClose, onEdit }: Props) {
         component: c,
       })),
     ];
-  }, [components]);
+  }, [components, item.history]);
 
   const [active, setActive] = useState(0);
   useEffect(() => setActive(0), [item.projectKey]);
@@ -66,7 +76,9 @@ export function VisitorDetails({ item, onClose, onEdit }: Props) {
   // The project's own pictures on the overview; the component's own on its
   // tab. The tile image leads the project gallery, deduplicated, because a
   // gallery seeded from a project with one picture would show it twice.
-  const images = tab.component
+  const images = tab.history
+    ? []
+    : tab.component
     ? (tab.component.screenshots ?? [])
     : Array.from(new Set([item.screenshot, ...(item.gallery ?? [])].filter(Boolean) as string[]));
 
@@ -157,10 +169,15 @@ export function VisitorDetails({ item, onClose, onEdit }: Props) {
         <div key={tab.key} className="flex-1 overflow-y-auto animate-[fadeIn_150ms_ease-out]">
           {images.length > 0 && <Gallery images={images} phone={Boolean(tab.component)} />}
 
-          {tab.component ? (
+          {tab.history ? (
+            <HistoryBody history={item.history!} />
+          ) : tab.component ? (
             <ComponentBody component={tab.component} />
           ) : (
-            <OverviewBody item={item} tabbed={tabs.slice(1).map(t => t.component!)} />
+            <OverviewBody
+              item={item}
+              tabbed={tabs.filter(t => t.component).map(t => t.component!)}
+            />
           )}
         </div>
       </aside>
@@ -386,6 +403,99 @@ function OverviewBody({
       )}
 
       {item.blocks.links && item.liveUrl && <ExternalLink href={item.liveUrl} />}
+    </div>
+  );
+}
+
+
+const KIND_COLOUR: Record<string, string> = {
+  feat: 'bg-accent/15 text-accent',
+  fix: 'bg-amber-500/15 text-amber-600 dark:text-amber-400',
+  perf: 'bg-sky-500/15 text-sky-600 dark:text-sky-400',
+  refactor: 'bg-violet-500/15 text-violet-600 dark:text-violet-400',
+};
+
+/**
+ * How the project was actually built, from its own commits.
+ *
+ * Grouped by month rather than listed flat: the month is the unit a reader
+ * thinks in, and the gaps between months say as much as the commits do —
+ * a project worked on in February and again in November looks different
+ * from one worked on every week, and a flat list hides that.
+ *
+ * Nothing here was written for a portfolio, which is the point.
+ */
+function HistoryBody({ history }: { history: NonNullable<PortfolioItem['history']> }) {
+  const months = new Map<string, typeof history.commits>();
+  for (const commit of history.commits) {
+    const month = commit.date.slice(0, 7);
+    months.set(month, [...(months.get(month) ?? []), commit]);
+  }
+
+  const monthLabel = (month: string) =>
+    new Date(`${month}-01T00:00:00Z`).toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+
+  return (
+    <div className="px-6 py-6 space-y-6">
+      <dl className="grid grid-cols-3 gap-3">
+        {[
+          { label: 'Commits', value: String(history.totalCommits) },
+          { label: 'Active months', value: String(history.activeMonths) },
+          {
+            label: 'Span',
+            value: `${history.firstCommit.slice(0, 7)} → ${history.lastCommit.slice(0, 7)}`,
+          },
+        ].map(stat => (
+          <div key={stat.label} className="rounded-lg border border-border px-3 py-2">
+            <dt className="text-[10px] uppercase tracking-wide text-text-muted">{stat.label}</dt>
+            <dd className="mt-0.5 text-sm font-medium text-foreground tabular-nums">
+              {stat.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <div className="space-y-5">
+        {Array.from(months.entries()).map(([month, commits]) => (
+          <section key={month}>
+            <h4 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-text-muted">
+              {monthLabel(month)}
+            </h4>
+            <ul className="space-y-1.5">
+              {commits.map(commit => (
+                <li key={commit.hash} className="flex items-baseline gap-2.5 text-sm">
+                  <span className="shrink-0 w-14 text-[11px] text-text-muted tabular-nums">
+                    {commit.date.slice(5)}
+                  </span>
+                  <span
+                    className={`shrink-0 px-1.5 py-px rounded text-[10px] font-medium ${
+                      KIND_COLOUR[commit.kind] ?? 'bg-surface-hover text-text-muted'
+                    }`}
+                  >
+                    {commit.kind}
+                  </span>
+                  <span className="min-w-0 text-[13px] leading-relaxed text-foreground/85">
+                    {commit.subject}
+                  </span>
+                  <span className="ml-auto shrink-0 font-mono text-[10px] text-text-muted/70">
+                    {commit.hash}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+
+      <p className="text-[11px] text-text-muted">
+        A sample spread across the project&rsquo;s life, taken from{' '}
+        <span className="font-mono">{history.source ?? 'its repository'}</span>. Dependency bumps,
+        formatting and merges are left out.
+      </p>
     </div>
   );
 }

@@ -26,6 +26,98 @@ interface Props {
   initial: PortfolioVersion;
 }
 
+
+/**
+ * The link that goes on a résumé.
+ *
+ * Switched off until somebody switches it on, and said plainly rather than
+ * hinted at: the page carries a phone number and an email, and anyone who
+ * has the address can open it. "Unlisted" is the protection — the page asks
+ * search engines not to index it — and that only holds if the owner knows
+ * that is all it is.
+ *
+ * The address cannot be copied before it is saved, because until the save
+ * comes back the server has not agreed to it: another portfolio may already
+ * hold the same one.
+ */
+function SharePanel({
+  share,
+  onChange,
+  copied,
+  onCopied,
+  dirty,
+}: {
+  share: { enabled: boolean; slug: string };
+  onChange: (next: { enabled: boolean; slug: string }) => void;
+  copied: boolean;
+  onCopied: () => void;
+  dirty: boolean;
+}) {
+  const url = share.slug ? `https://madmasters.pro/p/${share.slug}` : '';
+
+  return (
+    <section className="rounded-xl border border-border bg-surface p-4">
+      <label className="flex items-start gap-2.5 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={share.enabled}
+          onChange={e => onChange({ ...share, enabled: e.target.checked })}
+          className="mt-0.5 accent-[#ff6b35]"
+        />
+        <span className="min-w-0">
+          <span className="block text-xs font-semibold uppercase tracking-wider text-text-muted">
+            Public link
+          </span>
+          <span className="block mt-1 text-[11px] text-text-muted leading-relaxed">
+            Anyone with the address can open this portfolio without signing in. It is not listed
+            anywhere and asks not to be indexed — but it is not secret, and it shows the phone
+            number and email above.
+          </span>
+        </span>
+      </label>
+
+      {share.enabled && (
+        <div className="mt-3 space-y-2">
+          <div className="flex items-center gap-1.5">
+            <span className="shrink-0 text-xs text-text-muted">madmasters.pro/p/</span>
+            <input
+              value={share.slug}
+              placeholder="olena-voloshyna"
+              onChange={e => onChange({ ...share, slug: e.target.value })}
+              className="min-w-0 flex-1 px-2 py-1.5 rounded-md bg-background border border-border text-sm text-foreground placeholder:text-text-muted/60 focus:border-accent outline-none"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(url);
+                onCopied();
+              }}
+              disabled={!url || dirty}
+              title={dirty ? 'Save first — the address is settled on the server' : url}
+              className="px-2.5 py-1.5 rounded-lg bg-accent text-white text-[11px] font-medium hover:bg-accent-hover disabled:opacity-40 transition-colors"
+            >
+              {copied ? 'Copied' : 'Copy link'}
+            </button>
+            {url && !dirty && (
+              <a
+                href={`/p/${share.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-accent hover:text-accent-hover transition-colors"
+              >
+                Open it
+              </a>
+            )}
+            {dirty && <span className="text-[11px] text-text-muted">Save to settle the address</span>}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function PortfolioBuilder({ initial }: Props) {
   const [name, setName] = useState(initial.name);
   const [targetRole, setTargetRole] = useState(initial.targetRole ?? '');
@@ -37,6 +129,8 @@ export function PortfolioBuilder({ initial }: Props) {
     [...(initial.items ?? [])].sort((a, b) => a.order - b.order),
   );
   const [cv, setCv] = useState(initial.cv);
+  const [share, setShare] = useState(initial.share ?? { enabled: false, slug: '' });
+  const [copied, setCopied] = useState(false);
 
   const [tab, setTab] = useState<'profile' | 'projects'>('profile');
   /**
@@ -57,29 +151,33 @@ export function PortfolioBuilder({ initial }: Props) {
 
   // Compared against the draft to know whether there is anything to save, and
   // to warn before the tab closes on unsaved work.
-  const saved = useRef(JSON.stringify({ name, targetRole, targetCompany, notes, status, profile, items }));
-  const draft = JSON.stringify({ name, targetRole, targetCompany, notes, status, profile, items });
+  const saved = useRef(JSON.stringify({ name, targetRole, targetCompany, notes, status, profile, items, share }));
+  const draft = JSON.stringify({ name, targetRole, targetCompany, notes, status, profile, items, share });
   const dirty = draft !== saved.current;
 
   const save = useCallback(async () => {
     try {
       setSaving(true);
       setError(null);
-      const body = { name, targetRole, targetCompany, notes, status, profile, items, cv };
+      const body = { name, targetRole, targetCompany, notes, status, profile, items, cv, share };
       const res = await fetch(`/api/admin/portfolios/${initial.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      if (!res.ok) throw new Error((await res.json()).error ?? 'Failed to save');
-      saved.current = JSON.stringify({ name, targetRole, targetCompany, notes, status, profile, items });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error ?? 'Failed to save');
+      // The token is minted by the server on the first share, so the address
+      // only exists here after a save has come back.
+      if (result.share) setShare(result.share);
+      saved.current = JSON.stringify({ name, targetRole, targetCompany, notes, status, profile, items, share: result.share ?? share });
       setSavedAt(new Date().toLocaleTimeString());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to save');
     } finally {
       setSaving(false);
     }
-  }, [initial.id, name, targetRole, targetCompany, notes, status, profile, items, cv]);
+  }, [initial.id, name, targetRole, targetCompany, notes, status, profile, items, cv, share]);
 
   // Cmd/Ctrl+S saves, because this is a document and that is what hands do.
   useEffect(() => {
@@ -354,6 +452,17 @@ export function PortfolioBuilder({ initial }: Props) {
                 <Field label="Notes to self" hint="never shown on the page">
                   <Textarea value={notes} onChange={setNotes} rows={3} />
                 </Field>
+
+                <SharePanel
+                  share={share}
+                  onChange={setShare}
+                  copied={copied}
+                  onCopied={() => {
+                    setCopied(true);
+                    window.setTimeout(() => setCopied(false), 1500);
+                  }}
+                  dirty={dirty}
+                />
               </>
             ) : (
               <>
