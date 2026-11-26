@@ -389,6 +389,14 @@ export function PortfolioBuilder({ initial }: Props) {
                   <Input value={profile.location ?? ''} onChange={v => setProfile(p => ({ ...p, location: v }))} />
                 </Field>
 
+                <Field label="CV file" hint="offered as a button on the page">
+                  <Input
+                    value={profile.resumeUrl ?? ''}
+                    onChange={v => setProfile(p => ({ ...p, resumeUrl: v }))}
+                    placeholder="/content/cv/olena-voloshyna.pdf"
+                  />
+                </Field>
+
                 <Field label="Main stack" hint="what a reader takes away in five seconds">
                   <ChipInput
                     values={profile.stack}

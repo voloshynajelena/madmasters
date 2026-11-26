@@ -24,6 +24,8 @@ export const profileSchema = z.object({
   phone: z.string().optional(),
   links: z.array(linkSchema).default([]),
   stack: z.array(z.string()).default([]),
+  resumeUrl: z.string().optional(),
+  resumeLabel: z.string().optional(),
 });
 
 export const itemSchema = z.object({

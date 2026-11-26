@@ -705,6 +705,14 @@ export interface PortfolioProfile {
   links: { label: string; url: string }[];
   /** The headline stack — what a reader should take away in five seconds. */
   stack: string[];
+  /**
+   * The CV itself, offered from the page.
+   *
+   * The link goes on a résumé and the résumé is offered from the link —
+   * whichever one an employer opens first, the other is one click away.
+   */
+  resumeUrl?: string;
+  resumeLabel?: string;
 }
 
 /** Which blocks of a project this version shows. */
